@@ -1,6 +1,7 @@
 // Import
 import deminer_dialog.DeminerDialogBinary;
 import deminer_dialog.DeminerDialogCustomNewGame;
+import deminer_dialog.DeminerDialogInfo;
 import deminer_graphic.DeminerButton;
 import deminer_graphic.DeminerFont;
 import deminer_graphic.DeminerLabel;
@@ -51,14 +52,6 @@ public class GUI extends JPanel implements ActionListener{
     private final static Color BTN_CYN_DEFAULT  = new Color(0x148F77);
     private final static Color BTN_CYN_FLYOVER  = new Color(0x17A589);
     private final static Color BTN_CYN_ACTIVE   = new Color(0x1ABC9C);
-
-
-    /**
-     * Neutral bouton colors
-     */
-    // private final static Color BTN_NTL_DEFAULT  = new Color(0x2C3E50);
-    // private final static Color BTN_NTL_FLYOVER  = new Color(0x34495E);
-    // private final static Color BTN_NTL_ACTIVE   = new Color(0x566573);
 
 
     /**
@@ -341,7 +334,18 @@ public class GUI extends JPanel implements ActionListener{
             // Display dialog
             param.setVisible(true);
 
-            // TODO Info dialog with a OK btn
+
+            // Infos
+            if (!param.getParamValid() && param.getUserConfirm()) {
+                DeminerDialogInfo info = new DeminerDialogInfo(app, "Invalid parameters", new String[]{ "- Width and Height must be between",
+                                                                                                                "5 and 150",
+                                                                                                                "",
+                                                                                                                "- Number of mines must be between",
+                                                                                                                "1 and (Width * Height - 2)"
+                                                                                                            });
+                info.setVisible(true);
+            }
+
 
         }while (!param.getParamValid() && param.getUserConfirm());
 
