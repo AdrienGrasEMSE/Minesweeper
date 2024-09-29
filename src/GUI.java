@@ -9,7 +9,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import javax.swing.*;
 
 
@@ -76,7 +75,7 @@ public class GUI extends JPanel implements ActionListener{
      */
     private final   App         app;
     private final   Minefield   field;
-    private         Square[][]  squareIndex;
+    // private         Square[][]  squareIndex;
     private         int         previousLevelIndex;
 
     
@@ -195,45 +194,12 @@ public class GUI extends JPanel implements ActionListener{
         valLevel            .addItemListener((ItemEvent e) -> {
 
             // Making an action only on item selection
-            if (e.getStateChange() == ItemEvent.SELECTED && valLevel.getSelectedIndex() != -1) {
+            if (e.getStateChange()          == ItemEvent.SELECTED   &&
+                valLevel.getSelectedIndex() != -1                   &&
+                valLevel.getSelectedIndex() != previousLevelIndex) {
 
                 // Changing game level
-                previousLevelIndex = valLevel.getSelectedIndex();
-                switch (valLevel.getSelectedIndex()) {
-
-                    // Custom
-                    case 0:
-                        app.setLevel(Level.EASY);
-                        break;
-                    
-                    // Easy
-                    case 1:
-                        app.setLevel(Level.MEDIUM);
-                        break;
-
-                    // Medium
-                    case 2:
-                        app.setLevel(Level.HARD);
-                        break;
-
-                    // Hard
-                    case 3:
-                        app.setLevel(Level.CUSTOM);
-                        break;
-                        
-                }
-
-
-                // Dialog to start a new game
-                DeminerDialogBinary newGame = new DeminerDialogBinary(app, "Do you want to start a new game ?");
-                newGame.setVisible(true);
-
-
-                // Getting the answer
-                boolean userChoice = newGame.getUserChoice();
-                if (userChoice) {
-                    app.newClassicGame();
-                }
+                levelChange(false);
 
             }
         });
@@ -282,6 +248,140 @@ public class GUI extends JPanel implements ActionListener{
 
 
     /**
+     * Action performed on level change
+     */
+    private void levelChange(boolean lightDisplay) {
+
+        // Changing game level
+        previousLevelIndex = valLevel.getSelectedIndex();
+        switch (valLevel.getSelectedIndex()) {
+            case 0 -> app.setLevel(Level.EASY);
+            case 1 -> app.setLevel(Level.MEDIUM);
+            case 2 -> app.setLevel(Level.HARD);
+            case 3 -> app.setLevel(Level.CUSTOM);
+                
+        }
+
+
+        // If light display off
+        if (!lightDisplay) {
+
+            // Closing the popup
+            valLevel.setPopupVisible(false);
+
+
+            // Dialog to start a new game
+            DeminerDialogBinary newGame = new DeminerDialogBinary(app, "Do you want to start a new game ?");
+            newGame.setVisible(true);
+
+
+            // Getting the answer
+            boolean userChoice = newGame.getUserChoice();
+            if (userChoice && app.getLevel() != Level.CUSTOM) {
+                
+                // New game 
+                this.newClassicGame(true);
+
+
+            } else if (userChoice && app.getLevel() == Level.CUSTOM) {
+
+                // New game 
+                this.newCustomGame(true);
+
+            }
+
+        }
+
+    }
+
+
+
+
+    /**
+     * Action performed when the user want a new classic game
+     */
+    private void newClassicGame(boolean lightDisplay) {
+
+        // If light display on
+        if (lightDisplay) {
+
+            // New classic game
+            app.newClassicGame();
+
+
+        } else {
+
+            // Dialog to confirm
+            DeminerDialogBinary confirm = new DeminerDialogBinary(app, "Confirm ?");
+            confirm.setVisible(true);
+
+
+            // Getting the answer
+            boolean userChoice = confirm.getUserChoice();
+            if (userChoice) {
+                app.newClassicGame();
+            }
+
+        }
+
+    }
+
+
+
+
+    /**
+     * Action performed when the user want a new custom game
+     */
+    private void newCustomGame(boolean lightDisplay) {
+
+        // Dialog to get custom parameters
+        DeminerDialogCustomNewGame param = new DeminerDialogCustomNewGame(app);
+        do {
+
+            // Display dialog
+            param.setVisible(true);
+
+            // TODO Info dialog with a OK btn
+
+        }while (!param.getParamValid() && param.getUserConfirm());
+
+
+        // Confirm
+        if (param.getUserConfirm()) {
+            
+            // If light display on
+            if (lightDisplay) {
+
+                // New custom game
+                app.newCustomGame(param.getCustomHeight(), param.getCustomWidth(), param.getCustomNbMines());
+
+
+            } else {
+
+                // Dialog to confirm
+                DeminerDialogBinary confirm = new DeminerDialogBinary(app, "Confirm ?");
+                confirm.setVisible(true);
+
+
+                // Getting the answer
+                boolean userChoice = confirm.getUserChoice();
+                if (userChoice) {
+
+                    // New custom game
+                    app.newCustomGame(param.getCustomHeight(), param.getCustomWidth(), param.getCustomNbMines());
+                }
+
+            }
+
+        }
+
+    }
+
+
+
+
+
+    /**
      * Displaying the mine field using the square class
      */
     public void displayField() {
@@ -308,38 +408,13 @@ public class GUI extends JPanel implements ActionListener{
         } else if (e.getSource() == newGameButton && app.getLevel().getNbLevel() != 3) {
 
             // Dialog to confirm
-            DeminerDialogBinary confirm = new DeminerDialogBinary(app, "Confirm ?");
-            confirm.setVisible(true);
-
-
-            // Getting the answer
-            boolean userChoice = confirm.getUserChoice();
-            if (userChoice) {
-                app.newClassicGame();
-            }
+            newClassicGame(false);
             return;
 
 
         } else if (e.getSource() == newGameButton && app.getLevel().getNbLevel() == 3) {
 
-            // // Dialog to get custom parameters
-            // DeminerDialogCustomNewGame param = new DeminerDialogCustomNewGame(app);
-            // param.setVisible(true);
-
-
-            // // TODO asynchronisme ?
-
-
-            // Dialog to confirm
-            DeminerDialogBinary confirm = new DeminerDialogBinary(app, "Confirm ?");
-            confirm.setVisible(true);
-
-
-            // Getting the answer
-            boolean userChoice = confirm.getUserChoice();
-            if (userChoice) {
-                app.newClassicGame();
-            }
+            newCustomGame(false);
             return;
 
 

@@ -1,5 +1,4 @@
 // Import
-import deminer_dialog.DeminerDialogCustomNewGame;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -28,8 +27,8 @@ public class App extends JFrame {
     /**
      * Game attribute
      */
-    private int     sqRevealed  = 0;
-    private int     winScore    = 0;
+    // private int     sqRevealed  = 0;
+    // private int     winScore    = 0;
 
 
 
@@ -49,32 +48,16 @@ public class App extends JFrame {
     public App() {
 
         // Setting up global style
-        ImageIcon   logoIcon    = new ImageIcon("./img/mine.png");
-        Image       logo        = logoIcon.getImage();
+        ImageIcon   logoIcon        = new ImageIcon("./img/mine.png");
+        Image       logo            = logoIcon.getImage();
         this        .setIconImage   (logo);
         this        .setName        ("AdrienG's deminer");
         this        .setTitle       ("AdrienG's deminer");
 
 
-        // Creating a new classic (random difficulty) game
-        int nb = random.nextInt(2);
-        switch (nb) {
-            case 0:
-                gameLevel = Level.EASY;
-                break;
-            case 1:
-                gameLevel = Level.MEDIUM;
-                break;
-            case 2:
-                gameLevel = Level.HARD;
-                break;
-        }
-
-
         // Setting up the GUI and adding it up to the Frame
-        gui = new GUI(this, field);
+        this.gui = new GUI(this, field);
         this.setContentPane(gui);
-        newClassicGame();
 
 
         // Calculing size after its content and setting window visible
@@ -84,7 +67,27 @@ public class App extends JFrame {
 
 
         // Setting up action on click on the close button
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+    }
+
+
+
+
+
+    /**
+     * Init method
+     */
+    private void init() {
+
+        // Creating a new classic (random difficulty) game
+        int nb = random.nextInt(2);
+        switch (nb) {
+            case 0 -> gameLevel = Level.EASY;
+            case 1 -> gameLevel = Level.MEDIUM;
+            case 2 -> gameLevel = Level.HARD;
+        }
+        newClassicGame();
     }
 
 
@@ -131,8 +134,28 @@ public class App extends JFrame {
         field.newClassicEmptyField(gameLevel);
 
         // Reset attributes
-        sqRevealed  = 0;
-        winScore    = field.getLenght() * field.getWidth() - field.getNumberOfMine();
+        // sqRevealed  = 0;
+        // winScore    = field.getLenght() * field.getWidth() - field.getNumberOfMine();
+
+        // Refresh display
+        gui.displayField();
+
+    }
+
+
+
+
+    /**
+     * Creating a new game with a classic difficulty
+     */
+    public void newCustomGame(int customLenght, int customWidth, int customNbMines) {
+
+        // Regenerate a new field
+        field.newCustomEmptyField(gameLevel, customLenght, customWidth, customNbMines);
+
+        // Reset attributes
+        // sqRevealed  = 0;
+        // winScore    = field.getLenght() * field.getWidth() - field.getNumberOfMine();
 
         // Refresh display
         gui.displayField();
@@ -156,10 +179,11 @@ public class App extends JFrame {
 
         // ??
         App app = new App();
+        app.init();
 
 
-        DeminerDialogCustomNewGame test = new DeminerDialogCustomNewGame(app);
-        test.setVisible(true);
+        // DeminerDialogCustomNewGame test = new DeminerDialogCustomNewGame(app);
+        // test.setVisible(true);
 
 
         // Enfing point

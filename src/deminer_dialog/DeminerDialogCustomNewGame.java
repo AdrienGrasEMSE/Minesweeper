@@ -7,11 +7,7 @@ import deminer_graphic.DeminerFont;
 import deminer_graphic.DeminerIntegerField;
 import deminer_graphic.DeminerLabel;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -64,9 +60,11 @@ public class DeminerDialogCustomNewGame extends JDialog {
     /**
      * Attributes : answer
      */
-    private int customWidth;
-    private int customHeight;
-    private int customNbMines;
+    private int     customWidth;
+    private int     customHeight;
+    private int     customNbMines;
+    private boolean paramValid  = false;
+    private boolean userConfirm;
 
 
 
@@ -132,6 +130,32 @@ public class DeminerDialogCustomNewGame extends JDialog {
         // Creating the confirm and cancel buttons
         DeminerButton cancelButton  = new DeminerButton("Cancel",   DeminerFont.JOST_SEMIBOLD, 18, Color.WHITE, BTN_RED_DEFAULT, BTN_RED_FLYOVER, BTN_RED_ACTIVE);
         DeminerButton confirmButton = new DeminerButton("Confirm",  DeminerFont.JOST_SEMIBOLD, 18, Color.WHITE, BTN_GRN_DEFAULT, BTN_GRN_FLYOVER, BTN_GRN_ACTIVE);
+        
+
+        // Yes button action
+        confirmButton.addActionListener(e -> {
+
+            // Saving parameters
+            this.customWidth    = widthInput    .getIntegerValue();
+            this.customHeight   = heightInput   .getIntegerValue();
+            this.customNbMines  = nbMinesInput  .getIntegerValue();
+
+
+            // Validation
+            paramValidation();
+            userConfirm = true;
+            dispose();
+        });
+
+
+        // No button action
+        cancelButton.addActionListener(e -> {
+            userConfirm = false;
+            dispose();
+        });
+        
+        
+        // Plotting the buttons
         buttonPanel.add(cancelButton);
         buttonPanel.add(confirmButton);
 
@@ -151,19 +175,111 @@ public class DeminerDialogCustomNewGame extends JDialog {
         // Displaying the dialog relative to the prarent frame
         this.setLocationRelativeTo(parent);
 
-
-        // Yes button action
-        // TODO make these action usable
-        cancelButton.addActionListener(e -> {
-            System.out.println("Vous avez choisi 'Confirm'");
-            dispose();
-        });
-
-
-        // No button action
-        confirmButton.addActionListener(e -> {
-            System.out.println("Vous avez choisi 'Cancel'");
-            dispose();
-        });
     }
+
+
+
+
+    /**
+     * Method to check parameters
+     */
+    private void paramValidation() {
+
+        // Width validation
+        if (customWidth < 5 || customWidth > 150) {
+            
+            // Invalid parameters
+            paramValid = false;
+            return;
+
+        }
+        
+
+        // Height validation
+        if (customHeight < 5 || customHeight > 150) {
+
+            // Invalid parameters
+            paramValid = false;
+            return;
+
+        }
+        
+
+        // NbMines validation
+        if (customNbMines < 1 || customNbMines > (int) ((customWidth * customHeight) / 0.75)) {
+
+            // Invalid parameters
+            paramValid = false;
+            return;
+            
+
+        }
+        
+
+        // Valid parameters
+        paramValid = true;
+
+    }
+
+
+
+
+    /**
+     * Getter : to get if the user has confirm the parameters
+     * 
+     * @return userConfirm
+     */
+    public boolean getUserConfirm() {
+        return userConfirm;
+    }
+
+
+
+
+    /**
+     * Getter : to get if the parameters are valid
+     * 
+     * @return paramValid
+     */
+    public boolean getParamValid() {
+        return paramValid;
+    }
+
+
+
+
+    /**
+     * Getter : to get the custom width entered by the user
+     * 
+     * @return customWidth
+     */
+    public int getCustomWidth() {
+        return customWidth;
+    }
+
+
+
+
+    /**
+     * Getter : to get the custom height entered by the user
+     * 
+     * @return customHeight
+     */
+    public int getCustomHeight() {
+        return customHeight;
+    }
+
+
+
+
+    /**
+     * Getter : to get the number of mines height entered by the user
+     * 
+     * @return customNbMines the number of mines
+     */
+    public int getCustomNbMines() {
+        return customNbMines;
+    }
+
+
 }
