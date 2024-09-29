@@ -1,4 +1,6 @@
 // Import
+import deminer_dialog.DeminerDialogBinary;
+import deminer_dialog.DeminerDialogCustomNewGame;
 import deminer_graphic.DeminerButton;
 import deminer_graphic.DeminerFont;
 import deminer_graphic.DeminerLabel;
@@ -6,6 +8,8 @@ import deminer_graphic.combo_box.DeminerComboBox;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import javax.swing.*;
 
 
@@ -73,8 +77,7 @@ public class GUI extends JPanel implements ActionListener{
     private final   App         app;
     private final   Minefield   field;
     private         Square[][]  squareIndex;
-
-
+    private         int         previousLevelIndex;
 
     
     /**
@@ -189,7 +192,51 @@ public class GUI extends JPanel implements ActionListener{
         valLevel            .setBackground(GUI_DARK_GREY);
         valLevel            .setForeground(Color.black);
         valLevel            .setSelectedItem(app.getLevel());
-        valLevel            .addActionListener(this);
+        valLevel            .addItemListener((ItemEvent e) -> {
+
+            // Making an action only on item selection
+            if (e.getStateChange() == ItemEvent.SELECTED && valLevel.getSelectedIndex() != -1) {
+
+                // Changing game level
+                previousLevelIndex = valLevel.getSelectedIndex();
+                switch (valLevel.getSelectedIndex()) {
+
+                    // Custom
+                    case 0:
+                        app.setLevel(Level.EASY);
+                        break;
+                    
+                    // Easy
+                    case 1:
+                        app.setLevel(Level.MEDIUM);
+                        break;
+
+                    // Medium
+                    case 2:
+                        app.setLevel(Level.HARD);
+                        break;
+
+                    // Hard
+                    case 3:
+                        app.setLevel(Level.CUSTOM);
+                        break;
+                        
+                }
+
+
+                // Dialog to start a new game
+                DeminerDialogBinary newGame = new DeminerDialogBinary(app, "Do you want to start a new game ?");
+                newGame.setVisible(true);
+
+
+                // Getting the answer
+                boolean userChoice = newGame.getUserChoice();
+                if (userChoice) {
+                    app.newClassicGame();
+                }
+
+            }
+        });
 
     }
 
@@ -258,67 +305,45 @@ public class GUI extends JPanel implements ActionListener{
             return;
 
 
-        } else if (e.getSource() == valLevel) {
+        } else if (e.getSource() == newGameButton && app.getLevel().getNbLevel() != 3) {
 
-            // Changing game level
-            switch (valLevel.getSelectedIndex()) {
+            // Dialog to confirm
+            DeminerDialogBinary confirm = new DeminerDialogBinary(app, "Confirm ?");
+            confirm.setVisible(true);
 
-                // Custom
-                case 0:
-                    app.setLevel(Level.EASY);
-                    break;
-                
-                // Easy
-                case 1:
-                    app.setLevel(Level.MEDIUM);
-                    break;
 
-                // Medium
-                case 2:
-                    app.setLevel(Level.HARD);
-                    break;
-
-                // Hard
-                case 3:
-                    app.setLevel(Level.CUSTOM);
-                    break;
-                    
+            // Getting the answer
+            boolean userChoice = confirm.getUserChoice();
+            if (userChoice) {
+                app.newClassicGame();
             }
             return;
 
 
-        } else if (e.getSource() == newGameButton && app.getLevel().getNbLevel() != 3) {
+        } else if (e.getSource() == newGameButton && app.getLevel().getNbLevel() == 3) {
 
-            // Restarting a new game
-            app.newClassicGame();
+            // // Dialog to get custom parameters
+            // DeminerDialogCustomNewGame param = new DeminerDialogCustomNewGame(app);
+            // param.setVisible(true);
+
+
+            // // TODO asynchronisme ?
+
+
+            // Dialog to confirm
+            DeminerDialogBinary confirm = new DeminerDialogBinary(app, "Confirm ?");
+            confirm.setVisible(true);
+
+
+            // Getting the answer
+            boolean userChoice = confirm.getUserChoice();
+            if (userChoice) {
+                app.newClassicGame();
+            }
             return;
 
 
-        } //else if (e.getSource() == newGameButton && app.getLevel().getNbLevel() == 3) {
-
-        //     // TODO : trouver un moyen de forcer le contenu utilisateur à un entier (Faire de l'héritage de JTextField)
-
-        //     // Displaying inputs for custom parameters
-        //     customNewGame();
-        //     int reponse = JOptionPane.showConfirmDialog(null, customParam, "Custom game", JOptionPane.PLAIN_MESSAGE);
-
-        //     // Applying parameters
-        //     if (reponse == JOptionPane.YES_OPTION) {
-
-        //         // Getting parameters
-        //         int customLenght_   = Integer.parseInt(customLenght.getText());
-        //         int customWidth_    = Integer.parseInt(customWidth.getText());
-        //         int customNbMines_  = Integer.parseInt(customNbMines.getText());
-        //         app.newCustomGame(customLenght_, customWidth_, customNbMines_);
-        //         return;
-
-        //     } else {
-
-        //         // Canceling
-        //         return;
-        //     }
-
-        // }
+        }
 
         // Default action
         throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
