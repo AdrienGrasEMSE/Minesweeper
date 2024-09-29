@@ -1,7 +1,6 @@
 // Package declaration
 package deminer_dialog;
 
-
 // Import
 import deminer_graphic.DeminerButton;
 import deminer_graphic.DeminerFont;
@@ -12,6 +11,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 
 /**
@@ -50,17 +50,18 @@ public class DeminerDialogBinary extends JDialog {
      * Constructor
      * 
      * @param parent            JFrame that own the dialog
-     * @param title             Dialog title
      * @param message           Dialog message
      */
-    public DeminerDialogBinary(JFrame parent, String title, String message) {
+    public DeminerDialogBinary(JFrame parent, String message) {
 
         // Herited constructor
-        super(parent, title, true);
+        super(parent, "", true);
+        this.setUndecorated(true);
 
 
         // Creating the main JPanel
         JPanel panel = new JPanel();
+        panel.setBorder     (new EmptyBorder(10, 10, 10, 10));
         panel.setBackground (GUI_DARK_GREY);
         panel.setLayout     (new BorderLayout());
 
@@ -73,14 +74,15 @@ public class DeminerDialogBinary extends JDialog {
 
         // Creating the panel for the yes and no buttons
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setBackground(GUI_DARK_GREY);
+        buttonPanel.setBorder       (new EmptyBorder(15, 0, 0, 0));
+        buttonPanel.setBackground   (GUI_DARK_GREY);
 
 
         // Creating the yes and no buttons
-        DeminerButton yesButton = new DeminerButton("Yes", DeminerFont.JOST_SEMIBOLD, 18, Color.WHITE, BTN_RED_DEFAULT, BTN_RED_FLYOVER, BTN_RED_ACTIVE);
-        DeminerButton noButton  = new DeminerButton("No", DeminerFont.JOST_SEMIBOLD, 18, Color.WHITE, BTN_GRN_DEFAULT, BTN_GRN_FLYOVER, BTN_GRN_ACTIVE);
-        buttonPanel.add(yesButton);
+        DeminerButton noButton  = new DeminerButton("No",   DeminerFont.JOST_SEMIBOLD, 18, Color.WHITE, BTN_RED_DEFAULT, BTN_RED_FLYOVER, BTN_RED_ACTIVE);
+        DeminerButton yesButton = new DeminerButton("Yes",  DeminerFont.JOST_SEMIBOLD, 18, Color.WHITE, BTN_GRN_DEFAULT, BTN_GRN_FLYOVER, BTN_GRN_ACTIVE);
         buttonPanel.add(noButton);
+        buttonPanel.add(yesButton);
 
 
         // Adding the button pane to the dialog
@@ -88,27 +90,26 @@ public class DeminerDialogBinary extends JDialog {
 
 
         // Adding the whole to the dialog frame
-        setContentPane          (panel);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        pack                    ();
+        this.setContentPane (panel);
+        this.pack           ();
 
 
         // Displaying the dialog relative to the prarent frame
-        setLocationRelativeTo(parent);
+        this.setLocationRelativeTo(parent);
 
 
         // Yes button action
         // TODO make these action usable
-        yesButton.addActionListener(e -> {
-            System.out.println("Vous avez choisi 'Oui'");
-            dispose();
+        noButton.addActionListener(e -> {
+            System.out.println("Vous avez choisi 'Non'");
+            this.dispose();
         });
 
 
         // No button action
-        noButton.addActionListener(e -> {
-            System.out.println("Vous avez choisi 'Non'");
-            dispose();
+        yesButton.addActionListener(e -> {
+            System.out.println("Vous avez choisi 'Oui'");
+            this.dispose();
         });
     }
 
