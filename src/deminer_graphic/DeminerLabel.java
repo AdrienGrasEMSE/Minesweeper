@@ -16,16 +16,30 @@ import javax.swing.border.EmptyBorder;
  * 
  * @author  AdrienG
  * @version 0.0
+ * 
+ * 
+ * This label act like a normal JLabel but has :
+ * - Custom font from DeminerFont
+ * - Custom font size
+ * - Custom font color
  */
 public class DeminerLabel extends JLabel{
 
     /**
      * Constructor
+     * 
+     * @param text          Label's text
+     * @param selectedFont  Selected font from DeminerFont
+     * @param fontSize      Font size
+     * @param color         Font color
      */
     public DeminerLabel(String text, DeminerFont selectedFont, int fontSize, Color color) {
 
         // Herited constructor
         super(text);
+
+
+        // Inner border
         this.setBorder(new EmptyBorder(0, 10, 0, 10));
 
 

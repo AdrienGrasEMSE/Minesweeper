@@ -1,7 +1,6 @@
 // Package declaration
 package deminer_graphic.combo_box;
 
-
 // Import
 import java.awt.Color;
 import java.awt.Component;
@@ -14,6 +13,9 @@ import javax.swing.plaf.basic.BasicComboBoxEditor;
  * 
  * @author  AdrienG
  * @version 0.0
+ * 
+ * 
+ * Act like a normal editor but allow the DeminerComboBox to work properly (even if there is not a lot in here)
  */
 public class DeminerComboBoxEditor extends BasicComboBoxEditor {
 

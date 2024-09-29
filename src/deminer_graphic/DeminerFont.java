@@ -3,7 +3,7 @@ package deminer_graphic;
 
 
 /**
- * Enum DeminerFont, created in order to select font
+ * Enum DeminerFont, created in order to select localy installed font
  * 
  * @author  AdrienG
  * @version 0.0

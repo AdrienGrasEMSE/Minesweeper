@@ -1,7 +1,6 @@
 // Package declaration
 package deminer_graphic.combo_box;
 
-
 // Import
 import java.awt.Color;
 import java.awt.Font;
@@ -19,6 +18,10 @@ import javax.swing.plaf.basic.BasicComboBoxUI;
  * 
  * @author  AdrienG
  * @version 0.0
+ * 
+ * 
+ * Allow the DeminerComboBox to have :
+ * - the arrow button with dynamic color change on mouse action
  */
 public class DeminerComboBoxUI extends BasicComboBoxUI{
 

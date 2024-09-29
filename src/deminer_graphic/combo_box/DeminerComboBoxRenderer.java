@@ -1,7 +1,6 @@
 // Package declaration
 package deminer_graphic.combo_box;
 
-
 // Import
 import deminer_graphic.DeminerFont;
 import java.awt.Color;
@@ -21,6 +20,9 @@ import javax.swing.JList;
  * 
  * @author  AdrienG
  * @version 0.0
+ * 
+ * 
+ * Allow the DeminerComboBox to have the popup that has dynamic color change on mouse flyover
  */
 public class DeminerComboBoxRenderer extends DefaultListCellRenderer {
 
@@ -39,7 +41,6 @@ public class DeminerComboBoxRenderer extends DefaultListCellRenderer {
     /**
      * Constructor
      * 
-     * @param fontDefaultColor
      * @param fontSize         font size
      * @param fontDefaultColor font default color
      * @param fontActiveColor  font color on click

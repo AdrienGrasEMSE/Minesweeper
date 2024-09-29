@@ -13,6 +13,7 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JButton;
+import javax.swing.border.EmptyBorder;
 
 
 /**
@@ -20,6 +21,14 @@ import javax.swing.JButton;
  * 
  * @author  AdrienG
  * @version 0.0
+ * 
+ * 
+ * This button act like a normal one but appears different. It has :
+ * - Rounded angle
+ * - Custom font (from DeminerFont)
+ * - Custom font size
+ * - Custom font color
+ * - Background color that react to the mouse (flyover and click)
  */
 public class DeminerButton extends JButton implements MouseListener{
 
@@ -37,16 +46,21 @@ public class DeminerButton extends JButton implements MouseListener{
      * Constructor
      * 
      * @param text          button's label
+     * @param selectedFont  selected font from DeminerFont
      * @param fontSize      font size
-     * @param colorFont     font's color
+     * @param colorFont     font color
      * @param colorDefault  default color
      * @param colorFlyover  fylover color
-     * @param colorActive   active color
+     * @param colorActive   active color (on click)
      */
     public DeminerButton(String text, DeminerFont selectedFont, int fontSize, Color colorFont, Color colorDefault, Color colorFlyover, Color colorActive) {
 
         // Setting text
         this.setText(text);
+
+
+        // Inner border
+        this.setBorder(new EmptyBorder(0, 10, 0, 10));
 
 
         // Setting font
@@ -111,7 +125,8 @@ public class DeminerButton extends JButton implements MouseListener{
         
 
         // Repainting the component
-        super.paintComponent(g2d);
+        super   .paintComponent(g2d);
+        g2d     .dispose();
     }
 
 

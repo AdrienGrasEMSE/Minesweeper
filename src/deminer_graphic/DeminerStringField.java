@@ -1,16 +1,16 @@
 // Package declaration
 package deminer_graphic;
 
-
 // Import
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.event.MouseAdapter;
+import java.awt.FontFormatException;
 import java.awt.event.MouseEvent;
-import javax.swing.JFrame;
+import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.IOException;
 import javax.swing.JTextField;
-
+import javax.swing.border.EmptyBorder;
 
 
 /**
@@ -18,14 +18,21 @@ import javax.swing.JTextField;
  * 
  * @author  AdrienG
  * @version 0.0
+ * 
+ * 
+ * This Text field act like a normal one except it has :
+ * - Custom font from DeminerFont
+ * - Custom font size
+ * - Custom font color
+ * - Dynamic background color change (mouse flyover)
  */
-public class DeminerStringField extends JTextField {
+public class DeminerStringField extends JTextField implements MouseListener {
     
     /**
      * Attributes
      */
-    private Color defaultColor;
-    private Color flyoverColor;
+    private final Color defaultColor;
+    private final Color flyoverColor;
 
     
 
@@ -33,18 +40,37 @@ public class DeminerStringField extends JTextField {
     /**
      * Constructor
      * 
+     * @param selectedFont  selected font from DeminerFont
+     * @param fontSize      font size
      * @param fontColor     Font color
      * @param defaultColor  Default background color
      * @param flyoverColor  Fylover background color
      */
-    public DeminerStringField(int fontSize, Color fontColor, Color defaultColor, Color flyoverColor) {
+    public DeminerStringField(DeminerFont selectedFont, int fontSize, Color fontColor, Color defaultColor, Color flyoverColor) {
 
         // Herited constructor
         super();
 
 
-        // Appliquer la police personnalisée
-        this.setFont(new Font("Serif", Font.BOLD, fontSize));
+        // Inner border
+        this.setBorder(new EmptyBorder(0, 10, 0, 10));
+
+
+        // Setting font
+        try {
+
+            // Getting localy installed font
+            Font font = Font.createFont(Font.TRUETYPE_FONT, new File(selectedFont.getFontPath()));
+            this.setFont(font.deriveFont((float) fontSize));
+
+
+        } catch (FontFormatException | IOException | NullPointerException  e) {
+            
+            // Default font
+            System.out.println(e);
+            this.setFont(new Font("Arial", Font.BOLD, fontSize));
+
+        }
 
 
         // Getting attributes
@@ -52,71 +78,68 @@ public class DeminerStringField extends JTextField {
         this.flyoverColor = flyoverColor;
 
 
-        // Appliquer la couleur du texte
+        // Applying colors
         this.setForeground(fontColor);
         this.setBackground(defaultColor);
 
 
-        // Ajouter un MouseListener pour détecter le survol
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                // Changer la couleur de fond en cas de survol
-                setBackground(flyoverColor);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                // Réinitialiser la couleur de fond lorsque la souris quitte
-                setBackground(defaultColor);
-            }
-        });
+        // Mouslistner for dynamic color change
+        addMouseListener(this);
     }
 
 
+
+
+    /**
+     * Mouse Pressed on the field
+     */  
+    @Override 
+    public void mousePressed (MouseEvent e) {
+        // Nothing
+    }
     
 
-    // Méthode pour changer dynamiquement la police
-    public void setCustomFont(String fontName, int fontStyle, int fontSize) {
-        setFont(new Font(fontName, fontStyle, fontSize));
+    
+    
+    /**
+     * Mouse Clicked on the field
+     */
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        // Nothing
     }
 
-    // Méthode pour changer dynamiquement la couleur du texte
-    public void setTextColor(Color color) {
-        setForeground(color);
+
+
+
+    /**
+     * Mouse Released on the field
+     */
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        // Nothing
     }
 
-    // Méthode pour changer dynamiquement la couleur de fond
-    public void setDefaultColor(Color color) {
-        this.defaultColor = color;
-        setBackground(color);
+
+
+
+    /**
+     * Mouse enter the button
+     */
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        this.setBackground(flyoverColor);
     }
 
-    // Méthode pour changer la couleur de fond au survol
-    public void setFlyoverColor(Color color) {
-        this.flyoverColor = color;
+
+
+
+    /**
+     * Mouse leave the button
+     */
+    @Override
+    public void mouseExited(MouseEvent e) {
+        this.setBackground(defaultColor);
     }
 
-    public static void main(String[] args) {
-        // Créer une fenêtre JFrame pour tester CustomTextField
-        JFrame frame = new JFrame("Test CustomTextField");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 200);
-        frame.setLayout(new FlowLayout());
-
-        // Créer un CustomTextField avec police et couleurs personnalisées
-        DeminerStringField customTextField = new DeminerStringField(
-                18,    // Police : Serif, style : gras, taille : 18
-                Color.WHITE,               // Couleur du texte : blanc
-                Color.DARK_GRAY,           // Couleur de fond par défaut : gris foncé
-                Color.LIGHT_GRAY           // Couleur de fond au survol : gris clair
-        );
-        customTextField.setColumns(20);  // Largeur du champ de texte
-
-        // Ajouter le CustomTextField à la fenêtre
-        frame.add(customTextField);
-
-        // Afficher la fenêtre
-        frame.setVisible(true);
-    }
 }

@@ -1,7 +1,6 @@
 // Package declaration
 package deminer_graphic.combo_box;
 
-
 // Import
 import deminer_graphic.DeminerFont;
 import java.awt.Color;
@@ -20,6 +19,11 @@ import javax.swing.JComboBox;
  * 
  * @author  AdrienG
  * @version 0.0
+ * 
+ * It act like a normal JComboBox but has a different looking :
+ * - rounded angle
+ * - arrow button that has dynamic color change
+ * - popup that has dynamic color change
  */
 public class DeminerComboBox<E> extends JComboBox<E> {
 
@@ -120,7 +124,8 @@ public class DeminerComboBox<E> extends JComboBox<E> {
 
 
         // Repainting the component
-        super.paintComponent(g);
+        super   .paintComponent(g);
+        g2d     .dispose();
     }
 
 
