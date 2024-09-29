@@ -99,6 +99,16 @@ public class DeminerButton extends JButton implements MouseListener{
 
 
         // Adding the listener
+        initListener();
+    }
+
+
+
+
+    /**
+     * Init listener method
+     */
+    private void initListener() {
         this.addMouseListener(this);
     }
 

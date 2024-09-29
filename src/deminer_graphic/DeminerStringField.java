@@ -83,8 +83,18 @@ public class DeminerStringField extends JTextField implements MouseListener {
         this.setBackground(defaultColor);
 
 
-        // Mouslistner for dynamic color change
-        addMouseListener(this);
+        // Mouslistener
+        initListener();
+    }
+
+
+
+
+    /**
+     * Init listener method
+     */
+    private void initListener() {
+        this.addMouseListener(this);
     }
 
 
