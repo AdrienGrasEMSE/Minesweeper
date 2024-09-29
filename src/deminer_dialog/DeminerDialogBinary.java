@@ -45,6 +45,12 @@ public class DeminerDialogBinary extends JDialog {
 
 
     /**
+     * Font color
+     */
+    private final static Color FONT_DEFAULT     = new Color(0xEAECEE);
+
+
+    /**
      * Attributes
      */
     private boolean userChoice;
@@ -73,9 +79,9 @@ public class DeminerDialogBinary extends JDialog {
 
 
         // Creating the label for the message
-        DeminerLabel messageLabel = new DeminerLabel(message, DeminerFont.JOST_SEMIBOLD, 18, Color.WHITE);
+        DeminerLabel messageLabel = new DeminerLabel(message, DeminerFont.JOST_SEMIBOLD, 18, FONT_DEFAULT);
         messageLabel.setHorizontalAlignment (SwingConstants.CENTER);
-        panel       .add                    (messageLabel, BorderLayout.CENTER);
+        panel       .add                    (messageLabel, BorderLayout.NORTH);
 
 
         // Creating the panel for the yes and no buttons
@@ -85,18 +91,18 @@ public class DeminerDialogBinary extends JDialog {
 
 
         // Creating the yes and no buttons
-        DeminerButton noButton  = new DeminerButton("No",   DeminerFont.JOST_SEMIBOLD, 18, Color.WHITE, BTN_RED_DEFAULT, BTN_RED_FLYOVER, BTN_RED_ACTIVE);
-        DeminerButton yesButton = new DeminerButton("Yes",  DeminerFont.JOST_SEMIBOLD, 18, Color.WHITE, BTN_GRN_DEFAULT, BTN_GRN_FLYOVER, BTN_GRN_ACTIVE);
+        DeminerButton noButton  = new DeminerButton("No",   DeminerFont.JOST_SEMIBOLD, 18, FONT_DEFAULT, BTN_RED_DEFAULT, BTN_RED_FLYOVER, BTN_RED_ACTIVE);
+        DeminerButton yesButton = new DeminerButton("Yes",  DeminerFont.JOST_SEMIBOLD, 18, FONT_DEFAULT, BTN_GRN_DEFAULT, BTN_GRN_FLYOVER, BTN_GRN_ACTIVE);
         
         
-        // Yes button action
+        // No button action
         noButton.addActionListener(e -> {
             userChoice = false;
             this.dispose();
         });
 
 
-        // No button action
+        // Yes button action
         yesButton.addActionListener(e -> {
             userChoice = true;
             this.dispose();
