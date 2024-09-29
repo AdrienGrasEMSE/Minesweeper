@@ -44,6 +44,12 @@ public class DeminerDialogBinary extends JDialog {
     private final static Color BTN_GRN_ACTIVE   = new Color(0x2ECC71);
 
 
+    /**
+     * Attributes
+     */
+    private boolean userChoice;
+
+
 
 
     /**
@@ -81,6 +87,23 @@ public class DeminerDialogBinary extends JDialog {
         // Creating the yes and no buttons
         DeminerButton noButton  = new DeminerButton("No",   DeminerFont.JOST_SEMIBOLD, 18, Color.WHITE, BTN_RED_DEFAULT, BTN_RED_FLYOVER, BTN_RED_ACTIVE);
         DeminerButton yesButton = new DeminerButton("Yes",  DeminerFont.JOST_SEMIBOLD, 18, Color.WHITE, BTN_GRN_DEFAULT, BTN_GRN_FLYOVER, BTN_GRN_ACTIVE);
+        
+        
+        // Yes button action
+        noButton.addActionListener(e -> {
+            userChoice = false;
+            this.dispose();
+        });
+
+
+        // No button action
+        yesButton.addActionListener(e -> {
+            userChoice = true;
+            this.dispose();
+        });
+        
+        
+        // Plotting the buttons
         buttonPanel.add(noButton);
         buttonPanel.add(yesButton);
 
@@ -97,20 +120,18 @@ public class DeminerDialogBinary extends JDialog {
         // Displaying the dialog relative to the prarent frame
         this.setLocationRelativeTo(parent);
 
-
-        // Yes button action
-        // TODO make these action usable
-        noButton.addActionListener(e -> {
-            System.out.println("Vous avez choisi 'Non'");
-            this.dispose();
-        });
+    }
 
 
-        // No button action
-        yesButton.addActionListener(e -> {
-            System.out.println("Vous avez choisi 'Oui'");
-            this.dispose();
-        });
+
+
+    /**
+     * Getter : to get what option did the user choose
+     * 
+     * @return userChoice : true = yes, false = no
+     */
+    public boolean getUserChoice() {
+        return userChoice;
     }
 
 }
