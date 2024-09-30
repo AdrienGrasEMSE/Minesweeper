@@ -186,7 +186,7 @@ public class DeminerDialogCustomNewGame extends JDialog {
     private void paramValidation() {
 
         // Width validation
-        if (customWidth < 5 || customWidth > 150) {
+        if (customWidth < 5 || customWidth > 20) {
             
             // Invalid parameters
             paramValid = false;
@@ -196,7 +196,7 @@ public class DeminerDialogCustomNewGame extends JDialog {
         
 
         // Height validation
-        if (customHeight < 5 || customHeight > 150) {
+        if (customHeight < 5 || customHeight > 20) {
 
             // Invalid parameters
             paramValid = false;
