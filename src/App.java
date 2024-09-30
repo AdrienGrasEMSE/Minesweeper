@@ -300,7 +300,8 @@ public class App extends JFrame {
                         (testX != posX || testY != posY)) {
 
                             // If we get here, we need to display it
-                            if (squareMesh[testX][testY].isSquareRevealed() == false) {
+                            if (squareMesh[testX][testY].isSquareRevealed() == false &&
+                                squareMesh[testX][testY].isSquareLocked()   == false) {
                                 propagation(testX, testY);
                             }
                         
@@ -373,12 +374,11 @@ public class App extends JFrame {
         // DTheme.highlightCoefficient();
 
 
-        // ??
+        // App instanciation
         App app = new App();
         app.init();
 
-
-        // DeminerDialogCustomNewGame test = new DeminerDialogCustomNewGame(app);
+        // DeminerDialogInfo test = new DeminerDialogInfo(app, "Invalid parameters", new String[]{"<html><span>&#128681;</span></html>"});
         // test.setVisible(true);
 
 

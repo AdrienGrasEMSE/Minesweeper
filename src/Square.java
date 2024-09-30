@@ -14,6 +14,7 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 
 /**
@@ -34,6 +35,7 @@ public class Square extends JPanel implements MouseListener{
     private final   int     posY;
     private         Color   mainColor   = DTheme.SQR_NTL_N;
     private         boolean isRevealed  = false;
+    private         boolean isLocked    = false;
     private         int     sqSize;
     private         int     coefficient;                        // 0 = 0 mine around        -1 = the square is a mine
 
@@ -262,6 +264,18 @@ public class Square extends JPanel implements MouseListener{
             }
 
             
+        } else if (isLocked) {
+
+            // Setting the string and the color for the display
+            g.setFont(font);
+            FontMetrics metrics = g.getFontMetrics(font);
+            g.setColor(DTheme.FNT_COF_8);
+            g.drawString(
+                    "#",
+                    (getWidth()     - metrics.stringWidth("#")) / 2,
+                    (getHeight()    - metrics.getHeight())                              / 2 + metrics.getAscent()
+            );
+
         }
 
 
@@ -319,6 +333,18 @@ public class Square extends JPanel implements MouseListener{
 
 
     /**
+     * Getter : to check if the square is locked or not
+     * 
+     * @return isLocked showing if the Square is locked
+     */
+    public boolean isSquareLocked() {
+        return isLocked;
+    }
+
+
+
+
+    /**
      * Getter : to get the size of the square
      * 
      * @return sqSize
@@ -336,9 +362,18 @@ public class Square extends JPanel implements MouseListener{
     @Override 
     public void mousePressed (MouseEvent e) {
 
-        // If the square is not revealed yet
-        if (!isRevealed) {
+        // Action that depend on the click type
+        if (SwingUtilities.isLeftMouseButton(e) && !isRevealed && !isLocked) {
+
+            // Left button, we want to reveal this square
             app.clickEvent(posX, posY);
+
+
+        } else if (SwingUtilities.isRightMouseButton(e) && !isRevealed) {
+
+            // Enable / disable lock
+            isLocked = !isLocked;
+
         }
         
     }

@@ -398,6 +398,11 @@ public class GUI extends JPanel implements ActionListener{
 
 
 
+    /**
+     * End game phase : display a dialog to check if the user want a rematch or quit
+     * 
+     * @param gameWon in case of win or lost, the message is different
+     */
     public void endGamePhase(boolean gameWon) {
 
         // Dialog
@@ -429,10 +434,11 @@ public class GUI extends JPanel implements ActionListener{
             app.quit();
 
         }
-        
+
     }
 
 
+    
 
     /**
      * Setter : to get from the app the square mesh
