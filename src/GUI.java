@@ -1,6 +1,7 @@
 // Import
 import deminer_dialog.DeminerDialogBinary;
 import deminer_dialog.DeminerDialogCustomNewGame;
+import deminer_dialog.DeminerDialogEndGame;
 import deminer_dialog.DeminerDialogInfo;
 import deminer_graphic.DeminerButton;
 import deminer_graphic.DTheme;
@@ -317,7 +318,7 @@ public class GUI extends JPanel implements ActionListener{
 
         } else {
 
-            // Dialog to confirm
+            // Dialog to endGame
             DeminerDialogBinary confirm = new DeminerDialogBinary(app, "Confirm ?");
             confirm.setVisible(true);
 
@@ -375,7 +376,7 @@ public class GUI extends JPanel implements ActionListener{
 
             } else {
 
-                // Dialog to confirm
+                // Dialog to endGame
                 DeminerDialogBinary confirm = new DeminerDialogBinary(app, "Confirm ?");
                 confirm.setVisible(true);
 
@@ -395,6 +396,41 @@ public class GUI extends JPanel implements ActionListener{
     }
 
 
+
+
+    public void endGamePhase(boolean gameWon) {
+
+        // Dialog
+        DeminerDialogEndGame endGame = new DeminerDialogEndGame(app, gameWon);
+        endGame.setVisible(true);
+
+
+        // Getting the answer
+        boolean userChoice = endGame.getUserChoice();
+        if (userChoice) {
+
+            // New classic or custom game
+            if (app.getLevel() == Level.CUSTOM) {
+
+                // New custom game phase
+                newCustomGame(true);
+
+
+            } else {
+
+                // New classic game phase
+                newClassicGame(true);
+
+            }
+
+        } else {
+
+            // Quit app
+            app.quit();
+
+        }
+        
+    }
 
 
 

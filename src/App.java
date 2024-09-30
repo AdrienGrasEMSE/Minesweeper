@@ -2,9 +2,11 @@
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.Timer;
 
 
 
@@ -248,8 +250,19 @@ public class App extends JFrame {
         } else {
 
             // Reveal all and start loose phase
-            System.out.println("You lost");
             revealAll();
+
+
+            // Little pause to see the mine field
+            Timer timer = new Timer(1000, (ActionEvent e) -> {
+
+                // End game phase
+                gui.endGamePhase(false);
+                ((Timer) e.getSource()).stop();
+
+            });
+            timer.setRepeats(false);
+            timer.start();
 
         }
 
@@ -301,9 +314,20 @@ public class App extends JFrame {
         // Win condition
         if (sqRevealed == winScore) {
 
-            // Reveal all and start win phase
-            System.out.println("You win");
+            // Reveal all and start loose phase
             revealAll();
+
+
+            // Little pause to see the mine field
+            Timer timer = new Timer(1000, (ActionEvent e) -> {
+
+                // End game phase
+                gui.endGamePhase(true);
+                ((Timer) e.getSource()).stop();
+
+            });
+            timer.setRepeats(false);
+            timer.start();
 
         }
 
