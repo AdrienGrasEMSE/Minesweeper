@@ -137,6 +137,7 @@ public class DeminerButton extends JButton implements MouseListener{
         // Repainting the component
         super   .paintComponent(g2d);
         g2d     .dispose();
+        
     }
 
 
