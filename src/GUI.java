@@ -3,6 +3,7 @@ import deminer_dialog.DeminerDialogBinary;
 import deminer_dialog.DeminerDialogCustomNewGame;
 import deminer_dialog.DeminerDialogInfo;
 import deminer_graphic.DeminerButton;
+import deminer_graphic.DTheme;
 import deminer_graphic.DeminerFont;
 import deminer_graphic.DeminerLabel;
 import deminer_graphic.combo_box.DeminerComboBox;
@@ -13,7 +14,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
-import javax.swing.*;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 
 /**
@@ -25,52 +27,9 @@ import javax.swing.*;
 public class GUI extends JPanel implements ActionListener{
 
     /**
-     * Main colors
-     */
-    private final static Color GUI_DARK_CYAN      = new Color(0x117864);
-    private final static Color GUI_LIGHT_GREY     = new Color(0x212F3D);
-    private final static Color GUI_MAIN_GREY      = new Color(0x1C2833);
-    private final static Color GUI_DARK_GREY      = new Color(0x17202A);
-
-
-    /**
-     * Red bouton colors
-     */
-    private final static Color BTN_RED_DEFAULT  = new Color(0xCB4335);
-    private final static Color BTN_RED_FLYOVER  = new Color(0xE74C3C);
-    private final static Color BTN_RED_ACTIVE   = new Color(0xEA5E50);
-
-
-    /**
-     * Green bouton colors
-     */
-    private final static Color BTN_GRN_DEFAULT  = new Color(0x239B56);
-    private final static Color BTN_GRN_FLYOVER  = new Color(0x28B463);
-    private final static Color BTN_GRN_ACTIVE   = new Color(0x2ECC71);
-
-
-    /**
-     * Cyan bouton colors
-     */
-    private final static Color BTN_CYN_DEFAULT  = new Color(0x148F77);
-    private final static Color BTN_CYN_FLYOVER  = new Color(0x17A589);
-    private final static Color BTN_CYN_ACTIVE   = new Color(0x1ABC9C);
-
-
-    /**
-     * Font color
-     */
-    private final static Color FONT_DEFAULT     = new Color(0xEAECEE);
-    private final static Color FONT_ACTIVE      = new Color(0xD5D8DC);
-
-
-
-
-    /**
      * GUI main objects
-     */
+     */ 
     private final   App         app;
-    private final   Minefield   field;              // Maybe not mandatory ? Delete ?
     private         Square[][]  squareMesh;
     private         int         previousLevelIndex;
 
@@ -90,16 +49,16 @@ public class GUI extends JPanel implements ActionListener{
     /**
      * North panels elements
      */
-    private final DeminerLabel labScore         = new DeminerLabel("Score", DeminerFont.JOST_LIGHT,     18, FONT_DEFAULT);
-    private final DeminerLabel labLevel         = new DeminerLabel("Level", DeminerFont.JOST_REGULAR,   18, FONT_ACTIVE);
-    private final DeminerLabel valScore         = new DeminerLabel("",      DeminerFont.JOST_REGULAR,   18, FONT_ACTIVE);
+    private final DeminerLabel labScore         = new DeminerLabel("Score", DeminerFont.JOST_LIGHT,     24, DTheme.FNT_NTL_D);
+    private final DeminerLabel labLevel         = new DeminerLabel("Level", DeminerFont.JOST_REGULAR,   24, DTheme.FNT_NTL_N);
+    private final DeminerLabel valScore         = new DeminerLabel("",      DeminerFont.JOST_REGULAR,   24, DTheme.FNT_NTL_N);
     private final DeminerComboBox<Level> valLevel     = new DeminerComboBox<>(  Level.values(),
-                                                                                18,
-                                                                                FONT_DEFAULT,
-                                                                                FONT_ACTIVE,
-                                                                                BTN_CYN_DEFAULT,
-                                                                                BTN_CYN_FLYOVER,
-                                                                                BTN_CYN_ACTIVE);
+                                                                                24,
+                                                                                DTheme.FNT_NTL_D,
+                                                                                DTheme.FNT_NTL_N,
+                                                                                DTheme.BTN_VAR_D,
+                                                                                DTheme.BTN_VAR_N,
+                                                                                DTheme.BTN_VAR_L);
     private boolean manualLevelChange           = false;
 
 
@@ -108,8 +67,8 @@ public class GUI extends JPanel implements ActionListener{
     /**
      * South panels elements
      */
-    private final DeminerButton quitButton      = new DeminerButton("Quit",     DeminerFont.JOST_SEMIBOLD, 16, Color.WHITE, BTN_RED_DEFAULT, BTN_RED_FLYOVER, BTN_RED_ACTIVE);
-    private final DeminerButton newGameButton   = new DeminerButton("New game", DeminerFont.JOST_SEMIBOLD, 16, Color.WHITE, BTN_GRN_DEFAULT, BTN_GRN_FLYOVER, BTN_GRN_ACTIVE);
+    private final DeminerButton quitButton      = new DeminerButton("Quit",     DeminerFont.JOST_SEMIBOLD, 24, Color.WHITE, DTheme.BTN_RED_D, DTheme.BTN_RED_N, DTheme.BTN_RED_L);
+    private final DeminerButton newGameButton   = new DeminerButton("New game", DeminerFont.JOST_SEMIBOLD, 24, Color.WHITE, DTheme.BTN_GRN_D, DTheme.BTN_GRN_D, DTheme.BTN_GRN_D);
 
 
 
@@ -117,11 +76,10 @@ public class GUI extends JPanel implements ActionListener{
     /**
      * GUI
      */
-    public GUI(App app, Minefield field) {
+    public GUI(App app) {
 
         // Getting application
         this.app    = app;
-        this.field  = field;
 
 
         // Setting up layout and VFX
@@ -150,8 +108,8 @@ public class GUI extends JPanel implements ActionListener{
 
         // Panels vfx
         
-        eastPanel           .setBackground  (GUI_MAIN_GREY);
-        westPanel           .setBackground  (GUI_MAIN_GREY);
+        eastPanel           .setBackground  (DTheme.GUI_NTL_D);
+        westPanel           .setBackground  (DTheme.GUI_NTL_D);
 
         // TEST
         JLabel east     = new JLabel("EAST");
@@ -171,7 +129,7 @@ public class GUI extends JPanel implements ActionListener{
 
         // Plotting panel and set VFX
         add(northPanel,     BorderLayout.NORTH);
-        northPanel          .setBackground(GUI_DARK_CYAN);
+        northPanel          .setBackground(DTheme.GUI_VAR_N);
 
 
         // Plotting elements inside
@@ -185,8 +143,6 @@ public class GUI extends JPanel implements ActionListener{
         labScore            .setForeground(Color.white);
         valScore            .setForeground(Color.white);
         labLevel            .setForeground(Color.white);
-        valLevel            .setBackground(GUI_DARK_GREY);
-        valLevel            .setForeground(Color.black);
         valLevel            .setSelectedItem(app.getLevel());
         valLevel            .addItemListener((ItemEvent e) -> {
 
@@ -214,7 +170,7 @@ public class GUI extends JPanel implements ActionListener{
 
         // Plotting panel and set VFX
         add(southPanel,     BorderLayout.SOUTH);
-        southPanel          .setBackground  (GUI_DARK_GREY);
+        southPanel          .setBackground  (DTheme.GUI_DRK_N);
 
 
         // Plotting elements inside
@@ -238,7 +194,7 @@ public class GUI extends JPanel implements ActionListener{
 
         // Plotting panel and set VFX
         add(centerPanel,    BorderLayout.CENTER);
-        centerPanel         .setBackground(GUI_LIGHT_GREY);
+        centerPanel         .setBackground(DTheme.GUI_NTL_N);
 
     }
 
@@ -358,10 +314,10 @@ public class GUI extends JPanel implements ActionListener{
             // Infos
             if (!param.getParamValid() && param.getUserConfirm()) {
                 DeminerDialogInfo info = new DeminerDialogInfo(app, "Invalid parameters", new String[]{ "- Width and Height must be between",
-                                                                                                                "5 and 150",
+                                                                                                                "5 and 20",
                                                                                                                 "",
                                                                                                                 "- Number of mines must be between",
-                                                                                                                "1 and (Width * Height - 2)"
+                                                                                                                "1 and 75% of (Width * Height)"
                                                                                                             });
                 info.setVisible(true);
             }
@@ -430,17 +386,29 @@ public class GUI extends JPanel implements ActionListener{
         // Creating the grid to display mines and coefficient
         JPanel minesPanel   = new JPanel();
         minesPanel          .setLayout(new GridLayout(squareMesh.length, squareMesh[0].length));
-        minesPanel          .setBackground(GUI_LIGHT_GREY);
+        minesPanel          .setBackground(DTheme.GUI_NTL_N);
+
+
+        // Getting the size of the new square
+        int sqSize = this.squareSizeCalcul();
 
 
         // Filling up the grid
-        for (int posX = 0; posX < field.getLenght(); posX ++) {
-            for (int posY = 0; posY < field.getWidth(); posY ++) {
+        for (Square[] squareMeshLine : squareMesh) {
+            for (Square square : squareMeshLine) {
 
-                // Plotting the square
-                minesPanel.add(squareMesh[posX][posY]);
+                // Setting up square size
+                square.setSquareSize(sqSize);
+
+
+                // Plotting the square in a JPanel to get border
+                JPanel squareHolder = new JPanel();
+                squareHolder        .setBackground(DTheme.GUI_NTL_N);
+                squareHolder        .add(square);
+                minesPanel          .add(squareHolder);
 
             }
+
         }
 
 
@@ -449,6 +417,54 @@ public class GUI extends JPanel implements ActionListener{
         centerPanel.revalidate();
         centerPanel.repaint();
         
+    }
+
+
+
+
+    /**
+     * 
+     * 
+     * @return
+     */
+    private int squareSizeCalcul() {
+
+        // Calculed size
+        int calcSize;
+
+
+        // Getting the right coefficient
+        /**Explanation :
+         * 
+         * This calcul is not too crazy when you know what's going on here
+         * 
+         * Each square is plotted in a JPanel. I do not know why, but these JPanel
+         * create a border. These border have their thickness fixed and non relative
+         * to the square.
+         * 
+         * So i must consider it in my calcul of height and width available
+         */
+        int heightCalcul    = (int) ((centerPanel.getHeight()   - squareMesh    .length * 11 )      / squareMesh      .length);
+        int widthCalcul     = (int) ((centerPanel.getWidth()    - squareMesh[0] .length * 11 )      / squareMesh[0]   .length);
+
+
+        // Saving the smaller one
+        if (heightCalcul < widthCalcul) {
+            calcSize = heightCalcul;
+        } else {
+            calcSize = widthCalcul;
+        }
+
+
+        // Min and max condition
+        if (calcSize < 20) {
+            calcSize = 20;
+        }
+
+
+        // Returning the size
+        return calcSize;
+
     }
 
 

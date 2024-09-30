@@ -3,7 +3,7 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.util.Random;
-import javax.swing.*;
+import javax.swing.JFrame;
 
 
 
@@ -57,13 +57,14 @@ public class App extends JFrame {
 
 
         // Setting up the GUI and adding it up to the Frame
-        this.gui = new GUI(this, field);
+        this.gui = new GUI(this);
         this.setContentPane(gui);
 
 
         // Calculing size after its content and setting window visible
         this.setSize            (new Dimension(SCREENWIDTH / 3, SCREENHEIGHT / 2));
         this.setPreferredSize   (new Dimension(SCREENWIDTH / 3, SCREENHEIGHT / 2));
+        this.setMinimumSize     (new Dimension(SCREENWIDTH / 3, SCREENHEIGHT / 2));
         this.setVisible         (true);
 
 
@@ -187,7 +188,7 @@ public class App extends JFrame {
             for (int posY = 0; posY < field.getWidth(); posY ++) {
 
                 // Setting up content
-                squareMesh[posX][posY] = new Square(this, posX, posY, 50, 50);
+                squareMesh[posX][posY] = new Square(this, posX, posY, 50);
 
             }
             
@@ -340,6 +341,10 @@ public class App extends JFrame {
 
         // Starting point
         System.out.println("Starting point");
+
+
+        // Theme application
+        // DTheme.highlightCoefficient();
 
 
         // ??

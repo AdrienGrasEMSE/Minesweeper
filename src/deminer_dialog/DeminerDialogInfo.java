@@ -2,11 +2,11 @@
 package deminer_dialog;
 
 // Import
+import deminer_graphic.DTheme;
 import deminer_graphic.DeminerButton;
 import deminer_graphic.DeminerFont;
 import deminer_graphic.DeminerLabel;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.GridLayout;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -22,26 +22,6 @@ import javax.swing.border.EmptyBorder;
  * @version 0.0
  */
 public class DeminerDialogInfo extends JDialog {
-
-    /**
-     * Background color
-     */
-    private final static Color GUI_DARK_GREY    = new Color(0x17202A);
-
-
-    /**
-     * Neutral bouton colors
-     */
-    private final static Color BTN_NTL_DEFAULT  = new Color(0x2C3E50);
-    private final static Color BTN_NTL_FLYOVER  = new Color(0x34495E);
-    private final static Color BTN_NTL_ACTIVE   = new Color(0x566573);
-
-
-    /**
-     * Font color
-     */
-    private final static Color FONT_DEFAULT     = new Color(0xEAECEE);
-
 
     /**
      * Main panel
@@ -66,12 +46,12 @@ public class DeminerDialogInfo extends JDialog {
 
         // Creating the main JPanel
         mainPanel.setBorder     (new EmptyBorder(10, 10, 10, 10));
-        mainPanel.setBackground (GUI_DARK_GREY);
+        mainPanel.setBackground (DTheme.GUI_DRK_L);
         mainPanel.setLayout     (new BorderLayout());
 
 
         // Creating the label for the title
-        DeminerLabel titleLabel             = new DeminerLabel(title, DeminerFont.JOST_SEMIBOLD, 18, FONT_DEFAULT);
+        DeminerLabel titleLabel             = new DeminerLabel(title, DeminerFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_N);
         titleLabel  .setHorizontalAlignment (SwingConstants.CENTER);
         mainPanel   .add                    (titleLabel, BorderLayout.NORTH);
 
@@ -81,7 +61,7 @@ public class DeminerDialogInfo extends JDialog {
 
        
         // Creating the ok button
-        DeminerButton okButton  = new DeminerButton("Ok",   DeminerFont.JOST_SEMIBOLD, 18, FONT_DEFAULT, BTN_NTL_DEFAULT, BTN_NTL_FLYOVER, BTN_NTL_ACTIVE);
+        DeminerButton okButton  = new DeminerButton("Ok",   DeminerFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_N, DTheme.BTN_NTL_D, DTheme.BTN_NTL_N, DTheme.BTN_NTL_L);
          
         
         // Button action
@@ -115,14 +95,14 @@ public class DeminerDialogInfo extends JDialog {
         // Creating a new panel that will hold all infos
         JPanel infoPanel = new JPanel(new GridLayout(listInfo.length, 1));
         infoPanel.setBorder(new EmptyBorder(10, 0, 10, 0));
-        infoPanel.setBackground (GUI_DARK_GREY);
+        infoPanel.setBackground (DTheme.GUI_DRK_L);
 
 
         // Crossing listInfo
         for (String info : listInfo) {
 
             // Creating the label for the message
-            DeminerLabel infoLabel              = new DeminerLabel(info, DeminerFont.JOST_LIGHT, 16, FONT_DEFAULT);
+            DeminerLabel infoLabel              = new DeminerLabel(info, DeminerFont.JOST_LIGHT, 16, DTheme.FNT_NTL_D);
             infoLabel   .setHorizontalAlignment (SwingConstants.CENTER);
             infoPanel   .add                    (infoLabel);
 

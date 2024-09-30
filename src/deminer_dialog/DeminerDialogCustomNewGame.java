@@ -1,6 +1,7 @@
 // Package declaration
 package deminer_dialog;
 
+import deminer_graphic.DTheme;
 // Import
 import deminer_graphic.DeminerButton;
 import deminer_graphic.DeminerFont;
@@ -21,41 +22,6 @@ import javax.swing.border.EmptyBorder;
  * @version 0.0
  */
 public class DeminerDialogCustomNewGame extends JDialog {
-
-    /**
-     * Background color
-     */
-    private final static Color GUI_DARK_GREY    = new Color(0x17202A);
-
-
-    /**
-     * Red bouton colors
-     */
-    private final static Color BTN_RED_DEFAULT  = new Color(0xCB4335);
-    private final static Color BTN_RED_FLYOVER  = new Color(0xE74C3C);
-    private final static Color BTN_RED_ACTIVE   = new Color(0xEA5E50);
-
-
-    /**
-     * Green bouton colors
-     */
-    private final static Color BTN_GRN_DEFAULT  = new Color(0x239B56);
-    private final static Color BTN_GRN_FLYOVER  = new Color(0x28B463);
-    private final static Color BTN_GRN_ACTIVE   = new Color(0x2ECC71);
-
-
-    /**
-     * Neutral bouton colors
-     */
-    private final static Color BTN_NTL_DEFAULT  = new Color(0x2C3E50);
-    private final static Color BTN_NTL_FLYOVER  = new Color(0x34495E);
-
-
-    /**
-     * Font color
-     */
-    private final static Color FONT_DEFAULT     = new Color(0xEAECEE);
-
 
     /**
      * Attributes : answer
@@ -85,38 +51,38 @@ public class DeminerDialogCustomNewGame extends JDialog {
 
         // Creating the label for the message
         JPanel              msgPanel        = new JPanel();
-        DeminerLabel        messageLabel    = new DeminerLabel("Enter the custom game parameters :", DeminerFont.JOST_SEMIBOLD, 18, FONT_DEFAULT);
+        DeminerLabel        messageLabel    = new DeminerLabel("Enter the custom game parameters :", DeminerFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_L);
         msgPanel    .setBorder              (new EmptyBorder(0, 0, 5, 0));
-        msgPanel    .setBackground          (GUI_DARK_GREY);
+        msgPanel    .setBackground          (DTheme.GUI_DRK_L);
         msgPanel    .add                    (messageLabel);
 
 
         // Creating the panel for the width parameters
         JPanel              widthPanel      = new JPanel                (new GridLayout(1, 2));
-        DeminerLabel        widthLab        = new DeminerLabel          ("Custom width :", DeminerFont.JOST_LIGHT, 18, FONT_DEFAULT);
-        DeminerIntegerField widthInput      = new DeminerIntegerField   (DeminerFont.JOST_LIGHT, 18, FONT_DEFAULT, BTN_NTL_DEFAULT, BTN_NTL_FLYOVER);
+        DeminerLabel        widthLab        = new DeminerLabel          ("Custom width :", DeminerFont.JOST_LIGHT, 18, DTheme.FNT_NTL_D);
+        DeminerIntegerField widthInput      = new DeminerIntegerField   (DeminerFont.JOST_LIGHT, 18, DTheme.FNT_NTL_N, DTheme.BTN_NTL_D, DTheme.BTN_NTL_N);
         widthPanel.setBorder                (new EmptyBorder(2, 10, 2, 10));
-        widthPanel.setBackground            (GUI_DARK_GREY);
+        widthPanel.setBackground            (DTheme.GUI_DRK_L);
         widthPanel.add                      (widthLab);
         widthPanel.add                      (widthInput);
 
 
         // Creating the panel for the height parameters
         JPanel              heightPanel     = new JPanel                (new GridLayout(1, 2));
-        DeminerLabel        heightLab       = new DeminerLabel          ("Custom height :", DeminerFont.JOST_LIGHT, 18, FONT_DEFAULT);
-        DeminerIntegerField heightInput     = new DeminerIntegerField   (DeminerFont.JOST_LIGHT, 18, FONT_DEFAULT, BTN_NTL_DEFAULT, BTN_NTL_FLYOVER);
+        DeminerLabel        heightLab       = new DeminerLabel          ("Custom height :", DeminerFont.JOST_LIGHT, 18, DTheme.FNT_NTL_D);
+        DeminerIntegerField heightInput     = new DeminerIntegerField   (DeminerFont.JOST_LIGHT, 18, DTheme.FNT_NTL_N, DTheme.BTN_NTL_D, DTheme.BTN_NTL_N);
         heightPanel.setBorder               (new EmptyBorder(2, 10, 2, 10));
-        heightPanel.setBackground           (GUI_DARK_GREY);
+        heightPanel.setBackground           (DTheme.GUI_DRK_L);
         heightPanel.add                     (heightLab);
         heightPanel.add                     (heightInput);
 
 
         // Creating the panel for the number of mines
         JPanel              nbMinesPanel    = new JPanel                (new GridLayout(1, 2));
-        DeminerLabel        nbMinesLab      = new DeminerLabel          ("Number of mines :", DeminerFont.JOST_LIGHT, 18, FONT_DEFAULT);
-        DeminerIntegerField nbMinesInput    = new DeminerIntegerField   (DeminerFont.JOST_LIGHT, 18, FONT_DEFAULT, BTN_NTL_DEFAULT, BTN_NTL_FLYOVER);
+        DeminerLabel        nbMinesLab      = new DeminerLabel          ("Number of mines :", DeminerFont.JOST_LIGHT, 18, DTheme.FNT_NTL_D);
+        DeminerIntegerField nbMinesInput    = new DeminerIntegerField   (DeminerFont.JOST_LIGHT, 18, DTheme.FNT_NTL_N, DTheme.BTN_NTL_D, DTheme.BTN_NTL_N);
         nbMinesPanel.setBorder              (new EmptyBorder(2, 10, 2, 10));
-        nbMinesPanel.setBackground          (GUI_DARK_GREY);
+        nbMinesPanel.setBackground          (DTheme.GUI_DRK_L);
         nbMinesPanel.add                    (nbMinesLab);
         nbMinesPanel.add                    (nbMinesInput);
 
@@ -124,12 +90,12 @@ public class DeminerDialogCustomNewGame extends JDialog {
         // Creating the panel for the confirm and cancel buttons
         JPanel buttonPanel          = new JPanel();
         buttonPanel.setBorder       (new EmptyBorder(5, 0, 0, 0));
-        buttonPanel.setBackground   (GUI_DARK_GREY);
+        buttonPanel.setBackground   (DTheme.GUI_DRK_L);
 
 
         // Creating the confirm and cancel buttons
-        DeminerButton cancelButton  = new DeminerButton("Cancel",   DeminerFont.JOST_SEMIBOLD, 18, Color.WHITE, BTN_RED_DEFAULT, BTN_RED_FLYOVER, BTN_RED_ACTIVE);
-        DeminerButton confirmButton = new DeminerButton("Confirm",  DeminerFont.JOST_SEMIBOLD, 18, Color.WHITE, BTN_GRN_DEFAULT, BTN_GRN_FLYOVER, BTN_GRN_ACTIVE);
+        DeminerButton cancelButton  = new DeminerButton("Cancel",   DeminerFont.JOST_SEMIBOLD, 18, Color.WHITE, DTheme.BTN_RED_D, DTheme.BTN_RED_N, DTheme.BTN_RED_L);
+        DeminerButton confirmButton = new DeminerButton("Confirm",  DeminerFont.JOST_SEMIBOLD, 18, Color.WHITE, DTheme.BTN_GRN_D, DTheme.BTN_GRN_N, DTheme.BTN_GRN_L);
         
 
         // Yes button action

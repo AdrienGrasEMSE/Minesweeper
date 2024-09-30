@@ -1,12 +1,12 @@
 // Package declaration
 package deminer_dialog;
 
+import deminer_graphic.DTheme;
 // Import
 import deminer_graphic.DeminerButton;
 import deminer_graphic.DeminerFont;
 import deminer_graphic.DeminerLabel;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -21,34 +21,6 @@ import javax.swing.border.EmptyBorder;
  * @version 0.0
  */
 public class DeminerDialogBinary extends JDialog {
-
-    /**
-     * Background color
-     */
-    private final static Color GUI_DARK_GREY    = new Color(0x17202A);
-
-
-    /**
-     * Red bouton colors
-     */
-    private final static Color BTN_RED_DEFAULT  = new Color(0xCB4335);
-    private final static Color BTN_RED_FLYOVER  = new Color(0xE74C3C);
-    private final static Color BTN_RED_ACTIVE   = new Color(0xEA5E50);
-
-
-    /**
-     * Green bouton colors
-     */
-    private final static Color BTN_GRN_DEFAULT  = new Color(0x239B56);
-    private final static Color BTN_GRN_FLYOVER  = new Color(0x28B463);
-    private final static Color BTN_GRN_ACTIVE   = new Color(0x2ECC71);
-
-
-    /**
-     * Font color
-     */
-    private final static Color FONT_DEFAULT     = new Color(0xEAECEE);
-
 
     /**
      * Attributes
@@ -74,12 +46,12 @@ public class DeminerDialogBinary extends JDialog {
         // Creating the main JPanel
         JPanel panel = new JPanel();
         panel.setBorder     (new EmptyBorder(10, 10, 10, 10));
-        panel.setBackground (GUI_DARK_GREY);
+        panel.setBackground (DTheme.GUI_DRK_L);
         panel.setLayout     (new BorderLayout());
 
 
         // Creating the label for the message
-        DeminerLabel messageLabel = new DeminerLabel(message, DeminerFont.JOST_SEMIBOLD, 18, FONT_DEFAULT);
+        DeminerLabel messageLabel = new DeminerLabel(message, DeminerFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_D);
         messageLabel.setHorizontalAlignment (SwingConstants.CENTER);
         panel       .add                    (messageLabel, BorderLayout.NORTH);
 
@@ -87,12 +59,12 @@ public class DeminerDialogBinary extends JDialog {
         // Creating the panel for the yes and no buttons
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBorder       (new EmptyBorder(15, 0, 0, 0));
-        buttonPanel.setBackground   (GUI_DARK_GREY);
+        buttonPanel.setBackground   (DTheme.GUI_DRK_L);
 
 
         // Creating the yes and no buttons
-        DeminerButton noButton  = new DeminerButton("No",   DeminerFont.JOST_SEMIBOLD, 18, FONT_DEFAULT, BTN_RED_DEFAULT, BTN_RED_FLYOVER, BTN_RED_ACTIVE);
-        DeminerButton yesButton = new DeminerButton("Yes",  DeminerFont.JOST_SEMIBOLD, 18, FONT_DEFAULT, BTN_GRN_DEFAULT, BTN_GRN_FLYOVER, BTN_GRN_ACTIVE);
+        DeminerButton noButton  = new DeminerButton("No",   DeminerFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_D, DTheme.BTN_RED_D, DTheme.BTN_RED_N, DTheme.BTN_RED_L);
+        DeminerButton yesButton = new DeminerButton("Yes",  DeminerFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_D, DTheme.BTN_GRN_D, DTheme.BTN_GRN_N, DTheme.BTN_GRN_L);
         
         
         // No button action
