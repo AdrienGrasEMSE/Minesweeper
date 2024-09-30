@@ -40,14 +40,14 @@ public class Square extends JPanel implements MouseListener{
     /**
      * Attributes
      */
-    private App     app;
+    private final   App     app;
+    private final   int     posX;
+    private final   int     posY;
     private Color   mainColor   = new Color(DEFAULT);
     private boolean isRevealed  = false;
     private int     sqWidth     = 50;                   // 50 px by default
     private int     sqHeight    = 50;                   // 50 px by default
     private int     coefficient;                        // 0 = 0 mine around        -1 = the square is a mine
-    private int     posX;
-    private int     posY;
 
 
 
@@ -63,13 +63,12 @@ public class Square extends JPanel implements MouseListener{
     /**
      * Constructor
      * 
-     * TODO : Apporter la modification de la taille de la fenêtre
+     * TODO : setting size according containers
      */
-    public Square(App app, int newCoefficient, int newPosX, int newPosY, int newSqWidth, int newSqHeight) {
+    public Square(App app, int newPosX, int newPosY, int newSqWidth, int newSqHeight) {
 
         // Getting attributes
         this.app        = app;
-        coefficient     = newCoefficient;
         posX            = newPosX;
         posY            = newPosY;
         sqWidth         = newSqWidth;
@@ -77,7 +76,28 @@ public class Square extends JPanel implements MouseListener{
 
         // Setting the size
         setPreferredSize(new Dimension(sqWidth, sqHeight));
+        initListener();
+    }
+
+
+
+
+    /**
+     * Listener intit
+     */
+    private void initListener() {
         addMouseListener(this);
+    }
+
+
+
+
+    /**
+     * Setter
+     * @param coefficient
+     */
+    public void setCoefficient(int coefficient) {
+        this.coefficient = coefficient;
     }
 
 
@@ -240,7 +260,7 @@ public class Square extends JPanel implements MouseListener{
 
 
     /**
-     * Getter
+     * Getter : to check if the square is revealed or not
      * 
      * @return isRevealed showing if the Square is revealed
      */
@@ -256,7 +276,12 @@ public class Square extends JPanel implements MouseListener{
      */  
     @Override 
     public void mousePressed (MouseEvent e) {
-        this.reveal();
+
+        // If the square is not revealed yet
+        if (!isRevealed) {
+            app.clickEvent(posX, posY);
+        }
+        
     }
     
 

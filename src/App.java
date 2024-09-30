@@ -21,14 +21,15 @@ public class App extends JFrame {
     private         Level       gameLevel   = Level.EASY;
     private final   Random      random      = new Random();
     private final   Minefield   field       = new Minefield();
+    private         Square[][]  squareMesh ;
     private final   GUI         gui;
 
 
     /**
      * Game attribute
      */
-    // private int     sqRevealed  = 0;
-    // private int     winScore    = 0;
+    private int     sqRevealed  = 0;
+    private int     winScore    = 0;
 
 
 
@@ -74,7 +75,6 @@ public class App extends JFrame {
 
 
 
-
     /**
      * Init method
      */
@@ -87,7 +87,12 @@ public class App extends JFrame {
             case 1 -> gameLevel = Level.MEDIUM;
             case 2 -> gameLevel = Level.HARD;
         }
+
+
+        // Update displayed level and start a new classic game
+        gui.updateLevel();
         newClassicGame();
+
     }
 
 
@@ -131,14 +136,17 @@ public class App extends JFrame {
     public void newClassicGame() {
 
         // Regenerate the field
-        field.newClassicEmptyField(gameLevel);
+        field   .newClassicEmptyField(gameLevel);
+        this    .meshInit();
+
 
         // Reset attributes
-        // sqRevealed  = 0;
-        // winScore    = field.getLenght() * field.getWidth() - field.getNumberOfMine();
+        sqRevealed  = 0;
+        winScore    = field.getLenght() * field.getWidth() - field.getNumberOfMine();
+
 
         // Refresh display
-        gui.displayField();
+        gui.displayMesh();
 
     }
 
@@ -151,14 +159,171 @@ public class App extends JFrame {
     public void newCustomGame(int customLenght, int customWidth, int customNbMines) {
 
         // Regenerate a new field
-        field.newCustomEmptyField(gameLevel, customLenght, customWidth, customNbMines);
+        field   .newCustomEmptyField(gameLevel, customLenght, customWidth, customNbMines);
+        this    .meshInit();
+
 
         // Reset attributes
-        // sqRevealed  = 0;
-        // winScore    = field.getLenght() * field.getWidth() - field.getNumberOfMine();
+        sqRevealed  = 0;
+        winScore    = field.getLenght() * field.getWidth() - field.getNumberOfMine();
+
 
         // Refresh display
-        gui.displayField();
+        gui.displayMesh();
+
+    }
+
+
+
+
+    /**
+     * Square mesh initialization
+     */
+    private void meshInit() {
+
+        // Generate the square mesh
+        squareMesh = new Square[field.getLenght()][field.getWidth()];
+        for (int posX = 0; posX < field.getLenght(); posX ++) {
+            for (int posY = 0; posY < field.getWidth(); posY ++) {
+
+                // Setting up content
+                squareMesh[posX][posY] = new Square(this, posX, posY, 50, 50);
+
+            }
+            
+        }
+
+
+        // Transmit the square mesh to the GUI
+        gui.setSquareMesh(squareMesh);
+
+    }
+
+
+
+
+    /**
+     * Method to take into account a mouse click on a certain square
+     * 
+     * @param posX
+     * @param posy
+     */
+    public void clickEvent(int posX, int posY) {
+
+        // In case it's the first click
+        if (sqRevealed == 0) {
+
+            // Setting up field
+            field.initField(posX, posY);
+
+
+            // Modifying square
+            for (int posX_ = 0; posX_ < field.getLenght(); posX_ ++) {
+                for (int posY_ = 0; posY_ < field.getWidth(); posY_ ++) {
+                    
+                    // If it's a mine or a coefficient
+                    if (field.isMine(posX_, posY_)) {
+                        squareMesh[posX_][posY_].setCoefficient(-1);
+                    } else {
+                        squareMesh[posX_][posY_].setCoefficient(field.mineDetection(posX_, posY_));
+                    }
+
+                }
+
+            }
+
+        }
+
+
+        // Reveal the square if it's not a mine
+        if (!field.isMine(posX, posY)) {
+
+            // Reveal and propagate
+            propagation(posX, posY);
+
+
+        } else {
+
+            // Reveal all and start loose phase
+            System.out.println("You lost");
+            revealAll();
+
+        }
+
+    }
+
+
+
+
+    /**
+     * Reval the square in posX, posY and propagate
+     * 
+     * @param posX
+     * @param posY
+     */
+    private void propagation(int posX, int posY) {
+
+        // Reveal the square
+        squareMesh[posX][posY].reveal();
+        sqRevealed ++;
+        gui.updateScore(sqRevealed);
+
+
+        // Stop condition
+        if (field.mineDetection(posX, posY) == 0) {
+
+            // Each X possibilities (X-1 / X / X+1)
+            for (int testX = posX - 1; testX <= posX + 1; testX ++) {
+
+                // Each Y possibilities (Y-1 / Y / Y+1)
+                for (int testY = posY - 1; testY <= posY + 1; testY ++) {
+
+                    // If the new coordinate are valid
+                    if (testX > -1     && testX < field.getLenght() &&
+                        testY > -1     && testY < field.getWidth()  &&
+                        (testX != posX || testY != posY)) {
+
+                            // If we get here, we need to display it
+                            if (squareMesh[testX][testY].isSquareRevealed() == false) {
+                                propagation(testX, testY);
+                            }
+                        
+                    }
+
+                }
+            }
+        }
+
+
+        // Win condition
+        if (sqRevealed == winScore) {
+
+            // Reveal all and start win phase
+            System.out.println("You win");
+            revealAll();
+
+        }
+
+    }
+
+
+
+
+    /**
+     * Rveal the entire mesh
+     */
+    private void revealAll() {
+
+        // Rveal the entire mesh
+        for (int posX = 0; posX < field.getLenght(); posX ++) {
+            for (int posY = 0; posY < field.getWidth(); posY ++) {
+
+                // Setting up content
+                squareMesh[posX][posY].reveal();
+
+            }
+
+        }
 
     }
 

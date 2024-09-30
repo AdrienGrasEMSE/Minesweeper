@@ -6,7 +6,10 @@ import deminer_graphic.DeminerButton;
 import deminer_graphic.DeminerFont;
 import deminer_graphic.DeminerLabel;
 import deminer_graphic.combo_box.DeminerComboBox;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -67,8 +70,8 @@ public class GUI extends JPanel implements ActionListener{
      * GUI main objects
      */
     private final   App         app;
-    private final   Minefield   field;
-    // private         Square[][]  squareIndex;
+    private final   Minefield   field;              // Maybe not mandatory ? Delete ?
+    private         Square[][]  squareMesh;
     private         int         previousLevelIndex;
 
     
@@ -97,6 +100,7 @@ public class GUI extends JPanel implements ActionListener{
                                                                                 BTN_CYN_DEFAULT,
                                                                                 BTN_CYN_FLYOVER,
                                                                                 BTN_CYN_ACTIVE);
+    private boolean manualLevelChange           = false;
 
 
 
@@ -189,7 +193,8 @@ public class GUI extends JPanel implements ActionListener{
             // Making an action only on item selection
             if (e.getStateChange()          == ItemEvent.SELECTED   &&
                 valLevel.getSelectedIndex() != -1                   &&
-                valLevel.getSelectedIndex() != previousLevelIndex) {
+                valLevel.getSelectedIndex() != previousLevelIndex   &&
+                !manualLevelChange) {
 
                 // Changing game level
                 levelChange(false);
@@ -233,7 +238,22 @@ public class GUI extends JPanel implements ActionListener{
 
         // Plotting panel and set VFX
         add(centerPanel,    BorderLayout.CENTER);
-        centerPanel         .setBackground  (GUI_LIGHT_GREY);
+        centerPanel         .setBackground(GUI_LIGHT_GREY);
+
+    }
+
+
+
+
+    /**
+     * Update the displayed level according to the app one
+     */
+    public void updateLevel() {
+
+        // Disable ItemListener
+        manualLevelChange   = true;
+        valLevel            .setSelectedItem(app.getLevel());
+        manualLevelChange   = false;
 
     }
 
@@ -386,10 +406,61 @@ public class GUI extends JPanel implements ActionListener{
 
 
     /**
+     * Setter : to get from the app the square mesh
+     * 
+     * @param squareMesh
+     */
+    public void setSquareMesh(Square[][] squareMesh) {
+        this.squareMesh = squareMesh;
+    }
+
+
+
+
+    /**
      * Displaying the mine field using the square class
      */
-    public void displayField() {
-        field.displayPrettyMines();
+    public void displayMesh() {
+        
+        // Removing everything from the center panel and reset the score
+        centerPanel.removeAll();
+        valScore.setText("0");
+
+
+        // Creating the grid to display mines and coefficient
+        JPanel minesPanel   = new JPanel();
+        minesPanel          .setLayout(new GridLayout(squareMesh.length, squareMesh[0].length));
+        minesPanel          .setBackground(GUI_LIGHT_GREY);
+
+
+        // Filling up the grid
+        for (int posX = 0; posX < field.getLenght(); posX ++) {
+            for (int posY = 0; posY < field.getWidth(); posY ++) {
+
+                // Plotting the square
+                minesPanel.add(squareMesh[posX][posY]);
+
+            }
+        }
+
+
+        // Rafraîchir l'affichage
+        centerPanel.add(minesPanel);
+        centerPanel.revalidate();
+        centerPanel.repaint();
+        
+    }
+
+
+
+
+    /**
+     * Update the score tab
+     * 
+     * @param score
+     */
+    public void updateScore(int score) {
+        valScore.setText(String.valueOf(score));
     }
 
 
