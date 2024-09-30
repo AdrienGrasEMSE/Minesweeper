@@ -3,6 +3,7 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.util.Random;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 
@@ -93,6 +94,7 @@ public class App extends JFrame {
         // Update displayed level and start a new classic game
         gui.updateLevel();
         newClassicGame();
+        gui.setSizeAdaptation(true);
 
     }
 
