@@ -411,16 +411,16 @@ public class GUI extends JPanel implements ActionListener{
 
         } else if (e.getSource() == newGameButton && app.getLevel().getNbLevel() != 3) {
 
-            // Dialog to confirm
+            // New classic game phase
             newClassicGame(false);
             return;
 
 
         } else if (e.getSource() == newGameButton && app.getLevel().getNbLevel() == 3) {
 
+            // New custom game phase
             newCustomGame(false);
             return;
-
 
         }
 
