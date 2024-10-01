@@ -1,5 +1,6 @@
 // Import
 // import deminer_graphic.DTheme;
+import deminer_dialog.EndGame;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -26,15 +27,17 @@ public class App extends JFrame {
     private final   Minefield   field       = new Minefield();
     private         Square[][]  squareMesh ;
     private final   GUI         gui;
-    private final   DCounter    counter;
+    private         DCounter    counter;
 
 
     /**
      * Game attribute
      */
     private int     sqRevealed  = 0;
+    private int     score       = 0;
     private int     winScore    = 0;
     private int     timeSpent   = 0;
+    private int     timeLimit   = 0;
 
 
 
@@ -76,10 +79,6 @@ public class App extends JFrame {
         // Setting up action on click on the close button
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-
-        // Setting up counter
-        this.counter = new DCounter(this);
-
     }
 
 
@@ -103,10 +102,6 @@ public class App extends JFrame {
         gui.updateLevel();
         newClassicGame();
         gui.setSizeAdaptation(true);
-
-
-        // Start counter
-        counter.start();
 
     }
 
@@ -152,16 +147,10 @@ public class App extends JFrame {
 
         // Regenerate the field
         field   .newClassicEmptyField(gameLevel);
-        this    .meshInit();
+        
 
-
-        // Reset attributes
-        sqRevealed  = 0;
-        winScore    = field.getLenght() * field.getWidth() - field.getNumberOfMine();
-
-
-        // Refresh display
-        gui.displayMesh();
+        // Lauching the new game
+        this    .newGame();
 
     }
 
@@ -175,16 +164,37 @@ public class App extends JFrame {
 
         // Regenerate a new field
         field   .newCustomEmptyField(gameLevel, customLenght, customWidth, customNbMines);
+
+
+        // Lauching the new game
+        this    .newGame();
+
+    }
+
+
+
+
+    /**
+     * Lauching the new game
+     */
+    private void newGame() {
+
+        // Regenerate the field
         this    .meshInit();
 
 
         // Reset attributes
-        sqRevealed  = 0;
-        winScore    = field.getLenght() * field.getWidth() - field.getNumberOfMine();
+        this.sqRevealed = 0;
+        this.score      = 0;
+        this.winScore   = field.getLenght() * field.getWidth() - field.getNumberOfMine();
+        this.timeSpent  = 0;
+        this.timeLimit  = field.getTimeLimit();
 
 
         // Refresh display
-        gui.displayMesh();
+        gui.displayMesh     ();
+        gui.updateTimeLimit (this.timeLimit);
+        gui.updateTime      (this.timeSpent);
 
     }
 
@@ -247,6 +257,9 @@ public class App extends JFrame {
 
             }
 
+            // Start counter
+            counter = new DCounter(this);
+
         }
 
 
@@ -259,6 +272,10 @@ public class App extends JFrame {
 
         } else {
 
+            // Stop counter
+            counter.stop();
+
+
             // Reveal all and start loose phase
             revealAll();
 
@@ -267,7 +284,7 @@ public class App extends JFrame {
             Timer timer = new Timer(1000, (ActionEvent e) -> {
 
                 // End game phase
-                gui.endGamePhase(false);
+                gui.endGamePhase(EndGame.MINES_CLIKED);
                 ((Timer) e.getSource()).stop();
 
             });
@@ -290,9 +307,10 @@ public class App extends JFrame {
     private void propagation(int posX, int posY) {
 
         // Reveal the square
-        squareMesh[posX][posY].reveal();
-        sqRevealed ++;
-        gui.updateScore(sqRevealed);
+        squareMesh[posX][posY]  .reveal();
+        sqRevealed              ++;
+        score                   += timeLimit - timeSpent;
+        gui                     .updateScore(score);
 
 
         // Stop condition
@@ -325,6 +343,10 @@ public class App extends JFrame {
         // Win condition
         if (sqRevealed == winScore) {
 
+            // Stop counter
+            counter.stop();
+
+
             // Reveal all and start loose phase
             revealAll();
 
@@ -333,7 +355,7 @@ public class App extends JFrame {
             Timer timer = new Timer(1000, (ActionEvent e) -> {
 
                 // End game phase
-                gui.endGamePhase(true);
+                gui.endGamePhase(EndGame.WIN);
                 ((Timer) e.getSource()).stop();
 
             });
@@ -372,8 +394,36 @@ public class App extends JFrame {
      * Increment the time spent in a game
      */
     public void incrTimeSpent() {
+
+        // Updating time
         this.timeSpent ++;
-        System.out.println(timeSpent);
+        gui.updateTime(timeSpent);
+
+
+        // Checking the time limit
+        if (this.timeSpent == this.timeLimit) {
+            
+            // Stop counter
+            counter.stop();
+
+
+            // Reveal all and start loose phase
+            revealAll();
+
+
+            // Little pause to see the mine field
+            Timer timer = new Timer(1000, (ActionEvent e) -> {
+
+                // End game phase
+                gui.endGamePhase(EndGame.MAX_TIME_REACHED);
+                ((Timer) e.getSource()).stop();
+
+            });
+            timer.setRepeats(false);
+            timer.start();
+
+        }
+
     }
     
 
@@ -388,7 +438,7 @@ public class App extends JFrame {
     public static void main(String[] args) throws Exception {
 
         // Starting point
-        System.out.println("Starting point");
+        System.out.println("DEMINER : Starting point");
 
 
         // Theme application
@@ -403,8 +453,8 @@ public class App extends JFrame {
         // test.setVisible(true);
 
 
-        // Enfing point
-        System.out.println("Ending point");
+        // Ending point
+        System.out.println("DEMINER : Ending point");
 
     }
 }

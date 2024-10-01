@@ -1,15 +1,20 @@
-
+// Import
 import static java.lang.Thread.sleep;
 
 
+/**
+ * Deminer Counter : class that allow the deminer to be equiped with a counter
+ * 
+ * @author  AdrienG
+ * @version 0.0
+ */
 public class DCounter implements Runnable {
 
     /**
      * Counter attribute
      */
-    private final   Thread  counter;
+    private         Thread  counter;
     private final   App     app;
-    private         boolean isActive = false;
 
 
 
@@ -28,15 +33,19 @@ public class DCounter implements Runnable {
         // Getting attributes
         this.app = app;
 
+
+        // Starting the thread
+        this.init();
+
     }
 
 
 
 
     /**
-     * Starting the counter
+     * Initialise the thread
      */
-    public void start() {
+    private void init() {
         counter.start();
     }
 
@@ -44,49 +53,36 @@ public class DCounter implements Runnable {
 
 
     /**
-     * Engage the counter
+     * Stop counter
      */
-    public void activate() {
-        isActive = true;
+    public void stop() {
+        counter = null;
     }
-
-
-
-
-    /**
-     * Disengage the counter
-     */
-    public void deactivate() {
-        isActive = false;
-    }
+    
 
 
     
-
     /**
-     * 
+     * Thread method
      */
     @Override
-    public void run () { 
+    public void run () {
 
         // Stop condition
         while (counter != null) {
 
-            // Only count when it's active
-            if (isActive) {
+            // Counting every second
+            try {
 
-                // Counting every second
-                try {
-
-                    sleep(1000);
-                    app.incrTimeSpent();
+                // 1 sec pause
+                sleep(1000);
+                app.incrTimeSpent();
 
 
-                } catch(InterruptedException e) {
+            } catch(InterruptedException e) {
 
-                    System.err.println(e);
-
-                }
+                // Printing exception
+                System.err.println(e);
 
             }
 

@@ -1,8 +1,9 @@
 // Package declaration
 package deminer_dialog;
 
-import deminer_graphic.DTheme;
+
 // Import
+import deminer_graphic.DTheme;
 import deminer_graphic.DeminerButton;
 import deminer_graphic.DeminerFont;
 import deminer_graphic.DeminerLabel;
@@ -15,7 +16,7 @@ import javax.swing.border.EmptyBorder;
 
 
 /**
- * Class Binary Dialog (binary question popup, with yes/no answer)
+ * Class End Game Dialog : popup that occurs at the end of the game after every type of end
  * 
  * @author  AdrienG
  * @version 0.0
@@ -36,7 +37,7 @@ public class DeminerDialogEndGame extends JDialog {
      * @param parent            JFrame that own the dialog
      * @param message           Dialog title
      */
-    public DeminerDialogEndGame(JFrame parent, boolean winPhase) {
+    public DeminerDialogEndGame(JFrame parent, EndGame endGameType) {
 
         // Herited constructor
         super(parent, "", true);
@@ -51,11 +52,11 @@ public class DeminerDialogEndGame extends JDialog {
 
 
         // Setting up the title and the message
-        String title;
-        if (winPhase) {
-            title   = "You win !";
-        } else {
-            title   = "You lost";
+        String title = "";
+        switch (endGameType) {
+            case EndGame.WIN                -> title   = "You win !";
+            case EndGame.MINES_CLIKED       -> title   = "You has explosed yourself...";
+            case EndGame.MAX_TIME_REACHED   -> title   = "Time limit reached : you lost...";
         }
 
 

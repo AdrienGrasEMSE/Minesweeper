@@ -3,6 +3,7 @@ import deminer_dialog.DeminerDialogBinary;
 import deminer_dialog.DeminerDialogCustomNewGame;
 import deminer_dialog.DeminerDialogEndGame;
 import deminer_dialog.DeminerDialogInfo;
+import deminer_dialog.EndGame;
 import deminer_graphic.DeminerButton;
 import deminer_graphic.DTheme;
 import deminer_graphic.DeminerFont;
@@ -17,8 +18,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
-import javax.swing.JLabel;
+import java.awt.event.KeyEvent;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
 
 /**
@@ -40,11 +45,16 @@ public class GUI extends JPanel implements ActionListener{
     /**
      * GUI main panels
      */
-    private final JPanel northPanel   = new JPanel(new FlowLayout());
-    private final JPanel eastPanel    = new JPanel();
-    private final JPanel southPanel   = new JPanel(new FlowLayout());
-    private final JPanel westPanel    = new JPanel();
-    private final JPanel centerPanel  = new JPanel();
+    private final JPanel    northPanel      = new JPanel(new GridLayout(2, 1));
+    private final JPanel    southPanel      = new JPanel(new FlowLayout());
+    private final JPanel    centerPanel     = new JPanel();
+
+
+    /**
+     * GUI menu
+     */
+    private final JMenuBar  menuBar         = new JMenuBar();
+    private final JMenu     menuGame        = new JMenu("Game");
 
 
     /**
@@ -59,9 +69,13 @@ public class GUI extends JPanel implements ActionListener{
     /**
      * North panels elements
      */
-    private final DeminerLabel labScore         = new DeminerLabel("Score", DeminerFont.JOST_LIGHT,     18, DTheme.FNT_NTL_D);
-    private final DeminerLabel labLevel         = new DeminerLabel("Level", DeminerFont.JOST_REGULAR,   18, DTheme.FNT_NTL_N);
-    private final DeminerLabel valScore         = new DeminerLabel("",      DeminerFont.JOST_REGULAR,   18, DTheme.FNT_NTL_N);
+    private final DeminerLabel labScore         = new DeminerLabel("Score",         DeminerFont.JOST_REGULAR,   18, DTheme.FNT_NTL_D);
+    private final DeminerLabel labLevel         = new DeminerLabel("Level",         DeminerFont.JOST_REGULAR,   18, DTheme.FNT_NTL_D);
+    private final DeminerLabel labTime          = new DeminerLabel("Time",          DeminerFont.JOST_REGULAR,   18, DTheme.FNT_NTL_D);
+    private final DeminerLabel labTimeMax       = new DeminerLabel("Time limit",    DeminerFont.JOST_REGULAR,   18, DTheme.FNT_NTL_D);
+    private final DeminerLabel valScore         = new DeminerLabel("",              DeminerFont.JOST_LIGHT,     18, DTheme.FNT_NTL_N);
+    private final DeminerLabel valTime          = new DeminerLabel("00:00",         DeminerFont.JOST_LIGHT,     18, DTheme.FNT_NTL_N);
+    private final DeminerLabel valTimeMax       = new DeminerLabel("",              DeminerFont.JOST_LIGHT,     18, DTheme.FNT_NTL_N);
     private final DeminerComboBox<Level> valLevel     = new DeminerComboBox<>(  Level.values(),
                                                                                 18,
                                                                                 DTheme.FNT_NTL_D,
@@ -92,45 +106,45 @@ public class GUI extends JPanel implements ActionListener{
 
 
         // Setting up layout and VFX
-        setLayout(new BorderLayout());
-        setBackground(Color.black);
+        this.setLayout(new BorderLayout());
+
+
+        // Setting up Menu
+        this.menuSetup();
 
 
         // Setting up panels
-        panelSetup();
-        northPanelSetup();
-        southPanelSetup();
-        centerPanelSetup();
+        this.northPanelSetup();
+        this.southPanelSetup();
+        this.centerPanelSetup();
 
     }
+
 
 
 
     /**
-     * Setting up main panels : north, east, south, west and center
+     * Menu setup
      */
-    private void panelSetup() {
-
-        // Plotting panels
-        add(eastPanel,      BorderLayout.EAST);
-        add(westPanel,      BorderLayout.WEST);
-
-        // Panels vfx
+    private void menuSetup() {
         
-        eastPanel           .setBackground  (DTheme.GUI_NTL_D);
-        westPanel           .setBackground  (DTheme.GUI_NTL_D);
+        // Adding item to the menuGame
+        JMenuItem mQuitter  = new JMenuItem("Quitter", KeyEvent.VK_Q); 
+        menuGame            .add(mQuitter);
 
-        // TEST
-        JLabel east     = new JLabel("EAST");
-        JLabel west     = new JLabel("WEST");
-        eastPanel       .add(east);
-        westPanel       .add(west);
+
+        // Adding menu to the menu bar
+        menuBar.add(menuGame);
+
+
+        // Plotting the menu bar
+        app.add(menuBar);
 
     }
-
-
-
     
+
+
+
     /**
      * Setting up north panel
     */
@@ -138,20 +152,34 @@ public class GUI extends JPanel implements ActionListener{
 
         // Plotting panel and set VFX
         add(northPanel,     BorderLayout.NORTH);
-        northPanel          .setBackground(DTheme.GUI_VAR_N);
+        northPanel          .setBackground  (DTheme.GUI_VAR_N);
 
 
-        // Plotting elements inside
-        northPanel          .add(labScore);
-        northPanel          .add(valScore);
-        northPanel          .add(labLevel);
-        northPanel          .add(valLevel);
+        // Upper panel
+        JPanel upperPanel   = new JPanel(new FlowLayout());
+        upperPanel          .setBorder      (new EmptyBorder(0, 0, 5, 0));
+        upperPanel          .setBackground  (DTheme.GUI_VAR_N);
+        upperPanel          .add(labScore);
+        upperPanel          .add(valScore);
+        upperPanel          .add(labLevel);
+        upperPanel          .add(valLevel);
 
 
-        // Elements VFX
-        labScore            .setForeground(Color.white);
-        valScore            .setForeground(Color.white);
-        labLevel            .setForeground(Color.white);
+        // Lower panel
+        JPanel lowerPanel   = new JPanel(new FlowLayout());
+        lowerPanel          .setBackground  (DTheme.GUI_VAR_N);
+        lowerPanel          .add(labTime);
+        lowerPanel          .add(valTime);
+        lowerPanel          .add(labTimeMax);
+        lowerPanel          .add(valTimeMax);
+
+
+        // Plotting
+        northPanel          .add(upperPanel);
+        northPanel          .add(lowerPanel);
+
+
+        // Setting up combo box
         valLevel            .setSelectedItem(app.getLevel());
         valLevel            .addItemListener((ItemEvent e) -> {
 
@@ -249,6 +277,108 @@ public class GUI extends JPanel implements ActionListener{
         valLevel            .setSelectedItem(app.getLevel());
         manualLevelChange   = false;
 
+    }
+
+
+
+
+    /**
+     * Update the displayed time according to the app one
+     */
+    public void updateTime(int timeSpent) {
+
+        // Divise the time to get minute and second
+        int min_ = timeSpent / 60;
+        int sec_ = (timeSpent % 60);
+
+
+        // Setting up string for the label
+        String min = "00";
+        String sec = "00";
+
+
+        // Attributing minutes
+        if (min_ > 0 && min_ < 10) {
+            min = "0" + String.valueOf(min_);
+        } else if (min_ > 9 && min_ < 100) {
+            min = String.valueOf(min_);
+        }
+
+
+        // Attributing sec
+        if (sec_ > 0 && sec_ < 10) {
+            sec = "0" + String.valueOf(sec_);
+        } else if (sec_ > 9 && sec_ < 100) {
+            sec = String.valueOf(sec_);
+        }
+
+
+        // Updating the label
+        valTime.setText(min + ":" + sec);
+    }
+
+
+
+
+    /**
+     * Update the displayed time limit
+     * 
+     * @param timeLimit
+     */
+    public void updateTimeLimit(int timeLimit) {
+
+        // If there is a time limit
+        if (timeLimit == 0) {
+
+            // Setting up content
+            valTimeMax.setText("No limit");
+
+
+        } else {
+            
+            // Divise the time to get minute and second
+            int min_ = timeLimit / 60;
+            int sec_ = (timeLimit % 60);
+
+
+            // Setting up string for the label
+            String min = "00";
+            String sec = "00";
+
+
+            // Attributing minutes
+            if (min_ > 0 && min_ < 10) {
+                min = "0" + String.valueOf(min_);
+            } else if (min_ > 9 && min_ < 100) {
+                min = String.valueOf(min_);
+            }
+
+
+            // Attributing sec
+            if (sec_ > 0 && sec_ < 10) {
+                sec = "0" + String.valueOf(sec_);
+            } else if (sec_ > 9 && sec_ < 100) {
+                sec = String.valueOf(sec_);
+            }
+
+
+            // Updating the label
+            valTimeMax.setText(min + ":" + sec);
+
+        }
+
+    }
+
+
+
+
+    /**
+     * Update the score tab
+     * 
+     * @param score
+     */
+    public void updateScore(int score) {
+        valScore.setText(String.valueOf(score));
     }
 
 
@@ -403,10 +533,10 @@ public class GUI extends JPanel implements ActionListener{
      * 
      * @param gameWon in case of win or lost, the message is different
      */
-    public void endGamePhase(boolean gameWon) {
+    public void endGamePhase(EndGame endGameType) {
 
         // Dialog
-        DeminerDialogEndGame endGame = new DeminerDialogEndGame(app, gameWon);
+        DeminerDialogEndGame endGame = new DeminerDialogEndGame(app, endGameType);
         endGame.setVisible(true);
 
 
@@ -544,18 +674,6 @@ public class GUI extends JPanel implements ActionListener{
         // Returning the size
         return calcSize;
 
-    }
-
-
-
-
-    /**
-     * Update the score tab
-     * 
-     * @param score
-     */
-    public void updateScore(int score) {
-        valScore.setText(String.valueOf(score));
     }
 
 

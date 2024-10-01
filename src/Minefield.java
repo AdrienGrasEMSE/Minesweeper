@@ -18,9 +18,11 @@ public class Minefield {
      */
     private                 int         numberOfMine;
     private                 boolean[][] field;
+    private                 int         timeLimit;
     private final           Random      random          = new Random();
-    private final static    int[]       tabSize         = {5, 10, 15};
-    private final static    int[]       tabNbMines      = {3, 9, 27};
+    private final static    int[]       tabSize         = { 5,      10,     15};
+    private final static    int[]       tabNbMines      = { 3,      9,      27};
+    private final static    int[]       tabTimeLimit    = { 60,     300,    600};
 
 
 
@@ -45,6 +47,7 @@ public class Minefield {
         if (nb != 3) {
 
             // Creating for a common difficulty game
+            timeLimit       = tabTimeLimit[nb];
             numberOfMine    = tabNbMines[nb];
             field           = new boolean [tabSize[nb]][tabSize[nb]];
             return 0;
@@ -74,6 +77,7 @@ public class Minefield {
         if (nb == 3) {
 
             // Creating for a custom difficulty game
+            timeLimit       = 0;
             numberOfMine    = numberOfMineRequired;
             field           = new boolean [fieldLenght][fieldWidth];
             return 0;
@@ -125,6 +129,18 @@ public class Minefield {
      */
     public int getNumberOfMine() {
         return numberOfMine;
+    }
+
+
+
+
+    /**
+     * Getter : to check the time limit
+     * 
+     * @return timeLimit
+     */
+    public int getTimeLimit() {
+        return timeLimit;
     }
 
 
