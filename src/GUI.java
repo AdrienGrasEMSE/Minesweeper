@@ -45,7 +45,7 @@ public class GUI extends JPanel implements ActionListener{
     /**
      * GUI main panels
      */
-    private final JPanel    northPanel      = new JPanel(new GridLayout(2, 1));
+    private final JPanel    northPanel      = new JPanel(new GridLayout(1, 2, 100, 0));
     private final JPanel    southPanel      = new JPanel(new FlowLayout());
     private final JPanel    centerPanel     = new JPanel();
 
@@ -151,32 +151,34 @@ public class GUI extends JPanel implements ActionListener{
     private void northPanelSetup() {
 
         // Plotting panel and set VFX
-        add(northPanel,     BorderLayout.NORTH);
+        this.add(northPanel,BorderLayout.NORTH);
         northPanel          .setBackground  (DTheme.GUI_VAR_N);
+        northPanel          .setBorder      (new EmptyBorder(10, 0, 10, 0));
 
 
-        // Upper panel
-        JPanel upperPanel   = new JPanel(new FlowLayout());
-        upperPanel          .setBorder      (new EmptyBorder(0, 0, 5, 0));
-        upperPanel          .setBackground  (DTheme.GUI_VAR_N);
-        upperPanel          .add(labScore);
-        upperPanel          .add(valScore);
-        upperPanel          .add(labLevel);
-        upperPanel          .add(valLevel);
+        // Score panel
+        JPanel scorePanel   = new JPanel    (new GridLayout(2, 2, 0, 5));
+        scorePanel          .setBorder      (new EmptyBorder(10, 10, 10, 10));
+        scorePanel          .setBackground(DTheme.GUI_VAR_N);
+        scorePanel          .add(labLevel);
+        scorePanel          .add(valLevel);
+        scorePanel          .add(labScore);
+        scorePanel          .add(valScore);
 
 
-        // Lower panel
-        JPanel lowerPanel   = new JPanel(new FlowLayout());
-        lowerPanel          .setBackground  (DTheme.GUI_VAR_N);
-        lowerPanel          .add(labTime);
-        lowerPanel          .add(valTime);
-        lowerPanel          .add(labTimeMax);
-        lowerPanel          .add(valTimeMax);
+        // Time panel
+        JPanel timelPanel   = new JPanel    (new GridLayout(2, 2, 0, 5));
+        timelPanel          .setBorder      (new EmptyBorder(10, 10, 10, 10));
+        timelPanel          .setBackground  (DTheme.GUI_VAR_N);
+        timelPanel          .add(labTime);
+        timelPanel          .add(valTime);
+        timelPanel          .add(labTimeMax);
+        timelPanel          .add(valTimeMax);
 
 
         // Plotting
-        northPanel          .add(upperPanel);
-        northPanel          .add(lowerPanel);
+        northPanel          .add(timelPanel);
+        northPanel          .add(scorePanel);
 
 
         // Setting up combo box
@@ -193,6 +195,36 @@ public class GUI extends JPanel implements ActionListener{
                 levelChange(false);
 
             }
+        });
+
+
+        // Adding the listener to check size changement
+        northPanel.addComponentListener(new ComponentAdapter() {
+            
+            // On size change
+            @Override
+            public void componentResized(ComponentEvent e) {
+
+                /**
+                 * Border size change : what's the matter ?
+                 * 
+                 * By changing the border size, we can keep a fixed size for each side
+                 * of the north panel (time side and level/score side). Each side will
+                 * be separated by a fix lenght that does not depend on the frame size.
+                 * 
+                 * Calcul is :
+                 * 
+                 * ((panelWidth - 2 * side_size) - sides_spacing) / 2 = left_and_right_border_thickeness
+                 */
+                int         newHGap = ((northPanel.getWidth() - 550) - 100) / 2;
+
+
+                // Applying the new border
+                northPanel          .setBorder(new EmptyBorder(10, newHGap, 10, newHGap));
+                northPanel          .revalidate();
+                
+            }
+            
         });
 
     }
