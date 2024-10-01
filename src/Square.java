@@ -37,6 +37,7 @@ public class Square extends JPanel implements MouseListener{
     private         boolean isRevealed  = false;
     private         boolean isLocked    = false;
     private         int     sqSize;
+    private         int     fontSize;
     private         int     coefficient;                        // 0 = 0 mine around        -1 = the square is a mine
 
 
@@ -64,6 +65,7 @@ public class Square extends JPanel implements MouseListener{
         this.posX       = newPosX;
         this.posY       = newPosY;
         this.sqSize     = sqSize;
+        this.fontSize   = (int) (this.sqSize * 0.70);
 
 
         // Setting the listener
@@ -89,19 +91,24 @@ public class Square extends JPanel implements MouseListener{
         this.setMaximumSize     (new Dimension(this.sqSize, this.sqSize));
         this.setMinimumSize     (new Dimension(this.sqSize, this.sqSize));
 
+
+        // CHanging font size
+        this.fontSize = (int) (this.sqSize * 0.70);
+
+
         // Setting up font
         Font font_;
         try {
 
             // Getting localy installed font
-            font_   = Font.createFont(Font.TRUETYPE_FONT, new File(DeminerFont.JOST_SEMIBOLD.getFontPath())).deriveFont((float) (sqSize * 0.70));
+            font_   = Font.createFont(Font.TRUETYPE_FONT, new File(DeminerFont.JOST_SEMIBOLD.getFontPath())).deriveFont((float) fontSize);
 
 
         } catch (FontFormatException | IOException | NullPointerException e) {
             
             // Default font
             System.out.println(e);
-            font_   = new Font("Arial", Font.BOLD, sqSize * 70);
+            font_   = new Font("Arial", Font.BOLD, fontSize);
 
         }
         this.font = font_;
@@ -167,38 +174,22 @@ public class Square extends JPanel implements MouseListener{
         if (isRevealed) {            
 
             // Setting the string and the color for the display
-            g.setFont(font);
-            FontMetrics metrics = g.getFontMetrics(font);
+            g2d.setFont(font);
+            FontMetrics metrics = g2d.getFontMetrics(font);
             switch (coefficient) {
                 case -1 -> {
-                    g.setColor(DTheme.FNT_COF_M);
-                    g.drawString(
+                    g2d.setColor(DTheme.FNT_COF_M);
+                    g2d.drawString(
                             "¤",
                             (getWidth()     - metrics.stringWidth("¤")) / 2,
                             (getHeight()    - metrics.getHeight())          / 2 + metrics.getAscent()
                     );
 
-                    // TODO : make it working with image
-
-                    // // Fetching image
-                    // ImageIcon   img = new ImageIcon(getClass().getResource("./img/mine_not_found.png"));
-                    // JLabel      msg = new JLabel(img);
-                    // this        .add(msg);
-
-                    // // JLabel img = new JLabel(new ImageIcon("./img/mine_not_found.png"));
-                    // // JLabel img = new JLabel(new ImageIcon(getClass().getResource("./img/mine_not_found.png")));
-                    // // this.add(img);
-
-                    // // try {
-                        
-                    // // } catch (Exception e) {
-                    // // }
-
                 }
 
                 case 1 -> {
-                    g.setColor(DTheme.FNT_COF_1);
-                    g.drawString(
+                    g2d.setColor(DTheme.FNT_COF_1);
+                    g2d.drawString(
                             String.valueOf(coefficient),
                             (getWidth()     - metrics.stringWidth(String.valueOf(coefficient))) / 2,
                             (getHeight()    - metrics.getHeight())                              / 2 + metrics.getAscent()
@@ -206,8 +197,8 @@ public class Square extends JPanel implements MouseListener{
                 }
                 
                 case 2 -> {
-                    g.setColor(DTheme.FNT_COF_2);
-                    g.drawString(
+                    g2d.setColor(DTheme.FNT_COF_2);
+                    g2d.drawString(
                             String.valueOf(coefficient),
                             (getWidth()     - metrics.stringWidth(String.valueOf(coefficient))) / 2,
                             (getHeight()    - metrics.getHeight())                              / 2 + metrics.getAscent()
@@ -215,8 +206,8 @@ public class Square extends JPanel implements MouseListener{
                 }
 
                 case 3 -> {
-                    g.setColor(DTheme.FNT_COF_3);
-                    g.drawString(
+                    g2d.setColor(DTheme.FNT_COF_3);
+                    g2d.drawString(
                             String.valueOf(coefficient),
                             (getWidth()     - metrics.stringWidth(String.valueOf(coefficient))) / 2,
                             (getHeight()    - metrics.getHeight())                              / 2 + metrics.getAscent()
@@ -224,8 +215,8 @@ public class Square extends JPanel implements MouseListener{
                 }
 
                 case 4 -> {
-                    g.setColor(DTheme.FNT_COF_4);
-                    g.drawString(
+                    g2d.setColor(DTheme.FNT_COF_4);
+                    g2d.drawString(
                             String.valueOf(coefficient),
                             (getWidth()     - metrics.stringWidth(String.valueOf(coefficient))) / 2,
                             (getHeight()    - metrics.getHeight())                              / 2 + metrics.getAscent()
@@ -233,8 +224,8 @@ public class Square extends JPanel implements MouseListener{
                 }
 
                 case 5 -> {
-                    g.setColor(DTheme.FNT_COF_5);
-                    g.drawString(
+                    g2d.setColor(DTheme.FNT_COF_5);
+                    g2d.drawString(
                             String.valueOf(coefficient),
                             (getWidth()     - metrics.stringWidth(String.valueOf(coefficient))) / 2,
                             (getHeight()    - metrics.getHeight())                              / 2 + metrics.getAscent()
@@ -242,8 +233,8 @@ public class Square extends JPanel implements MouseListener{
                 }
 
                 case 6 -> {
-                    g.setColor(DTheme.FNT_COF_6);
-                    g.drawString(
+                    g2d.setColor(DTheme.FNT_COF_6);
+                    g2d.drawString(
                             String.valueOf(coefficient),
                             (getWidth()     - metrics.stringWidth(String.valueOf(coefficient))) / 2,
                             (getHeight()    - metrics.getHeight())                              / 2 + metrics.getAscent()
@@ -251,8 +242,8 @@ public class Square extends JPanel implements MouseListener{
                 }
 
                 case 7 -> {
-                    g.setColor(DTheme.FNT_COF_7);
-                    g.drawString(
+                    g2d.setColor(DTheme.FNT_COF_7);
+                    g2d.drawString(
                             String.valueOf(coefficient),
                             (getWidth()     - metrics.stringWidth(String.valueOf(coefficient))) / 2,
                             (getHeight()    - metrics.getHeight())                              / 2 + metrics.getAscent()
@@ -260,8 +251,8 @@ public class Square extends JPanel implements MouseListener{
                 }
 
                 case 8 -> {
-                    g.setColor(DTheme.FNT_COF_8);
-                    g.drawString(
+                    g2d.setColor(DTheme.FNT_COF_8);
+                    g2d.drawString(
                             String.valueOf(coefficient),
                             (getWidth()     - metrics.stringWidth(String.valueOf(coefficient))) / 2,
                             (getHeight()    - metrics.getHeight())                              / 2 + metrics.getAscent()
@@ -274,12 +265,13 @@ public class Square extends JPanel implements MouseListener{
         } else if (isLocked) {
 
             // Setting the string and the color for the display
-            g.setFont(font);
-            FontMetrics metrics = g.getFontMetrics(font);
-            g.setColor(DTheme.FNT_NTL_L);
-            g.drawString(
-                    "!",
-                    (getWidth()     - metrics.stringWidth("!")) / 2,
+            g2d.setFont(font);
+            FontMetrics metrics = g2d.getFontMetrics(font);
+            g2d.setFont(new Font("Serif", Font.PLAIN, fontSize));
+            g2d.setColor(DTheme.FNT_NTL_L);
+            g2d.drawString(
+                    "⚑",
+                    (getWidth()     - metrics.stringWidth("⚑")) / 2,
                     (getHeight()    - metrics.getHeight())                              / 2 + metrics.getAscent()
             );
 
@@ -287,7 +279,7 @@ public class Square extends JPanel implements MouseListener{
 
 
         // Free resources
-        g2d.dispose();
+        // g2d.dispose();
 
     }
 
@@ -380,6 +372,7 @@ public class Square extends JPanel implements MouseListener{
 
             // Enable / disable lock
             isLocked = !isLocked;
+            this.repaint();
 
         }
         
