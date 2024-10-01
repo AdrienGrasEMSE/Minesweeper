@@ -1,6 +1,4 @@
 // Imports
-import deminer_graphic.DTheme;
-import deminer_graphic.DeminerFont;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -15,6 +13,8 @@ import java.io.File;
 import java.io.IOException;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import dgraphics.DFont;
+import dgraphics.DTheme;
 
 
 /**
@@ -101,7 +101,7 @@ public class Square extends JPanel implements MouseListener{
         try {
 
             // Getting localy installed font
-            font_   = Font.createFont(Font.TRUETYPE_FONT, new File(DeminerFont.JOST_SEMIBOLD.getFontPath())).deriveFont((float) fontSize);
+            font_   = Font.createFont(Font.TRUETYPE_FONT, new File(DFont.JOST_SEMIBOLD.getFontPath())).deriveFont((float) fontSize);
 
 
         } catch (FontFormatException | IOException | NullPointerException e) {

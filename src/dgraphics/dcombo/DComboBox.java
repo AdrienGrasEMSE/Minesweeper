@@ -1,8 +1,6 @@
 // Package declaration
-package deminer_graphic.combo_box;
+package dgraphics.dcombo;
 
-// Import
-import deminer_graphic.DFont;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -12,6 +10,8 @@ import java.awt.RenderingHints;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JComboBox;
+
+import dgraphics.DFont;
 
 
 /**

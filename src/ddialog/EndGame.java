@@ -1,5 +1,5 @@
 // Package declaration
-package deminer_dialog;
+package ddialog;
 
 
 /**

@@ -1,5 +1,5 @@
 // Package declaration
-package deminer_graphic.combo_box;
+package dgraphics.dcombo;
 
 // Import
 import java.awt.Color;
@@ -65,5 +65,7 @@ public class DComboBoxEditor extends BasicComboBoxEditor {
         } else {
             editor.setText("");
         }
+
     }
+    
 }

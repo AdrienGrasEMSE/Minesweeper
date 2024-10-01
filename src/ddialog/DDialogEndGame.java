@@ -1,17 +1,17 @@
 // Package declaration
-package deminer_dialog;
+package ddialog;
 
 // Import
-import deminer_graphic.DTheme;
-import deminer_graphic.DButton;
-import deminer_graphic.DFont;
-import deminer_graphic.DLabel;
 import java.awt.BorderLayout;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import dgraphics.DButton;
+import dgraphics.DFont;
+import dgraphics.DLabel;
+import dgraphics.DTheme;
 
 
 /**

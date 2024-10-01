@@ -1,8 +1,7 @@
 // Package declaration
-package deminer_graphic.combo_box;
+package dgraphics.dcombo;
 
 // Import
-import deminer_graphic.DFont;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -13,6 +12,7 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import dgraphics.DFont;
 
 
 /**

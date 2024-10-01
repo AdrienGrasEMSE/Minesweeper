@@ -1,5 +1,5 @@
 // Package déclaration
-package deminer_graphic;
+package dgraphics;
 
 // Import
 import java.awt.Color;

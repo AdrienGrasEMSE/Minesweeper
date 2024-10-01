@@ -1,14 +1,4 @@
 // Import
-import deminer_dialog.DeminerDialogBinary;
-import deminer_dialog.DeminerDialogCustomNewGame;
-import deminer_dialog.DeminerDialogEndGame;
-import deminer_dialog.DeminerDialogInfo;
-import deminer_dialog.EndGame;
-import deminer_graphic.DeminerButton;
-import deminer_graphic.DTheme;
-import deminer_graphic.DeminerFont;
-import deminer_graphic.DeminerLabel;
-import deminer_graphic.combo_box.DeminerComboBox;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -24,6 +14,16 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import ddialog.DDialogBinary;
+import ddialog.DDialogCustomNewGame;
+import ddialog.DDialogEndGame;
+import ddialog.DDialogInfo;
+import ddialog.EndGame;
+import dgraphics.DButton;
+import dgraphics.DFont;
+import dgraphics.DLabel;
+import dgraphics.DTheme;
+import dgraphics.dcombo.DComboBox;
 
 
 /**
@@ -69,14 +69,14 @@ public class GUI extends JPanel implements ActionListener{
     /**
      * North panels elements
      */
-    private final DeminerLabel labScore         = new DeminerLabel("Score",         DeminerFont.JOST_REGULAR,   18, DTheme.FNT_NTL_D);
-    private final DeminerLabel labLevel         = new DeminerLabel("Level",         DeminerFont.JOST_REGULAR,   18, DTheme.FNT_NTL_D);
-    private final DeminerLabel labTime          = new DeminerLabel("Time",          DeminerFont.JOST_REGULAR,   18, DTheme.FNT_NTL_D);
-    private final DeminerLabel labTimeMax       = new DeminerLabel("Time limit",    DeminerFont.JOST_REGULAR,   18, DTheme.FNT_NTL_D);
-    private final DeminerLabel valScore         = new DeminerLabel("",              DeminerFont.JOST_LIGHT,     18, DTheme.FNT_NTL_N);
-    private final DeminerLabel valTime          = new DeminerLabel("00:00",         DeminerFont.JOST_LIGHT,     18, DTheme.FNT_NTL_N);
-    private final DeminerLabel valTimeMax       = new DeminerLabel("",              DeminerFont.JOST_LIGHT,     18, DTheme.FNT_NTL_N);
-    private final DeminerComboBox<Level> valLevel     = new DeminerComboBox<>(  Level.values(),
+    private final DLabel labScore         = new DLabel("Score",         DFont.JOST_REGULAR,   18, DTheme.FNT_NTL_D);
+    private final DLabel labLevel         = new DLabel("Level",         DFont.JOST_REGULAR,   18, DTheme.FNT_NTL_D);
+    private final DLabel labTime          = new DLabel("Time",          DFont.JOST_REGULAR,   18, DTheme.FNT_NTL_D);
+    private final DLabel labTimeMax       = new DLabel("Time limit",    DFont.JOST_REGULAR,   18, DTheme.FNT_NTL_D);
+    private final DLabel valScore         = new DLabel("",              DFont.JOST_LIGHT,     18, DTheme.FNT_NTL_N, DTheme.BTN_VAR_N);
+    private final DLabel valTime          = new DLabel("00:00",         DFont.JOST_LIGHT,     18, DTheme.FNT_NTL_N, DTheme.BTN_VAR_N);
+    private final DLabel valTimeMax       = new DLabel("",              DFont.JOST_LIGHT,     18, DTheme.FNT_NTL_N, DTheme.BTN_VAR_N);
+    private final DComboBox<Level> valLevel     = new DComboBox<>(  Level.values(),
                                                                                 18,
                                                                                 DTheme.FNT_NTL_D,
                                                                                 DTheme.FNT_NTL_N,
@@ -90,8 +90,8 @@ public class GUI extends JPanel implements ActionListener{
     /**
      * South panels elements
      */
-    private final DeminerButton quitButton      = new DeminerButton("Quit",     DeminerFont.JOST_SEMIBOLD, 24, Color.WHITE, DTheme.BTN_RED_D, DTheme.BTN_RED_N, DTheme.BTN_RED_L);
-    private final DeminerButton newGameButton   = new DeminerButton("New game", DeminerFont.JOST_SEMIBOLD, 24, Color.WHITE, DTheme.BTN_GRN_D, DTheme.BTN_GRN_D, DTheme.BTN_GRN_D);
+    private final DButton quitButton      = new DButton("Quit",     DFont.JOST_SEMIBOLD, 24, Color.WHITE, DTheme.BTN_RED_D, DTheme.BTN_RED_N, DTheme.BTN_RED_L);
+    private final DButton newGameButton   = new DButton("New game", DFont.JOST_SEMIBOLD, 24, Color.WHITE, DTheme.BTN_GRN_D, DTheme.BTN_GRN_D, DTheme.BTN_GRN_D);
 
 
 
@@ -408,7 +408,7 @@ public class GUI extends JPanel implements ActionListener{
 
 
             // Dialog to start a new game
-            DeminerDialogBinary newGame = new DeminerDialogBinary(app, "Do you want to start a new game ?");
+            DDialogBinary newGame = new DDialogBinary(app, "Do you want to start a new game ?");
             newGame.setVisible(true);
 
 
@@ -449,7 +449,7 @@ public class GUI extends JPanel implements ActionListener{
         } else {
 
             // Dialog to endGame
-            DeminerDialogBinary confirm = new DeminerDialogBinary(app, "Confirm ?");
+            DDialogBinary confirm = new DDialogBinary(app, "Confirm ?");
             confirm.setVisible(true);
 
 
@@ -472,7 +472,7 @@ public class GUI extends JPanel implements ActionListener{
     private void newCustomGame(boolean lightDisplay) {
 
         // Dialog to get custom parameters
-        DeminerDialogCustomNewGame param = new DeminerDialogCustomNewGame(app);
+        DDialogCustomNewGame param = new DDialogCustomNewGame(app);
         do {
 
             // Display dialog
@@ -481,7 +481,7 @@ public class GUI extends JPanel implements ActionListener{
 
             // Infos
             if (!param.getParamValid() && param.getUserConfirm()) {
-                DeminerDialogInfo info = new DeminerDialogInfo(app, "Invalid parameters", new String[]{ "- Width and Height must be between",
+                DDialogInfo info = new DDialogInfo(app, "Invalid parameters", new String[]{ "- Width and Height must be between",
                                                                                                                 "5 and 20",
                                                                                                                 "",
                                                                                                                 "- Number of mines must be between",
@@ -507,7 +507,7 @@ public class GUI extends JPanel implements ActionListener{
             } else {
 
                 // Dialog to endGame
-                DeminerDialogBinary confirm = new DeminerDialogBinary(app, "Confirm ?");
+                DDialogBinary confirm = new DDialogBinary(app, "Confirm ?");
                 confirm.setVisible(true);
 
 
@@ -536,7 +536,7 @@ public class GUI extends JPanel implements ActionListener{
     public void endGamePhase(EndGame endGameType) {
 
         // Dialog
-        DeminerDialogEndGame endGame = new DeminerDialogEndGame(app, endGameType);
+        DDialogEndGame endGame = new DDialogEndGame(app, endGameType);
         endGame.setVisible(true);
 
 
@@ -632,9 +632,9 @@ public class GUI extends JPanel implements ActionListener{
 
 
     /**
+     * Calcul the square size according to the size of the centerPanel
      * 
-     * 
-     * @return
+     * @return calcSize, the calculed size
      */
     private int squareSizeCalcul() {
 
@@ -651,7 +651,9 @@ public class GUI extends JPanel implements ActionListener{
          * create a border. These border have their thickness fixed and non relative
          * to the square.
          * 
-         * So i must consider it in my calcul of height and width available
+         * So i must consider it in my calcul of height and width available.
+         * 
+         * I found out that 11px might the best approximation for these border
          */
         int heightCalcul    = (int) ((centerPanel.getHeight()   - squareMesh    .length * 11 )      / squareMesh      .length);
         int widthCalcul     = (int) ((centerPanel.getWidth()    - squareMesh[0] .length * 11 )      / squareMesh[0]   .length);
