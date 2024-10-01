@@ -3,9 +3,9 @@ package deminer_dialog;
 
 // Import
 import deminer_graphic.DTheme;
-import deminer_graphic.DeminerButton;
-import deminer_graphic.DeminerFont;
-import deminer_graphic.DeminerLabel;
+import deminer_graphic.DButton;
+import deminer_graphic.DFont;
+import deminer_graphic.DLabel;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import javax.swing.JDialog;
@@ -21,7 +21,7 @@ import javax.swing.border.EmptyBorder;
  * @author  AdrienG
  * @version 0.0
  */
-public class DeminerDialogInfo extends JDialog {
+public class DDialogInfo extends JDialog {
 
     /**
      * Main panel
@@ -37,7 +37,7 @@ public class DeminerDialogInfo extends JDialog {
      * @param message           Dialog message
      * @param listInfos         list of info that will be displayed on different line
      */
-    public DeminerDialogInfo(JFrame parent, String title, String[] listInfos) {
+    public DDialogInfo(JFrame parent, String title, String[] listInfos) {
 
         // Herited constructor
         super(parent, "", true);
@@ -51,7 +51,7 @@ public class DeminerDialogInfo extends JDialog {
 
 
         // Creating the label for the title
-        DeminerLabel titleLabel             = new DeminerLabel(title, DeminerFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_N);
+        DLabel titleLabel             = new DLabel(title, DFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_N);
         titleLabel  .setHorizontalAlignment (SwingConstants.CENTER);
         mainPanel   .add                    (titleLabel, BorderLayout.NORTH);
 
@@ -61,7 +61,7 @@ public class DeminerDialogInfo extends JDialog {
 
        
         // Creating the ok button
-        DeminerButton okButton  = new DeminerButton("Ok",   DeminerFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_N, DTheme.BTN_NTL_D, DTheme.BTN_NTL_N, DTheme.BTN_NTL_L);
+        DButton okButton  = new DButton("Ok",   DFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_N, DTheme.BTN_NTL_D, DTheme.BTN_NTL_N, DTheme.BTN_NTL_L);
          
         
         // Button action
@@ -102,7 +102,7 @@ public class DeminerDialogInfo extends JDialog {
         for (String info : listInfo) {
 
             // Creating the label for the message
-            DeminerLabel infoLabel              = new DeminerLabel(info, DeminerFont.JOST_LIGHT, 16, DTheme.FNT_NTL_D);
+            DLabel infoLabel              = new DLabel(info, DFont.JOST_LIGHT, 16, DTheme.FNT_NTL_D);
             infoLabel   .setHorizontalAlignment (SwingConstants.CENTER);
             infoPanel   .add                    (infoLabel);
 

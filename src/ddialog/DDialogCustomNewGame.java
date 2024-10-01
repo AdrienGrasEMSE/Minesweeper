@@ -1,12 +1,12 @@
 // Package declaration
 package deminer_dialog;
 
-import deminer_graphic.DTheme;
 // Import
-import deminer_graphic.DeminerButton;
-import deminer_graphic.DeminerFont;
-import deminer_graphic.DeminerIntegerField;
-import deminer_graphic.DeminerLabel;
+import deminer_graphic.DTheme;
+import deminer_graphic.DButton;
+import deminer_graphic.DFont;
+import deminer_graphic.DIntegerField;
+import deminer_graphic.DLabel;
 import java.awt.Color;
 import java.awt.GridLayout;
 import javax.swing.JDialog;
@@ -21,7 +21,7 @@ import javax.swing.border.EmptyBorder;
  * @author  AdrienG
  * @version 0.0
  */
-public class DeminerDialogCustomNewGame extends JDialog {
+public class DDialogCustomNewGame extends JDialog {
 
     /**
      * Attributes : answer
@@ -40,18 +40,17 @@ public class DeminerDialogCustomNewGame extends JDialog {
      * 
      * @param parent            JFrame that own the dialog
      */
-    public DeminerDialogCustomNewGame(JFrame parent) {
+    public DDialogCustomNewGame(JFrame parent) {
 
         // Herited constructor
         super(parent, "Custom game parameters", true);
-        // this.setSize        (new Dimension(500, 300));
         this.setUndecorated (true);
         this.setLayout      (new GridLayout(5, 1));
 
 
         // Creating the label for the message
         JPanel              msgPanel        = new JPanel();
-        DeminerLabel        messageLabel    = new DeminerLabel("Enter the custom game parameters :", DeminerFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_L);
+        DLabel        messageLabel    = new DLabel("Enter the custom game parameters :", DFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_L);
         msgPanel    .setBorder              (new EmptyBorder(0, 0, 5, 0));
         msgPanel    .setBackground          (DTheme.GUI_DRK_L);
         msgPanel    .add                    (messageLabel);
@@ -59,8 +58,8 @@ public class DeminerDialogCustomNewGame extends JDialog {
 
         // Creating the panel for the width parameters
         JPanel              widthPanel      = new JPanel                (new GridLayout(1, 2));
-        DeminerLabel        widthLab        = new DeminerLabel          ("Custom width :", DeminerFont.JOST_LIGHT, 18, DTheme.FNT_NTL_D);
-        DeminerIntegerField widthInput      = new DeminerIntegerField   (DeminerFont.JOST_LIGHT, 18, DTheme.FNT_NTL_N, DTheme.BTN_NTL_D, DTheme.BTN_NTL_N);
+        DLabel        widthLab        = new DLabel          ("Custom width :", DFont.JOST_LIGHT, 18, DTheme.FNT_NTL_D);
+        DIntegerField widthInput      = new DIntegerField   (DFont.JOST_LIGHT, 18, DTheme.FNT_NTL_N, DTheme.BTN_NTL_D, DTheme.BTN_NTL_N);
         widthPanel.setBorder                (new EmptyBorder(2, 10, 2, 10));
         widthPanel.setBackground            (DTheme.GUI_DRK_L);
         widthPanel.add                      (widthLab);
@@ -69,8 +68,8 @@ public class DeminerDialogCustomNewGame extends JDialog {
 
         // Creating the panel for the height parameters
         JPanel              heightPanel     = new JPanel                (new GridLayout(1, 2));
-        DeminerLabel        heightLab       = new DeminerLabel          ("Custom height :", DeminerFont.JOST_LIGHT, 18, DTheme.FNT_NTL_D);
-        DeminerIntegerField heightInput     = new DeminerIntegerField   (DeminerFont.JOST_LIGHT, 18, DTheme.FNT_NTL_N, DTheme.BTN_NTL_D, DTheme.BTN_NTL_N);
+        DLabel        heightLab       = new DLabel          ("Custom height :", DFont.JOST_LIGHT, 18, DTheme.FNT_NTL_D);
+        DIntegerField heightInput     = new DIntegerField   (DFont.JOST_LIGHT, 18, DTheme.FNT_NTL_N, DTheme.BTN_NTL_D, DTheme.BTN_NTL_N);
         heightPanel.setBorder               (new EmptyBorder(2, 10, 2, 10));
         heightPanel.setBackground           (DTheme.GUI_DRK_L);
         heightPanel.add                     (heightLab);
@@ -79,8 +78,8 @@ public class DeminerDialogCustomNewGame extends JDialog {
 
         // Creating the panel for the number of mines
         JPanel              nbMinesPanel    = new JPanel                (new GridLayout(1, 2));
-        DeminerLabel        nbMinesLab      = new DeminerLabel          ("Number of mines :", DeminerFont.JOST_LIGHT, 18, DTheme.FNT_NTL_D);
-        DeminerIntegerField nbMinesInput    = new DeminerIntegerField   (DeminerFont.JOST_LIGHT, 18, DTheme.FNT_NTL_N, DTheme.BTN_NTL_D, DTheme.BTN_NTL_N);
+        DLabel        nbMinesLab      = new DLabel          ("Number of mines :", DFont.JOST_LIGHT, 18, DTheme.FNT_NTL_D);
+        DIntegerField nbMinesInput    = new DIntegerField   (DFont.JOST_LIGHT, 18, DTheme.FNT_NTL_N, DTheme.BTN_NTL_D, DTheme.BTN_NTL_N);
         nbMinesPanel.setBorder              (new EmptyBorder(2, 10, 2, 10));
         nbMinesPanel.setBackground          (DTheme.GUI_DRK_L);
         nbMinesPanel.add                    (nbMinesLab);
@@ -94,8 +93,8 @@ public class DeminerDialogCustomNewGame extends JDialog {
 
 
         // Creating the confirm and cancel buttons
-        DeminerButton cancelButton  = new DeminerButton("Cancel",   DeminerFont.JOST_SEMIBOLD, 18, Color.WHITE, DTheme.BTN_RED_D, DTheme.BTN_RED_N, DTheme.BTN_RED_L);
-        DeminerButton confirmButton = new DeminerButton("Confirm",  DeminerFont.JOST_SEMIBOLD, 18, Color.WHITE, DTheme.BTN_GRN_D, DTheme.BTN_GRN_N, DTheme.BTN_GRN_L);
+        DButton cancelButton  = new DButton("Cancel",   DFont.JOST_SEMIBOLD, 18, Color.WHITE, DTheme.BTN_RED_D, DTheme.BTN_RED_N, DTheme.BTN_RED_L);
+        DButton confirmButton = new DButton("Confirm",  DFont.JOST_SEMIBOLD, 18, Color.WHITE, DTheme.BTN_GRN_D, DTheme.BTN_GRN_N, DTheme.BTN_GRN_L);
         
 
         // Yes button action

@@ -1,12 +1,11 @@
 // Package declaration
 package deminer_dialog;
 
-
 // Import
 import deminer_graphic.DTheme;
-import deminer_graphic.DeminerButton;
-import deminer_graphic.DeminerFont;
-import deminer_graphic.DeminerLabel;
+import deminer_graphic.DButton;
+import deminer_graphic.DFont;
+import deminer_graphic.DLabel;
 import java.awt.BorderLayout;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -21,7 +20,7 @@ import javax.swing.border.EmptyBorder;
  * @author  AdrienG
  * @version 0.0
  */
-public class DeminerDialogEndGame extends JDialog {
+public class DDialogEndGame extends JDialog {
 
     /**
      * Attributes
@@ -37,7 +36,7 @@ public class DeminerDialogEndGame extends JDialog {
      * @param parent            JFrame that own the dialog
      * @param message           Dialog title
      */
-    public DeminerDialogEndGame(JFrame parent, EndGame endGameType) {
+    public DDialogEndGame(JFrame parent, EndGame endGameType) {
 
         // Herited constructor
         super(parent, "", true);
@@ -61,7 +60,7 @@ public class DeminerDialogEndGame extends JDialog {
 
 
         // Creating the label for the title
-        DeminerLabel titleLabel = new DeminerLabel(title, DeminerFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_N);
+        DLabel titleLabel = new DLabel(title, DFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_N);
         titleLabel  .setHorizontalAlignment (SwingConstants.CENTER);
         panel       .add                    (titleLabel, BorderLayout.NORTH);
 
@@ -73,7 +72,7 @@ public class DeminerDialogEndGame extends JDialog {
 
 
         // Creating the label
-        DeminerLabel messageLabel = new DeminerLabel("Do you want to start a new game ?", DeminerFont.JOST_LIGHT, 16, DTheme.FNT_NTL_D);
+        DLabel messageLabel = new DLabel("Do you want to start a new game ?", DFont.JOST_LIGHT, 16, DTheme.FNT_NTL_D);
         messageLabel.setHorizontalAlignment (SwingConstants.CENTER);
         messagPanel .add                    (messageLabel);
         panel       .add                    (messagPanel, BorderLayout.CENTER); 
@@ -86,8 +85,8 @@ public class DeminerDialogEndGame extends JDialog {
 
 
         // Creating the yes and no buttons
-        DeminerButton quitButton    = new DeminerButton("Quit",     DeminerFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_D, DTheme.BTN_RED_D, DTheme.BTN_RED_N, DTheme.BTN_RED_L);
-        DeminerButton newGameButton = new DeminerButton("New game", DeminerFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_D, DTheme.BTN_GRN_D, DTheme.BTN_GRN_N, DTheme.BTN_GRN_L);
+        DButton quitButton    = new DButton("Quit",     DFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_D, DTheme.BTN_RED_D, DTheme.BTN_RED_N, DTheme.BTN_RED_L);
+        DButton newGameButton = new DButton("New game", DFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_D, DTheme.BTN_GRN_D, DTheme.BTN_GRN_N, DTheme.BTN_GRN_L);
         
         
         // No button action

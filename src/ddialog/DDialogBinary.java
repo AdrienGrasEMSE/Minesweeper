@@ -1,11 +1,11 @@
 // Package declaration
 package deminer_dialog;
 
+// Imports
 import deminer_graphic.DTheme;
-// Import
-import deminer_graphic.DeminerButton;
-import deminer_graphic.DeminerFont;
-import deminer_graphic.DeminerLabel;
+import deminer_graphic.DButton;
+import deminer_graphic.DFont;
+import deminer_graphic.DLabel;
 import java.awt.BorderLayout;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -20,7 +20,7 @@ import javax.swing.border.EmptyBorder;
  * @author  AdrienG
  * @version 0.0
  */
-public class DeminerDialogBinary extends JDialog {
+public class DDialogBinary extends JDialog {
 
     /**
      * Attributes
@@ -36,7 +36,7 @@ public class DeminerDialogBinary extends JDialog {
      * @param parent            JFrame that own the dialog
      * @param message           Dialog message
      */
-    public DeminerDialogBinary(JFrame parent, String message) {
+    public DDialogBinary(JFrame parent, String message) {
 
         // Herited constructor
         super(parent, "", true);
@@ -51,7 +51,7 @@ public class DeminerDialogBinary extends JDialog {
 
 
         // Creating the label for the message
-        DeminerLabel messageLabel = new DeminerLabel(message, DeminerFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_D);
+        DLabel messageLabel = new DLabel(message, DFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_D);
         messageLabel.setHorizontalAlignment (SwingConstants.CENTER);
         panel       .add                    (messageLabel, BorderLayout.NORTH);
 
@@ -63,8 +63,8 @@ public class DeminerDialogBinary extends JDialog {
 
 
         // Creating the yes and no buttons
-        DeminerButton noButton  = new DeminerButton("No",   DeminerFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_D, DTheme.BTN_RED_D, DTheme.BTN_RED_N, DTheme.BTN_RED_L);
-        DeminerButton yesButton = new DeminerButton("Yes",  DeminerFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_D, DTheme.BTN_GRN_D, DTheme.BTN_GRN_N, DTheme.BTN_GRN_L);
+        DButton noButton  = new DButton("No",   DFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_D, DTheme.BTN_RED_D, DTheme.BTN_RED_N, DTheme.BTN_RED_L);
+        DButton yesButton = new DButton("Yes",  DFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_D, DTheme.BTN_GRN_D, DTheme.BTN_GRN_N, DTheme.BTN_GRN_L);
         
         
         // No button action

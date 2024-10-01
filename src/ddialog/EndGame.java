@@ -1,6 +1,7 @@
 // Package declaration
 package deminer_dialog;
 
+
 /**
  * Enum that specify the type of an end of a game
  * 
