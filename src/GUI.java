@@ -8,7 +8,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
-import java.awt.event.KeyEvent;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -128,9 +127,104 @@ public class GUI extends JPanel implements ActionListener{
      */
     private void menuSetup() {
         
-        // Adding item to the menuGame
-        JMenuItem mQuitter  = new JMenuItem("Quitter", KeyEvent.VK_Q); 
-        menuGame            .add(mQuitter);
+        // Creating item for the menuGame
+        JMenu       mNewGame            = new JMenu("New Game");
+        JMenu       mNewClassicGame     = new JMenu("Classic Game");
+        JMenuItem   mNewEasyGame        = new JMenuItem("Easy");
+        JMenuItem   mNewMediumGame      = new JMenuItem("Medium");
+        JMenuItem   mNewHardGame        = new JMenuItem("Hard");
+        JMenuItem   mNewCustomGame      = new JMenuItem("Custom Game");
+        JMenuItem   mLevelChange        = new JMenuItem("Change difficulty");
+        JMenuItem   mOption             = new JMenuItem("Options");
+        JMenuItem   mQuit               = new JMenuItem("Quit");
+
+
+        // mNewEasyGame action
+        mNewEasyGame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                app.setLevel    (Level.EASY);
+                newClassicGame  (false);
+                updateLevel     ();
+            }
+        });
+
+
+        // mNewMediumGame action
+        mNewMediumGame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                app.setLevel    (Level.MEDIUM);
+                newClassicGame  (false);
+                updateLevel     ();
+            }
+        });
+
+
+        // mNewHardGame action
+        mNewHardGame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                app.setLevel    (Level.HARD);
+                newClassicGame  (false);
+                updateLevel     ();
+            }
+        });
+
+
+        // mNewHardGame action
+        mNewCustomGame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                app.setLevel    (Level.CUSTOM);
+                newCustomGame   (true);
+                updateLevel     ();
+            }
+        });
+
+
+        // mLevelChange action
+        mLevelChange.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO : display level change dialog
+            }
+        });
+
+
+        // mOption action
+        mOption.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO : display the option screen
+            }
+        });
+
+
+        // mQuit action
+        mQuit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                quitConfirm(false);
+            }
+        });
+
+
+        // Adding sub menu
+        mNewClassicGame     .add(mNewEasyGame);
+        mNewClassicGame     .add(mNewMediumGame);
+        mNewClassicGame     .add(mNewHardGame);
+        mNewGame            .add(mNewClassicGame);
+        mNewGame            .add(mNewCustomGame);
+
+
+        // Adding items to the menu
+        menuGame            .add(mNewGame);
+        menuGame            .add(mLevelChange);
+        menuGame            .addSeparator();
+        menuGame            .add(mOption);
+        menuGame            .addSeparator();
+        menuGame            .add(mQuit);
 
 
         // Adding menu to the menu bar
@@ -138,7 +232,7 @@ public class GUI extends JPanel implements ActionListener{
 
 
         // Plotting the menu bar
-        app.add(menuBar);
+        app.setJMenuBar(menuBar);
 
     }
     
@@ -153,7 +247,7 @@ public class GUI extends JPanel implements ActionListener{
         // Plotting panel and set VFX
         this.add(northPanel,BorderLayout.NORTH);
         northPanel          .setBackground  (DTheme.GUI_VAR_N);
-        northPanel          .setBorder      (new EmptyBorder(10, 0, 10, 0));
+        northPanel          .setBorder      (new EmptyBorder(0, 0, 0, 0));
 
 
         // Score panel
@@ -418,8 +512,10 @@ public class GUI extends JPanel implements ActionListener{
 
     /**
      * Action performed on level change
+     * 
+     * @param lightInteraction specify the type interaction with the user
      */
-    private void levelChange(boolean lightDisplay) {
+    private void levelChange(boolean lightInteraction) {
 
         // Changing game level
         previousLevelIndex = valLevel.getSelectedIndex();
@@ -432,8 +528,8 @@ public class GUI extends JPanel implements ActionListener{
         }
 
 
-        // If light display off
-        if (!lightDisplay) {
+        // If light interaction off
+        if (!lightInteraction) {
 
             // Closing the popup
             valLevel.setPopupVisible(false);
@@ -468,11 +564,13 @@ public class GUI extends JPanel implements ActionListener{
 
     /**
      * Action performed when the user want a new classic game
+     * 
+     * @param lightInteraction specify the type interaction with the user
      */
-    private void newClassicGame(boolean lightDisplay) {
+    private void newClassicGame(boolean lightInteraction) {
 
-        // If light display on
-        if (lightDisplay) {
+        // If light interaction on
+        if (lightInteraction) {
 
             // New classic game
             app.newClassicGame();
@@ -480,7 +578,7 @@ public class GUI extends JPanel implements ActionListener{
 
         } else {
 
-            // Dialog to endGame
+            // Dialog to confirm
             DDialogBinary confirm = new DDialogBinary(app, "Confirm ?");
             confirm.setVisible(true);
 
@@ -500,8 +598,10 @@ public class GUI extends JPanel implements ActionListener{
 
     /**
      * Action performed when the user want a new custom game
+     * 
+     * @param lightInteraction specify the type interaction with the user
      */
-    private void newCustomGame(boolean lightDisplay) {
+    private void newCustomGame(boolean lightInteraction) {
 
         // Dialog to get custom parameters
         DDialogCustomNewGame param = new DDialogCustomNewGame(app);
@@ -529,8 +629,8 @@ public class GUI extends JPanel implements ActionListener{
         // Confirm
         if (param.getUserConfirm()) {
             
-            // If light display on
-            if (lightDisplay) {
+            // If light interaction on
+            if (lightInteraction) {
 
                 // New custom game
                 app.newCustomGame(param.getCustomHeight(), param.getCustomWidth(), param.getCustomNbMines());
@@ -538,7 +638,7 @@ public class GUI extends JPanel implements ActionListener{
 
             } else {
 
-                // Dialog to endGame
+                // Dialog to confirm
                 DDialogBinary confirm = new DDialogBinary(app, "Confirm ?");
                 confirm.setVisible(true);
 
@@ -592,15 +692,49 @@ public class GUI extends JPanel implements ActionListener{
 
         } else {
 
-            // Quit app
-            app.quit();
+            // Quitting app
+            this.quitConfirm(false);
 
         }
 
     }
 
 
+
+
+    /**
+     * Start a new dialog phase to confirm app leaving
+     * 
+     * @param lightInteraction specify the type interaction with the user
+     */
+    private void quitConfirm(boolean lightInteraction) {
+
+        // If light interaction on
+        if (lightInteraction) {
+
+            // Quit app
+            app.quit();
+
+
+        } else {
+
+            // Dialog to confirm
+            DDialogBinary confirm = new DDialogBinary(app, "Confirm ?");
+            confirm.setVisible(true);
+
+
+            // Getting the answer
+            boolean userChoice = confirm.getUserChoice();
+            if (userChoice) {
+                app.quit();
+            }
+
+        }
+
+    }
     
+
+
 
     /**
      * Setter : to get from the app the square mesh
@@ -723,7 +857,7 @@ public class GUI extends JPanel implements ActionListener{
         if (e.getSource() == quitButton) {
 
             // Quitting the application
-            app.quit();
+            this.quitConfirm(false);
             return;
 
 

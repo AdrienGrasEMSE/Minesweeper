@@ -71,9 +71,9 @@ public class App extends JFrame {
 
 
         // Calculing size after its content and setting window visible
-        this.setSize            (new Dimension(SCREENWIDTH / 3, SCREENHEIGHT / 2));
-        this.setPreferredSize   (new Dimension(SCREENWIDTH / 3, SCREENHEIGHT / 2));
-        this.setMinimumSize     (new Dimension(SCREENWIDTH / 3, SCREENHEIGHT / 2));
+        this.setSize            (new Dimension(SCREENWIDTH / 2, 2 * SCREENHEIGHT / 3));
+        this.setPreferredSize   (new Dimension(SCREENWIDTH / 2, 2 * SCREENHEIGHT / 3));
+        this.setMinimumSize     (new Dimension(SCREENWIDTH / 2, 2 * SCREENHEIGHT / 3));
         this.setVisible         (true);
 
 
