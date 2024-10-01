@@ -59,11 +59,11 @@ public class GUI extends JPanel implements ActionListener{
     /**
      * North panels elements
      */
-    private final DeminerLabel labScore         = new DeminerLabel("Score", DeminerFont.JOST_LIGHT,     24, DTheme.FNT_NTL_D);
-    private final DeminerLabel labLevel         = new DeminerLabel("Level", DeminerFont.JOST_REGULAR,   24, DTheme.FNT_NTL_N);
-    private final DeminerLabel valScore         = new DeminerLabel("",      DeminerFont.JOST_REGULAR,   24, DTheme.FNT_NTL_N);
+    private final DeminerLabel labScore         = new DeminerLabel("Score", DeminerFont.JOST_LIGHT,     18, DTheme.FNT_NTL_D);
+    private final DeminerLabel labLevel         = new DeminerLabel("Level", DeminerFont.JOST_REGULAR,   18, DTheme.FNT_NTL_N);
+    private final DeminerLabel valScore         = new DeminerLabel("",      DeminerFont.JOST_REGULAR,   18, DTheme.FNT_NTL_N);
     private final DeminerComboBox<Level> valLevel     = new DeminerComboBox<>(  Level.values(),
-                                                                                24,
+                                                                                18,
                                                                                 DTheme.FNT_NTL_D,
                                                                                 DTheme.FNT_NTL_N,
                                                                                 DTheme.BTN_VAR_D,

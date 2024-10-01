@@ -136,7 +136,7 @@ public class Minefield {
      * @param startX
      * @param startY
      */
-    public void initField(int startX, int startY) {
+    public void fillField(int startX, int startY) {
 
         // Looping until there is no mines left
         int minesLeft = numberOfMine;
@@ -145,7 +145,7 @@ public class Minefield {
             // Filling the field
             int x = random.nextInt(field.length);
             int y = random.nextInt(field[0].length);
-            if (!field[x][y] && (x != startX && y != startY)) {
+            if (!field[x][y] && (x != startX || y != startY)) {
 
                 // Plotting the mine
                 field[x][y] = true;

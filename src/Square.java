@@ -177,6 +177,23 @@ public class Square extends JPanel implements MouseListener{
                             (getWidth()     - metrics.stringWidth("¤")) / 2,
                             (getHeight()    - metrics.getHeight())          / 2 + metrics.getAscent()
                     );
+
+                    // TODO : make it working with image
+
+                    // // Fetching image
+                    // ImageIcon   img = new ImageIcon(getClass().getResource("./img/mine_not_found.png"));
+                    // JLabel      msg = new JLabel(img);
+                    // this        .add(msg);
+
+                    // // JLabel img = new JLabel(new ImageIcon("./img/mine_not_found.png"));
+                    // // JLabel img = new JLabel(new ImageIcon(getClass().getResource("./img/mine_not_found.png")));
+                    // // this.add(img);
+
+                    // // try {
+                        
+                    // // } catch (Exception e) {
+                    // // }
+
                 }
 
                 case 1 -> {
@@ -251,16 +268,6 @@ public class Square extends JPanel implements MouseListener{
                     );
                 }
 
-                case 9 -> {
-                    g.setColor(DTheme.FNT_COF_9);
-                    g.drawString(
-                            String.valueOf(coefficient),
-                            (getWidth()     - metrics.stringWidth(String.valueOf(coefficient))) / 2,
-                            (getHeight()    - metrics.getHeight())                              / 2 + metrics.getAscent()
-                    );
-                }
-
-
             }
 
             
@@ -269,10 +276,10 @@ public class Square extends JPanel implements MouseListener{
             // Setting the string and the color for the display
             g.setFont(font);
             FontMetrics metrics = g.getFontMetrics(font);
-            g.setColor(DTheme.FNT_COF_8);
+            g.setColor(DTheme.FNT_NTL_L);
             g.drawString(
-                    "#",
-                    (getWidth()     - metrics.stringWidth("#")) / 2,
+                    "!",
+                    (getWidth()     - metrics.stringWidth("!")) / 2,
                     (getHeight()    - metrics.getHeight())                              / 2 + metrics.getAscent()
             );
 

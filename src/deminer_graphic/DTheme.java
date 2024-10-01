@@ -160,7 +160,6 @@ public class DTheme {
     public static Color FNT_COF_6 = new Color(0xf39c12);
     public static Color FNT_COF_7 = new Color(0xe67e22);
     public static Color FNT_COF_8 = new Color(0xd35400);
-    public static Color FNT_COF_9 = new Color(0xe74c3c);
     public static Color FNT_COF_M = new Color(0xF9EBEA);
 
 
@@ -273,7 +272,6 @@ public class DTheme {
         FNT_COF_6 = new Color(0xf39c12);
         FNT_COF_7 = new Color(0xe67e22);
         FNT_COF_8 = new Color(0xd35400);
-        FNT_COF_9 = new Color(0xe74c3c);
         FNT_COF_M = new Color(0xF9EBEA);
 
     }
@@ -301,7 +299,6 @@ public class DTheme {
         FNT_COF_6 = new Color(0xFFFFFF);
         FNT_COF_7 = new Color(0xFFFFFF);
         FNT_COF_8 = new Color(0xFFFFFF);
-        FNT_COF_9 = new Color(0xFFFFFF);
         FNT_COF_M = new Color(0xFFFFFF);
 
     }

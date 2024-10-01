@@ -80,7 +80,7 @@ public class DeminerDialogEndGame extends JDialog {
 
         // Creating the panel for the yes and no buttons
         JPanel buttonPanel          = new JPanel();
-        buttonPanel.setBorder       (new EmptyBorder(15, 0, 0, 0));
+        buttonPanel.setBorder       (new EmptyBorder(0, 0, 0, 0));
         buttonPanel.setBackground   (DTheme.GUI_DRK_L);
 
 

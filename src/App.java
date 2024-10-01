@@ -1,4 +1,5 @@
 // Import
+// import deminer_graphic.DTheme;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -7,7 +8,6 @@ import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.Timer;
-
 
 
 /**
@@ -26,6 +26,7 @@ public class App extends JFrame {
     private final   Minefield   field       = new Minefield();
     private         Square[][]  squareMesh ;
     private final   GUI         gui;
+    private final   DCounter    counter;
 
 
     /**
@@ -33,6 +34,7 @@ public class App extends JFrame {
      */
     private int     sqRevealed  = 0;
     private int     winScore    = 0;
+    private int     timeSpent   = 0;
 
 
 
@@ -74,6 +76,10 @@ public class App extends JFrame {
         // Setting up action on click on the close button
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
+
+        // Setting up counter
+        this.counter = new DCounter(this);
+
     }
 
 
@@ -97,6 +103,10 @@ public class App extends JFrame {
         gui.updateLevel();
         newClassicGame();
         gui.setSizeAdaptation(true);
+
+
+        // Start counter
+        counter.start();
 
     }
 
@@ -219,7 +229,7 @@ public class App extends JFrame {
         if (sqRevealed == 0) {
 
             // Setting up field
-            field.initField(posX, posY);
+            field.fillField(posX, posY);
 
 
             // Modifying square
@@ -355,6 +365,17 @@ public class App extends JFrame {
 
     }
 
+
+
+
+    /**
+     * Increment the time spent in a game
+     */
+    public void incrTimeSpent() {
+        this.timeSpent ++;
+        System.out.println(timeSpent);
+    }
+    
 
 
 
