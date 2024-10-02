@@ -37,6 +37,7 @@ public class GUI extends JPanel implements ActionListener{
      * GUI main objects
      */ 
     private final   App         app;
+    private         GUIType     guiType = GUIType.GUI_SOLO;
     private         Square[][]  squareMesh;
     private         int         previousLevelIndex;
 
@@ -54,6 +55,7 @@ public class GUI extends JPanel implements ActionListener{
      */
     private final JMenuBar  menuBar         = new JMenuBar();
     private final JMenu     menuGame        = new JMenu("Game");
+    private final JMenu     menuMod         = new JMenu("Game mod");
 
 
     /**
@@ -108,14 +110,17 @@ public class GUI extends JPanel implements ActionListener{
         this.setLayout(new BorderLayout());
 
 
-        // Setting up Menu
-        this.menuSetup();
+        // Setting up menus
+        this.menuGameSetup();
+        this.menuModSetup();
+
+
+        // Plotting the menu bar
+        app.setJMenuBar(menuBar);
 
 
         // Setting up panels
-        this.northPanelSetup();
-        this.southPanelSetup();
-        this.centerPanelSetup();
+        this.panelSetup(guiType);
 
     }
 
@@ -123,9 +128,9 @@ public class GUI extends JPanel implements ActionListener{
 
 
     /**
-     * Menu setup
+     * Menu game setup
      */
-    private void menuSetup() {
+    private void menuGameSetup() {
         
         // Creating item for the menuGame
         JMenu       mNewGame            = new JMenu("New Game");
@@ -146,7 +151,9 @@ public class GUI extends JPanel implements ActionListener{
                 app.setLevel    (Level.EASY);
                 newClassicGame  (false);
                 updateLevel     ();
+
             }
+
         });
 
 
@@ -157,7 +164,9 @@ public class GUI extends JPanel implements ActionListener{
                 app.setLevel    (Level.MEDIUM);
                 newClassicGame  (false);
                 updateLevel     ();
+
             }
+
         });
 
 
@@ -168,7 +177,9 @@ public class GUI extends JPanel implements ActionListener{
                 app.setLevel    (Level.HARD);
                 newClassicGame  (false);
                 updateLevel     ();
+
             }
+
         });
 
 
@@ -179,7 +190,9 @@ public class GUI extends JPanel implements ActionListener{
                 app.setLevel    (Level.CUSTOM);
                 newCustomGame   (true);
                 updateLevel     ();
+
             }
+
         });
 
 
@@ -188,7 +201,9 @@ public class GUI extends JPanel implements ActionListener{
             @Override
             public void actionPerformed(ActionEvent e) {
                 // TODO : display level change dialog
+
             }
+
         });
 
 
@@ -197,7 +212,9 @@ public class GUI extends JPanel implements ActionListener{
             @Override
             public void actionPerformed(ActionEvent e) {
                 // TODO : display the option screen
+
             }
+
         });
 
 
@@ -206,7 +223,9 @@ public class GUI extends JPanel implements ActionListener{
             @Override
             public void actionPerformed(ActionEvent e) {
                 quitConfirm(false);
+
             }
+            
         });
 
 
@@ -230,9 +249,76 @@ public class GUI extends JPanel implements ActionListener{
         // Adding menu to the menu bar
         menuBar.add(menuGame);
 
+    }
 
-        // Plotting the menu bar
-        app.setJMenuBar(menuBar);
+
+
+
+    /**
+     * Menu game setup
+     */
+    private void menuModSetup() {
+        
+        // Creating item for the menuMod
+        JMenuItem   mSolo               = new JMenuItem("Solo game");
+        JMenuItem   mMultiPlayer        = new JMenuItem("Multiplayer");
+
+
+        // mSolo action
+        mSolo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                // Switching UI if needed
+                if (guiType != GUIType.GUI_SOLO) {
+
+                    // Swicthing UI
+                    guiType     = GUIType.GUI_SOLO;
+                    panelSetup  (guiType);
+
+
+                    // Lauching a new easy game
+                    app.setLevel    (Level.EASY);
+                    newClassicGame  (false);
+                    updateLevel     ();
+
+                }
+
+            }
+
+        });
+
+
+        // mMultiPlayer action
+        mMultiPlayer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+                // Switching UI if needed
+                if (guiType != GUIType.GUI_ONLINE) {
+
+                    // Swicthing UI
+                    guiType     = GUIType.GUI_ONLINE;
+                    panelSetup  (guiType);
+
+
+                    // TODO : Implémenting server actions
+
+                }
+
+            }
+
+        });
+
+
+        // Adding items to the menu
+        menuMod.add(mSolo);
+        menuMod.addSeparator();
+        menuMod.add(mMultiPlayer);
+
+
+        // Adding menu to the menu bar
+        menuBar.add(menuMod);
 
     }
     
@@ -240,86 +326,134 @@ public class GUI extends JPanel implements ActionListener{
 
 
     /**
-     * Setting up north panel
-    */
-    private void northPanelSetup() {
+     * Setting up panel
+     * 
+     * @param guiType type of GUI wanted
+     */
+    private void panelSetup(GUIType guiType) {
 
-        // Plotting panel and set VFX
-        this.add(northPanel,BorderLayout.NORTH);
-        northPanel          .setBackground  (DTheme.GUI_VAR_N);
-        northPanel          .setBorder      (new EmptyBorder(0, 0, 0, 0));
-
-
-        // Score panel
-        JPanel scorePanel   = new JPanel    (new GridLayout(2, 2, 0, 5));
-        scorePanel          .setBorder      (new EmptyBorder(10, 10, 10, 10));
-        scorePanel          .setBackground(DTheme.GUI_VAR_N);
-        scorePanel          .add(labLevel);
-        scorePanel          .add(valLevel);
-        scorePanel          .add(labScore);
-        scorePanel          .add(valScore);
+        // Clearing the GUI
+        this.removeAll();
 
 
-        // Time panel
-        JPanel timelPanel   = new JPanel    (new GridLayout(2, 2, 0, 5));
-        timelPanel          .setBorder      (new EmptyBorder(10, 10, 10, 10));
-        timelPanel          .setBackground  (DTheme.GUI_VAR_N);
-        timelPanel          .add(labTime);
-        timelPanel          .add(valTime);
-        timelPanel          .add(labTimeMax);
-        timelPanel          .add(valTimeMax);
-
-
-        // Plotting
-        northPanel          .add(timelPanel);
-        northPanel          .add(scorePanel);
-
-
-        // Setting up combo box
-        valLevel            .setSelectedItem(app.getLevel());
-        valLevel            .addItemListener((ItemEvent e) -> {
-
-            // Making an action only on item selection
-            if (e.getStateChange()          == ItemEvent.SELECTED   &&
-                valLevel.getSelectedIndex() != -1                   &&
-                valLevel.getSelectedIndex() != previousLevelIndex   &&
-                !manualLevelChange) {
-
-                // Changing game level
-                levelChange(false);
-
-            }
-        });
-
-
-        // Adding the listener to check size changement
-        northPanel.addComponentListener(new ComponentAdapter() {
-            
-            // On size change
-            @Override
-            public void componentResized(ComponentEvent e) {
-
-                /**
-                 * Border size change : what's the matter ?
-                 * 
-                 * By changing the border size, we can keep a fixed size for each side
-                 * of the north panel (time side and level/score side). Each side will
-                 * be separated by a fix lenght that does not depend on the frame size.
-                 * 
-                 * Calcul is :
-                 * 
-                 * ((panelWidth - 2 * side_size) - sides_spacing) / 2 = left_and_right_border_thickeness
-                 */
-                int         newHGap = ((northPanel.getWidth() - 550) - 100) / 2;
-
-
-                // Applying the new border
-                northPanel          .setBorder(new EmptyBorder(10, newHGap, 10, newHGap));
-                northPanel          .revalidate();
+        // Pannel setup according to the type of GUI wanted
+        switch (guiType) {
+            case GUIType.GUI_SOLO:
+                this.northPanelSetup    (GUIType.GUI_SOLO);
+                this.southPanelSetup    (GUIType.GUI_SOLO);
+                this.centerPanelSetup   (GUIType.GUI_SOLO);
+                break;
+        
+            case GUIType.GUI_OPTION:
                 
-            }
-            
-        });
+                break;
+
+            case GUIType.GUI_ONLINE:
+                
+                break;
+        }
+
+    }
+
+
+
+
+    /**
+     * Setting up north panel
+     * 
+     * @param guiType type of GUI wanted
+    */
+    private void northPanelSetup(GUIType guiType) {
+
+        // Clearing the northpanel
+        northPanel.removeAll();
+
+
+        // Setting up northpanel according to the GUI Type
+        switch (guiType) {
+            case GUIType.GUI_SOLO:
+
+                // Plotting panel and set VFX
+                this.add(northPanel,BorderLayout.NORTH);
+                northPanel          .setBackground  (DTheme.GUI_VAR_N);
+                northPanel          .setBorder      (new EmptyBorder(0, 0, 0, 0));
+
+
+                // Score panel
+                JPanel scorePanel   = new JPanel    (new GridLayout(2, 2, 0, 5));
+                scorePanel          .setBorder      (new EmptyBorder(10, 10, 10, 10));
+                scorePanel          .setBackground(DTheme.GUI_VAR_N);
+                scorePanel          .add(labLevel);
+                scorePanel          .add(valLevel);
+                scorePanel          .add(labScore);
+                scorePanel          .add(valScore);
+
+
+                // Time panel
+                JPanel timelPanel   = new JPanel    (new GridLayout(2, 2, 0, 5));
+                timelPanel          .setBorder      (new EmptyBorder(10, 10, 10, 10));
+                timelPanel          .setBackground  (DTheme.GUI_VAR_N);
+                timelPanel          .add(labTime);
+                timelPanel          .add(valTime);
+                timelPanel          .add(labTimeMax);
+                timelPanel          .add(valTimeMax);
+
+
+                // Plotting
+                northPanel          .add(timelPanel);
+                northPanel          .add(scorePanel);
+
+
+                // Setting up combo box
+                valLevel            .setSelectedItem(app.getLevel());
+                valLevel            .addItemListener((ItemEvent e) -> {
+
+                    // Making an action only on item selection
+                    if (e.getStateChange()          == ItemEvent.SELECTED   &&
+                        valLevel.getSelectedIndex() != -1                   &&
+                        valLevel.getSelectedIndex() != previousLevelIndex   &&
+                        !manualLevelChange) {
+
+                        // Changing game level
+                        levelChange(false);
+
+                    }
+                });
+
+
+                // Adding the listener to check size changement
+                northPanel.addComponentListener(new ComponentAdapter() {
+                    
+                    // On size change
+                    @Override
+                    public void componentResized(ComponentEvent e) {
+
+                        /**
+                         * Border size change : what's the matter ?
+                         * 
+                         * By changing the border size, we can keep a fixed size for each side
+                         * of the north panel (time side and level/score side). Each side will
+                         * be separated by a fix lenght that does not depend on the frame size.
+                         * 
+                         * Calcul is :
+                         * 
+                         * ((panelWidth - 2 * side_size) - sides_spacing) / 2 = left_and_right_border_thickeness
+                         */
+                        int         newHGap = ((northPanel.getWidth() - 550) - 100) / 2;
+
+
+                        // Applying the new border
+                        northPanel          .setBorder(new EmptyBorder(10, newHGap, 10, newHGap));
+                        northPanel          .revalidate();
+                        
+                    }
+                    
+                });
+                break;
+        
+            default:
+                break;
+        }
 
     }
 
@@ -328,22 +462,37 @@ public class GUI extends JPanel implements ActionListener{
 
     /**
      * Setting up south panel
+     * 
+     * @param guiType type of GUI wanted
     */
-    private void southPanelSetup() {
+    private void southPanelSetup(GUIType guiType) {
 
-        // Plotting panel and set VFX
-        add(southPanel,     BorderLayout.SOUTH);
-        southPanel          .setBackground  (DTheme.GUI_DRK_N);
-
-
-        // Plotting elements inside
-        southPanel          .add(quitButton);
-        southPanel          .add(newGameButton);
+        // Clearing the southpanel
+        southPanel.removeAll();
 
 
-        // Setting up listeners
-        quitButton          .addActionListener(this);
-        newGameButton       .addActionListener(this);
+        // Setting up southpanel according to the GUI Type
+        switch (guiType) {
+            case GUIType.GUI_SOLO:
+
+                // Plotting panel and set VFX
+                this.add(southPanel,BorderLayout.SOUTH);
+                southPanel          .setBackground  (DTheme.GUI_DRK_N);
+
+
+                // Plotting elements inside
+                southPanel          .add(quitButton);
+                southPanel          .add(newGameButton);
+
+
+                // Setting up listeners
+                quitButton          .addActionListener(this);
+                newGameButton       .addActionListener(this);
+                break;
+        
+            default:
+                break;
+        }
 
     }
 
@@ -352,29 +501,44 @@ public class GUI extends JPanel implements ActionListener{
 
     /**
      * Setting up center panel
+     * 
+     * @param guiType type of GUI wanted
      */
-    private void centerPanelSetup() {
+    private void centerPanelSetup(GUIType guiType) {
 
-        // Plotting panel and set VFX
-        this.add(centerPanel,   BorderLayout.CENTER);
-        centerPanel             .setBackground(DTheme.GUI_NTL_N);
+        // Clearing the centerpanel
+        centerPanel.removeAll();
 
 
-        // Adding the listener to check size changement
-        centerPanel.addComponentListener(new ComponentAdapter() {
-            
-            // On size change
-            @Override
-            public void componentResized(ComponentEvent e) {
+        // Setting up centerpanel according to the GUI Type
+        switch (guiType) {
+            case GUIType.GUI_SOLO:
 
-                // If size adaptating is enable
-                if (sizeAdaptation) {
-                    displayMesh();
-                }
-                
-            }
-            
-        });
+                // Plotting panel and set VFX
+                this.add(centerPanel,   BorderLayout.CENTER);
+                centerPanel             .setBackground(DTheme.GUI_NTL_N);
+
+
+                // Adding the listener to check size changement
+                centerPanel.addComponentListener(new ComponentAdapter() {
+                    
+                    // On size change
+                    @Override
+                    public void componentResized(ComponentEvent e) {
+
+                        // If size adaptating is enable
+                        if (sizeAdaptation) {
+                            displayMesh();
+                        }
+                        
+                    }
+                    
+                });
+                break;
+        
+            default:
+                break;
+        }
 
     }
 
