@@ -68,7 +68,6 @@ public class DStringField extends JTextField implements MouseListener {
         } catch (FontFormatException | IOException | NullPointerException  e) {
             
             // Default font
-            System.out.println(e);
             this.setFont(new Font("Serif", Font.PLAIN, fontSize));
 
         }

@@ -97,7 +97,6 @@ public class DComboBoxRenderer extends DefaultListCellRenderer {
             } catch (FontFormatException | IOException | NullPointerException e) {
                 
                 // Default font
-                System.out.println(e);
                 this.setFont(new Font("Serif", Font.PLAIN, fontSize));
 
             }
@@ -122,10 +121,10 @@ public class DComboBoxRenderer extends DefaultListCellRenderer {
             } catch (FontFormatException | IOException | NullPointerException e) {
                 
                 // Default font
-                System.out.println(e);
                 this.setFont(new Font("Serif", Font.PLAIN, fontSize));
 
             }
+            
         }
 
 
