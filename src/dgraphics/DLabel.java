@@ -65,7 +65,7 @@ public class DLabel extends JLabel{
             
             // Default font
             System.out.println(e);
-            this.setFont(new Font("Arial", Font.BOLD, fontSize));
+            this.setFont(new Font("Serif", Font.PLAIN, fontSize));
         }
 
 

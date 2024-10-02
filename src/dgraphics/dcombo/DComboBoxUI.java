@@ -133,7 +133,7 @@ public class DComboBoxUI extends BasicComboBoxUI{
 
         // Set button properties
         button.setText              ("▼");
-        button.setFont              (new Font("Arial", Font.BOLD, fontSize));
+        button.setFont              (new Font("Serif", Font.PLAIN, fontSize));
         button.setBorder            (BorderFactory.createEmptyBorder());
         button.setContentAreaFilled (false);
         button.setFocusable         (false);

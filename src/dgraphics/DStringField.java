@@ -69,7 +69,7 @@ public class DStringField extends JTextField implements MouseListener {
             
             // Default font
             System.out.println(e);
-            this.setFont(new Font("Arial", Font.BOLD, fontSize));
+            this.setFont(new Font("Serif", Font.PLAIN, fontSize));
 
         }
 

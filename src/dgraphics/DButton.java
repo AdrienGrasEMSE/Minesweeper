@@ -77,7 +77,7 @@ public class DButton extends JButton implements MouseListener{
             
             // Default font
             System.out.println(e);
-            this.setFont(new Font("Arial", Font.BOLD, fontSize));
+            this.setFont(new Font("Serif", Font.PLAIN, fontSize));
 
         }
 

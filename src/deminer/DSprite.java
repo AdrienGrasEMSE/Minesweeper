@@ -113,7 +113,7 @@ public class DSprite extends JPanel implements MouseListener{
             
             // Default font
             System.out.println(e);
-            font_   = new Font("Arial", Font.BOLD, fontSize);
+            font_   = new Font("Serif", Font.PLAIN, fontSize);
 
         }
         this.font = font_;

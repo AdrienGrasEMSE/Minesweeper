@@ -15,7 +15,8 @@ public enum DFont {
      */
     JOST_LIGHT      ("./font/Jost-Light.ttf"),
     JOST_REGULAR    ("./font/Jost-Regular.ttf"),
-    JOST_SEMIBOLD   ("./font/Jost-SemiBold.ttf");
+    JOST_SEMIBOLD   ("./font/Jost-SemiBold.ttf"),
+    NONE            ("");
     
 
     /**
