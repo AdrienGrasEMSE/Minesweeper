@@ -29,6 +29,7 @@ public class DColors_SQR {
      *  - N for neutral
      *  - L for light
      *  - M for mined square
+     *  - P for pinned square
      *  - x = 1 to 9 for the number of mines around
      */
 
@@ -55,6 +56,7 @@ public class DColors_SQR {
     public final Color FNT_7;
     public final Color FNT_8;
     public final Color FNT_M;
+    public final Color FNT_P;
 
 
 
@@ -80,7 +82,8 @@ public class DColors_SQR {
                         int FNT_6,
                         int FNT_7,
                         int FNT_8,
-                        int FNT_M
+                        int FNT_M,
+                        int FNT_P
                     ) {
 
         // Data attribution
@@ -97,6 +100,7 @@ public class DColors_SQR {
         this.FNT_7 = new Color(FNT_7);
         this.FNT_8 = new Color(FNT_8);
         this.FNT_M = new Color(FNT_M);
+        this.FNT_P = new Color(FNT_P);
 
     }
 

@@ -118,7 +118,8 @@ public class DTheme {
                                                             0xf39c12,
                                                             0xe67e22,
                                                             0xd35400,
-                                                            0xF9EBEA);
+                                                            0xF9EBEA,
+                                                            0xFFFFFF);
 
 
 
@@ -200,7 +201,8 @@ public class DTheme {
                                     0xf39c12,
                                     0xe67e22,
                                     0xd35400,
-                                    0xF9EBEA);
+                                    0xF9EBEA,
+                                    0xFFFFFF);
 
     }
 
@@ -221,6 +223,7 @@ public class DTheme {
                                     0x697082,
                                     0x828897,
                                     0xCB4335,
+                                    0xFFFFFF,
                                     0xFFFFFF,
                                     0xFFFFFF,
                                     0xFFFFFF,

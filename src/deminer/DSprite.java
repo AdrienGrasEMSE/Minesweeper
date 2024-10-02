@@ -270,10 +270,9 @@ public class DSprite extends JPanel implements MouseListener{
         } else if (isLocked) {
 
             // Setting the string and the color for the display
-            g2d.setFont(font);
             FontMetrics metrics = g2d.getFontMetrics(font);
             g2d.setFont(new Font("Serif", Font.PLAIN, fontSize));
-            g2d.setColor(DTheme.SQR_NTL.BCK_L);
+            g2d.setColor(DTheme.SQR_NTL.FNT_P);
             g2d.drawString(
                     "⚑",
                     (getWidth()     - metrics.stringWidth("⚑")) / 2,
