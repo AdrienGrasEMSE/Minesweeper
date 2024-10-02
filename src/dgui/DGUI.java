@@ -39,9 +39,9 @@ public class DGUI extends JFrame {
     private final   DController controller;
     private final   JPanel      mainPanel           = new JPanel();
     private final   CardLayout  mainLayout          = new CardLayout();
-    private final   DUI_Local   uiLocal;
-    private final   DUI_Option  uiOption;
-    private final   DUI_Online  uiOnline;
+    private         DUI_Local   uiLocal;
+    private         DUI_Option  uiOption;
+    private         DUI_Online  uiOnline;
     private         DUI_Type    currentUI           = DUI_Type.UI_LOCAL;
     private         DUI_Type    previousUI          = DUI_Type.UI_LOCAL;
 
@@ -346,6 +346,49 @@ public class DGUI extends JFrame {
     }
 
 
+
+
+    /**
+     * Apply a theme
+     */
+    public void updateTheme() {
+
+        // Clearing the frame
+        mainPanel.remove             (uiLocal);
+        mainPanel.remove             (uiOption);
+        mainPanel.remove             (uiOnline);
+
+
+        // Setting up UIs
+        this.uiLocal            = new DUI_Local(this, this.controller);
+        this.uiOption           = new DUI_Option(this);
+        this.uiOnline           = new DUI_Online(this);
+
+
+        // Plotting UIs
+        mainPanel               .add(this.uiLocal,  "UI_LOCAL");
+        mainPanel               .add(this.uiOption, "UI_OPTION");
+        mainPanel               .add(this.uiOnline, "UI_ONLINE");
+
+
+        // Switching to the current UI
+        DUI_Type buffer_ = previousUI;
+        switch (currentUI) {
+            case DUI_Type.UI_LOCAL:
+                this.switchUILocal();
+                break;
+        
+            case DUI_Type.UI_OPTION:
+                this.switchUIOption();
+                break;
+
+            case DUI_Type.UI_ONLINE:
+                this.switchUIOnline();
+                break;
+        }
+        previousUI = buffer_;
+
+    }
 
 
     /**

@@ -677,7 +677,7 @@ public class DUI_Local extends JPanel implements ActionListener {
      * Displaying the mine field using the sprite class
      */
     public void displayMesh() {
-        
+       
         // Removing everything from the center panel and reset the score
         centerPanel.removeAll();
         valScore.setText("0");
