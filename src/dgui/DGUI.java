@@ -5,17 +5,19 @@ package dgui;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import deminer.DController;
-import deminer.DLevel;
-import deminer.DSprite;
+import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import ddialog.EndGame;
+import deminer.DController;
+import deminer.DLevel;
+import deminer.DSprite;
 
 
 /**
@@ -35,25 +37,49 @@ public class DGUI extends JFrame {
      * GUI main attributes
      */
     private final   DController controller;
-    private         DUI_Local   uiLocal;
-    private         boolean     ready           = false;
+    private final   JPanel      mainPanel           = new JPanel();
+    private final   CardLayout  mainLayout          = new CardLayout();
+    private final   DUI_Local   uiLocal;
+    private final   DUI_Option  uiOption;
+    private final   DUI_Online  uiOnline;
+    private         DUI_Type    currentUI           = DUI_Type.UI_LOCAL;
+    private         DUI_Type    previousUI          = DUI_Type.UI_LOCAL;
 
 
     /**
      * GUI menu
      */
-    private final   JMenuBar    menuBar         = new JMenuBar();
-    private final   JMenu       menuGame        = new JMenu("Game");
-    private final   JMenu       menuMod         = new JMenu("Game mod");
+    private final   JMenuBar    menuBar             = new JMenuBar();
+    private final   JMenu       menuGame            = new JMenu("Game");
+    private final   JMenu       menuMod             = new JMenu("Game mod");
+
+
+    /**
+     * Menu and submenu
+     */
+    private final   JMenu       mNewGame            = new JMenu     ("New Game");
+    private final   JMenu       mNewClassicGame     = new JMenu     ("Classic Game");
+    private final   JMenu       mLevelChange        = new JMenu     ("Change difficulty");
+    private final   JMenuItem   mNewEasyGame        = new JMenuItem ("Easy");
+    private final   JMenuItem   mNewMediumGame      = new JMenuItem ("Medium");
+    private final   JMenuItem   mNewHardGame        = new JMenuItem ("Hard");
+    private final   JMenuItem   mNewCustomGame      = new JMenuItem ("Custom Game");
+    private final   JMenuItem   mLevelEasy          = new JMenuItem ("Easy");
+    private final   JMenuItem   mLevelMedium        = new JMenuItem ("Medium");
+    private final   JMenuItem   mLevelHard          = new JMenuItem ("Hard");
+    private final   JMenuItem   mOption             = new JMenuItem ("Options");
+    private final   JMenuItem   mQuit               = new JMenuItem ("Quit");
+    private final   JMenuItem   mSolo               = new JMenuItem ("Solo game");
+    private final   JMenuItem   mMultiPlayer        = new JMenuItem ("Multiplayer");
 
 
     /**
      * Getting the screen size
      */
-    private final   Toolkit     toolkit         = Toolkit.getDefaultToolkit();
-    private final   Dimension   screenSize      = toolkit.getScreenSize();
-    private final   int         SCREENWIDTH     = screenSize.width;
-    private final   int         SCREENHEIGHT    = screenSize.height;
+    private final   Toolkit     toolkit             = Toolkit.getDefaultToolkit();
+    private final   Dimension   screenSize          = toolkit.getScreenSize();
+    private final   int         SCREENWIDTH         = screenSize.width;
+    private final   int         SCREENHEIGHT        = screenSize.height;
 
 
 
@@ -73,32 +99,42 @@ public class DGUI extends JFrame {
 
 
         // Getting the controller
-        this.controller = controller;
+        this.controller         = controller;
 
 
         // Setting up menus
-        this.menuGameSetup  ();
-        this.menuModSetup   ();
-        this.setJMenuBar    (menuBar);
+        this.menuGameSetup      ();
+        this.menuModSetup       ();
+        this.setJMenuBar        (menuBar);
 
 
         // Calculing size after its content and setting window visible
         this.setSize            (new Dimension(SCREENWIDTH / 2, 2 * SCREENHEIGHT / 3));
         this.setPreferredSize   (new Dimension(SCREENWIDTH / 2, 2 * SCREENHEIGHT / 3));
         this.setMinimumSize     (new Dimension(SCREENWIDTH / 2, 2 * SCREENHEIGHT / 3));
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setVisible         (true);
 
 
-        // Setting up action on click on the close button
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        // Setting up the main panel
+        this.mainPanel          .setLayout(mainLayout);
+        this                    .add(mainPanel);
 
 
-        // Lauching the local UI
-        this.setUILocal();
+        // Setting up UIs
+        this.uiLocal            = new DUI_Local(this, this.controller);
+        this.uiOption           = new DUI_Option(this);
+        this.uiOnline           = new DUI_Online(this);
 
 
-        // GUI ready
-        this.ready = true;
+        // Plotting UIs
+        mainPanel               .add(this.uiLocal,  "UI_LOCAL");
+        mainPanel               .add(this.uiOption, "UI_OPTION");
+        mainPanel               .add(this.uiOnline, "UI_ONLINE");
+
+
+        // Switching to the local UI
+        this                    .switchUILocal();
 
     }
 
@@ -109,29 +145,17 @@ public class DGUI extends JFrame {
      * Menu game setup
      */
     private void menuGameSetup() {
-        
-        // Creating item for the menuGame
-        JMenu       mNewGame            = new JMenu     ("New Game");
-        JMenu       mNewClassicGame     = new JMenu     ("Classic Game");
-        JMenu       mLevelChange        = new JMenu     ("Change difficulty");
-        JMenuItem   mNewEasyGame        = new JMenuItem ("Easy");
-        JMenuItem   mNewMediumGame      = new JMenuItem ("Medium");
-        JMenuItem   mNewHardGame        = new JMenuItem ("Hard");
-        JMenuItem   mNewCustomGame      = new JMenuItem ("Custom Game");
-        JMenuItem   mLevelEasy          = new JMenuItem ("Easy");
-        JMenuItem   mLevelMedium        = new JMenuItem ("Medium");
-        JMenuItem   mLevelHard          = new JMenuItem ("Hard");
-        JMenuItem   mOption             = new JMenuItem ("Options");
-        JMenuItem   mQuit               = new JMenuItem ("Quit");
-
 
         // mNewEasyGame action
         mNewEasyGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                // Lauching a new easy game
                 controller.setLevel     (DLevel.EASY);
+                uiLocal.updateLevel     (false);
                 uiLocal.newClassicGame  (false);
-                uiLocal.updateLevel     ();
+
             }
 
         });
@@ -141,9 +165,11 @@ public class DGUI extends JFrame {
         mNewMediumGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                // Lauching a new medium game
                 controller.setLevel     (DLevel.MEDIUM);
+                uiLocal.updateLevel     (false);
                 uiLocal.newClassicGame  (false);
-                uiLocal.updateLevel     ();
 
             }
 
@@ -154,9 +180,11 @@ public class DGUI extends JFrame {
         mNewHardGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                // Lauching a new hard game
                 controller.setLevel     (DLevel.HARD);
+                uiLocal.updateLevel     (false);
                 uiLocal.newClassicGame  (false);
-                uiLocal.updateLevel     ();
 
             }
 
@@ -167,9 +195,11 @@ public class DGUI extends JFrame {
         mNewCustomGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                // Lauching a new custom game
                 controller.setLevel     (DLevel.CUSTOM);
+                uiLocal.updateLevel     (false);
                 uiLocal.newCustomGame   (true);
-                uiLocal.updateLevel     ();
 
             }
 
@@ -180,7 +210,39 @@ public class DGUI extends JFrame {
         mLevelEasy.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+
+                // Change to easy difficulty
+                controller.setLevel     (DLevel.EASY);
+                uiLocal.updateLevel     (true);
+
+            }
+
+        });
+
+
+        // mLevelMedium action
+        mLevelMedium.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                // Change to medium difficulty
+                controller.setLevel     (DLevel.MEDIUM);
+                uiLocal.updateLevel     (true);
+
+            }
+
+        });
+
+
+        // mLevelHard action
+        mLevelHard.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                // Change to hard difficulty
+                controller.setLevel     (DLevel.HARD);
+                uiLocal.updateLevel     (true);
+
             }
 
         });
@@ -191,7 +253,8 @@ public class DGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 
-                // TODO : Option interface
+                // Switching to the option interface
+                switchUIOption();
 
             }
 
@@ -242,18 +305,16 @@ public class DGUI extends JFrame {
      */
     private void menuModSetup() {
         
-        // Creating item for the menuMod
-        JMenuItem   mSolo               = new JMenuItem("Solo game");
-        JMenuItem   mMultiPlayer        = new JMenuItem("Multiplayer");
-
-
         // mSolo action
         mSolo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                // Launching a local interface
-                setUILocal();
+                // Switching to the local interface
+                switchUILocal();
+                controller.setLevel(DLevel.EASY);
+                uiLocal.updateLevel(false);
+                uiLocal.newClassicGame(true);
 
             }
 
@@ -266,6 +327,7 @@ public class DGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 
                 // TODO : Multiplayer interface
+                switchUIOnline();
 
             }
 
@@ -287,29 +349,94 @@ public class DGUI extends JFrame {
 
 
     /**
-     * Getter : to check if the GUI is ready
-     * 
-     * @return ready, a flag that specify if the GUI is ready or not
+     * Switch to the local UI
      */
-    public boolean isReady() {
-        return this.ready;
+    private void switchUILocal() {
+
+        // Saving previous UI
+        previousUI  = currentUI;
+        currentUI   = DUI_Type.UI_LOCAL;
+        
+
+        // Switching
+        mainLayout  .show(mainPanel, "UI_LOCAL");
+        mSolo       .setEnabled(false);
+        mOption     .setEnabled(true);
+        mMultiPlayer.setEnabled(true);
+
     }
 
 
 
 
     /**
-     * Setting up local interface
+     * Switch to the option UI
      */
-    private void setUILocal() {
+    private void switchUIOption() {
 
-        // New local interface
-        this.uiLocal = new DUI_Local(this, this.controller);
-        this.setContentPane(uiLocal);
-        this.repaint();
+        // Saving previous UI
+        previousUI  = currentUI;
+        currentUI   = DUI_Type.UI_OPTION;
+        
+
+        // Switching
+        mainLayout  .show(mainPanel, "UI_OPTION");
+        mSolo       .setEnabled(true);
+        mOption     .setEnabled(false);
+        mMultiPlayer.setEnabled(true);
 
     }
 
+
+
+    
+    /**
+     * Switch to the online UI
+     */
+    private void switchUIOnline() {
+
+        // Saving previous UI
+        previousUI  = currentUI;
+        currentUI   = DUI_Type.UI_ONLINE;
+        
+
+        // Switching
+        mainLayout  .show(mainPanel, "UI_ONLINE");
+        mSolo       .setEnabled(true);
+        mOption     .setEnabled(true);
+        mMultiPlayer.setEnabled(false);
+
+    }
+
+
+
+
+    /**
+     * Switching back to the previous UI
+     */
+    public void switchUIPrevious() {
+
+        // Switching back to the previous UI
+        currentUI   = previousUI;
+
+        
+        // Switching
+        switch (currentUI) {
+            case DUI_Type.UI_LOCAL:
+                this.switchUILocal();
+                break;
+        
+            case DUI_Type.UI_OPTION:
+                this.switchUIOption();
+                break;
+
+            case DUI_Type.UI_ONLINE:
+                this.switchUIOnline();
+                break;
+        }
+        
+
+    }
 
 
 
@@ -322,7 +449,7 @@ public class DGUI extends JFrame {
      * =====================================================================================================================
      */
     public void updateScore         (int score)                 {uiLocal.updateScore        (score);};
-    public void updateLevel         ()                          {uiLocal.updateLevel        ();};
+    public void updateLevel         (boolean newGameTrigger)    {uiLocal.updateLevel        (newGameTrigger);};
     public void updateTime          (int timeSpent)             {uiLocal.updateTime         (timeSpent);};
     public void updateTimeLimit     (int timeLimit)             {uiLocal.updateTimeLimit    (timeLimit);};
     public void setSizeAdaptation   (boolean enable)            {uiLocal.setSizeAdaptation  (enable);};

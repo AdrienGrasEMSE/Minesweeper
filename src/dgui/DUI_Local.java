@@ -42,7 +42,7 @@ public class DUI_Local extends JPanel implements ActionListener {
     /**
      * UI main objects
      */ 
-    private final   DGUI         gui;
+    private final   DGUI        gui;
     private final   DController controller;
     private         DSprite[][] spriteMesh;
     private         int         previousLevelIndex;
@@ -145,8 +145,6 @@ public class DUI_Local extends JPanel implements ActionListener {
             @Override
             public void itemStateChanged(ItemEvent e) {
 
-                System.out.println(previousLevelIndex + " -> " + valLevel.getSelectedIndex());
-
                 // Making an action only on item selection
                 if (e.getStateChange()          == ItemEvent.SELECTED   &&
                     valLevel.getSelectedIndex() != -1                   &&
@@ -204,13 +202,8 @@ public class DUI_Local extends JPanel implements ActionListener {
     */
     private void northPanelSetup() {
 
-        // Clearing the northpanel
-        northPanel.removeAll();
-
-
         // Plotting panel and set VFX
-        this.add(northPanel,BorderLayout.NORTH);
-        northPanel          .removeAll      ();
+        this                .add(northPanel,BorderLayout.NORTH);
         northPanel          .setLayout      (new GridLayout(1, 2, 100, 0));
         northPanel          .setBackground  (DTheme.GUI_VAR.BCK_N);
         northPanel          .setBorder      (new EmptyBorder(0, 0, 0, 0));
@@ -285,10 +278,6 @@ public class DUI_Local extends JPanel implements ActionListener {
     */
     private void southPanelSetup() {
 
-        // Clearing the southpanel
-        southPanel.removeAll();
-
-
         // Plotting panel and set VFX
         this                .add            (southPanel,BorderLayout.SOUTH);
         southPanel          .setLayout      (new FlowLayout());
@@ -314,13 +303,9 @@ public class DUI_Local extends JPanel implements ActionListener {
      */
     private void centerPanelSetup() {
 
-        // Clearing the centerpanel
-        centerPanel.removeAll();
-        centerPanel.removeComponentListener(centerPanelSizeCheck);
-
-
         // Plotting panel and set VFX
         this                    .add            (centerPanel,   BorderLayout.CENTER);
+        centerPanel             .removeComponentListener(centerPanelSizeCheck);
         centerPanel             .setLayout      (new FlowLayout());
         centerPanel             .setBackground  (DTheme.GUI_NTL.BCK_N);
 
@@ -348,16 +333,49 @@ public class DUI_Local extends JPanel implements ActionListener {
     /**
      * Update the displayed level according to the controller one
      */
-    public void updateLevel() {
+    public void updateLevel(boolean newGameTrigger) {
 
         // Saving the previous index
         previousLevelIndex = controller.getLevel().getNbLevel();
-
-
-        // Update display without triggering the ItemListener
-        valLevel.removeItemListener(levelChangeCheck);
         valLevel.setSelectedItem(controller.getLevel());
-        valLevel.addItemListener(levelChangeCheck);
+
+
+        // If we maybe want a new game
+        if (newGameTrigger) {
+
+            // Change level
+            valLevel.setSelectedItem(controller.getLevel());
+
+
+            // Dialog to start a new game
+            DDialogBinary newGame = new DDialogBinary(gui, "Do you want to start a new game ?", DTheme.DLG_DRK);
+            newGame.setVisible(true);
+
+
+            // Getting the answer
+            boolean userChoice = newGame.getUserChoice();
+            if (userChoice && controller.getLevel() != DLevel.CUSTOM) {
+                
+                // New game 
+                newClassicGame(true);
+
+
+            } else if (userChoice && controller.getLevel() == DLevel.CUSTOM) {
+
+                // New game 
+                newCustomGame(true);
+
+            }
+
+
+        } else {
+
+            // Update display
+            valLevel.removeItemListener(levelChangeCheck);
+            valLevel.setSelectedItem(controller.getLevel());
+            valLevel.addItemListener(levelChangeCheck);
+
+        }
 
     }
 

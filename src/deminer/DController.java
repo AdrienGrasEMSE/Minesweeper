@@ -73,7 +73,7 @@ public class DController {
 
 
         // Update displayed level and start a new classic game
-        gui.updateLevel();
+        gui.updateLevel(false);
         newClassicGame();
         gui.setSizeAdaptation(true);
 
