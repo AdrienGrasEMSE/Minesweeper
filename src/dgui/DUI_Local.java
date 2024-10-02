@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -45,7 +46,6 @@ public class DUI_Local extends JPanel implements ActionListener {
     private final   DController controller;
     private         DSprite[][] spriteMesh;
     private         int         previousLevelIndex;
-    private         boolean     manualLevelChange   = false;
     private         boolean     sizeAdaptation      = false;
 
 
@@ -80,7 +80,8 @@ public class DUI_Local extends JPanel implements ActionListener {
     /**
      * Component listener
      */
-    private         ComponentAdapter centerPanelSizeCheck;
+    private         ComponentAdapter    centerPanelSizeCheck;
+    private         ItemListener        levelChangeCheck;
 
 
 
@@ -136,6 +137,63 @@ public class DUI_Local extends JPanel implements ActionListener {
             
         };
 
+
+        // Listener that check if the level has changed on the level selector
+        levelChangeCheck = new ItemListener() {
+
+            // On item change
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+
+                System.out.println(previousLevelIndex + " -> " + valLevel.getSelectedIndex());
+
+                // Making an action only on item selection
+                if (e.getStateChange()          == ItemEvent.SELECTED   &&
+                    valLevel.getSelectedIndex() != -1                   &&
+                    valLevel.getSelectedIndex() != previousLevelIndex) {
+
+                    // Changing game level
+                    previousLevelIndex = valLevel.getSelectedIndex();
+                    switch (valLevel.getSelectedIndex()) {
+                        case 0 -> controller.setLevel(DLevel.EASY);
+                        case 1 -> controller.setLevel(DLevel.MEDIUM);
+                        case 2 -> controller.setLevel(DLevel.HARD);
+                        case 3 -> controller.setLevel(DLevel.CUSTOM);
+                            
+                    }
+
+
+                    // Closing the popup
+                    valLevel.setPopupVisible(false);
+
+
+                    // Dialog to start a new game
+                    DDialogBinary newGame = new DDialogBinary(gui, "Do you want to start a new game ?", DTheme.DLG_DRK);
+                    newGame.setVisible(true);
+
+
+                    // Getting the answer
+                    boolean userChoice = newGame.getUserChoice();
+                    if (userChoice && controller.getLevel() != DLevel.CUSTOM) {
+                        
+                        // New game 
+                        newClassicGame(true);
+
+
+                    } else if (userChoice && controller.getLevel() == DLevel.CUSTOM) {
+
+                        // New game 
+                        newCustomGame(true);
+
+                    }
+
+                }
+                
+            
+            }
+
+        };
+
     }
 
 
@@ -185,19 +243,7 @@ public class DUI_Local extends JPanel implements ActionListener {
 
         // Setting up combo box
         valLevel            .setSelectedItem(controller.getLevel());
-        valLevel            .addItemListener((ItemEvent e) -> {
-
-            // Making an action only on item selection
-            if (e.getStateChange()          == ItemEvent.SELECTED   &&
-                valLevel.getSelectedIndex() != -1                   &&
-                valLevel.getSelectedIndex() != previousLevelIndex   &&
-                !manualLevelChange) {
-
-                // Changing game level
-                levelChange(false);
-
-            }
-        });
+        valLevel            .addItemListener(levelChangeCheck);
 
 
         // Adding the listener to check size changement
@@ -304,10 +350,14 @@ public class DUI_Local extends JPanel implements ActionListener {
      */
     public void updateLevel() {
 
-        // Disable ItemListener
-        manualLevelChange   = true;
-        valLevel            .setSelectedItem(controller.getLevel());
-        manualLevelChange   = false;
+        // Saving the previous index
+        previousLevelIndex = controller.getLevel().getNbLevel();
+
+
+        // Update display without triggering the ItemListener
+        valLevel.removeItemListener(levelChangeCheck);
+        valLevel.setSelectedItem(controller.getLevel());
+        valLevel.addItemListener(levelChangeCheck);
 
     }
 
@@ -417,63 +467,11 @@ public class DUI_Local extends JPanel implements ActionListener {
 
 
     /**
-     * Action performed on level change
-     * 
-     * @param lightInteraction specify the type interaction with the user
-     */
-    private void levelChange(boolean lightInteraction) {
-
-        // Changing game level
-        previousLevelIndex = valLevel.getSelectedIndex();
-        switch (valLevel.getSelectedIndex()) {
-            case 0 -> controller.setLevel(DLevel.EASY);
-            case 1 -> controller.setLevel(DLevel.MEDIUM);
-            case 2 -> controller.setLevel(DLevel.HARD);
-            case 3 -> controller.setLevel(DLevel.CUSTOM);
-                
-        }
-
-
-        // If light interaction off
-        if (!lightInteraction) {
-
-            // Closing the popup
-            valLevel.setPopupVisible(false);
-
-
-            // Dialog to start a new game
-            DDialogBinary newGame = new DDialogBinary(gui, "Do you want to start a new game ?", DTheme.DLG_DRK);
-            newGame.setVisible(true);
-
-
-            // Getting the answer
-            boolean userChoice = newGame.getUserChoice();
-            if (userChoice && controller.getLevel() != DLevel.CUSTOM) {
-                
-                // New game 
-                this.newClassicGame(true);
-
-
-            } else if (userChoice && controller.getLevel() == DLevel.CUSTOM) {
-
-                // New game 
-                this.newCustomGame(true);
-
-            }
-
-        }
-
-    }
-
-
-
-
-    /**
      * Action performed when the user want a new classic game
      * 
      * @param lightInteraction specify the type interaction with the user
      */
-    private void newClassicGame(boolean lightInteraction) {
+    public void newClassicGame(boolean lightInteraction) {
 
         // If light interaction on
         if (lightInteraction) {
@@ -507,7 +505,7 @@ public class DUI_Local extends JPanel implements ActionListener {
      * 
      * @param lightInteraction specify the type interaction with the user
      */
-    private void newCustomGame(boolean lightInteraction) {
+    public void newCustomGame(boolean lightInteraction) {
 
         // Dialog to get custom parameters
         DDialogCustomNewGame param = new DDialogCustomNewGame(gui);
@@ -616,7 +614,7 @@ public class DUI_Local extends JPanel implements ActionListener {
      * 
      * @param lightInteraction specify the type interaction with the user
      */
-    private void quitConfirm(boolean lightInteraction) {
+    public void quitConfirm(boolean lightInteraction) {
 
         // If light interaction on
         if (lightInteraction) {

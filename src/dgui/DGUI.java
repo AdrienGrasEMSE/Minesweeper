@@ -111,25 +111,27 @@ public class DGUI extends JFrame {
     private void menuGameSetup() {
         
         // Creating item for the menuGame
-        JMenu       mNewGame            = new JMenu("New Game");
-        JMenu       mNewClassicGame     = new JMenu("Classic Game");
-        JMenuItem   mNewEasyGame        = new JMenuItem("Easy");
-        JMenuItem   mNewMediumGame      = new JMenuItem("Medium");
-        JMenuItem   mNewHardGame        = new JMenuItem("Hard");
-        JMenuItem   mNewCustomGame      = new JMenuItem("Custom Game");
-        JMenuItem   mLevelChange        = new JMenuItem("Change difficulty");
-        JMenuItem   mOption             = new JMenuItem("Options");
-        JMenuItem   mQuit               = new JMenuItem("Quit");
+        JMenu       mNewGame            = new JMenu     ("New Game");
+        JMenu       mNewClassicGame     = new JMenu     ("Classic Game");
+        JMenu       mLevelChange        = new JMenu     ("Change difficulty");
+        JMenuItem   mNewEasyGame        = new JMenuItem ("Easy");
+        JMenuItem   mNewMediumGame      = new JMenuItem ("Medium");
+        JMenuItem   mNewHardGame        = new JMenuItem ("Hard");
+        JMenuItem   mNewCustomGame      = new JMenuItem ("Custom Game");
+        JMenuItem   mLevelEasy          = new JMenuItem ("Easy");
+        JMenuItem   mLevelMedium        = new JMenuItem ("Medium");
+        JMenuItem   mLevelHard          = new JMenuItem ("Hard");
+        JMenuItem   mOption             = new JMenuItem ("Options");
+        JMenuItem   mQuit               = new JMenuItem ("Quit");
 
 
         // mNewEasyGame action
         mNewEasyGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.setLevel    (DLevel.EASY);
-                // newClassicGame  (false);
-                // updateLevel     ();
-
+                controller.setLevel     (DLevel.EASY);
+                uiLocal.newClassicGame  (false);
+                uiLocal.updateLevel     ();
             }
 
         });
@@ -139,9 +141,9 @@ public class DGUI extends JFrame {
         mNewMediumGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.setLevel    (DLevel.MEDIUM);
-                // newClassicGame  (false);
-                // updateLevel     ();
+                controller.setLevel     (DLevel.MEDIUM);
+                uiLocal.newClassicGame  (false);
+                uiLocal.updateLevel     ();
 
             }
 
@@ -152,9 +154,9 @@ public class DGUI extends JFrame {
         mNewHardGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.setLevel    (DLevel.HARD);
-                // newClassicGame  (false);
-                // updateLevel     ();
+                controller.setLevel     (DLevel.HARD);
+                uiLocal.newClassicGame  (false);
+                uiLocal.updateLevel     ();
 
             }
 
@@ -165,21 +167,20 @@ public class DGUI extends JFrame {
         mNewCustomGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.setLevel    (DLevel.CUSTOM);
-                // newCustomGame   (true);
-                // updateLevel     ();
+                controller.setLevel     (DLevel.CUSTOM);
+                uiLocal.newCustomGame   (true);
+                uiLocal.updateLevel     ();
 
             }
 
         });
 
 
-        // mLevelChange action
-        mLevelChange.addActionListener(new ActionListener() {
+        // mLevelEasy action
+        mLevelEasy.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO : display level change dialog
-
+                
             }
 
         });
@@ -190,15 +191,7 @@ public class DGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 
-                // // Switching UI if needed
-                // if (guiType != GUIType.GUI_OPTION) {
-
-                //     // Swicthing UI
-                //     guiPreviousType     = guiType;
-                //     guiType             = GUIType.GUI_OPTION;
-                //     panelSetup          (guiType);
-
-                // }
+                // TODO : Option interface
 
             }
 
@@ -209,7 +202,7 @@ public class DGUI extends JFrame {
         mQuit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // quitConfirm(false);
+                uiLocal.quitConfirm(false);
 
             }
             
@@ -222,6 +215,9 @@ public class DGUI extends JFrame {
         mNewClassicGame     .add(mNewHardGame);
         mNewGame            .add(mNewClassicGame);
         mNewGame            .add(mNewCustomGame);
+        mLevelChange        .add(mLevelEasy);
+        mLevelChange        .add(mLevelMedium);
+        mLevelChange        .add(mLevelHard);
 
 
         // Adding items to the menu
