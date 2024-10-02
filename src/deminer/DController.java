@@ -2,16 +2,11 @@
 package deminer;
 
 // Import
-import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.util.Random;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.Timer;
 import ddialog.EndGame;
-import dgui.GUI;
+import dgui.DGUI;
 
 
 /**
@@ -20,14 +15,18 @@ import dgui.GUI;
  * @author  AdrienG
  * @version 0.0
  */
-public class DController extends JFrame {
+public class DController {
+
+    /**
+     * Controller main attributes
+     */
+    private final   DGUI         gui;
+
 
     /**
      * Application attribute
      */
-    private final   Random      random      = new Random();
     private final   DMinefield  field       = new DMinefield();
-    private final   GUI         gui;
     private         DLevel      gameLevel   = DLevel.EASY;
     private         DSprite[][] spriteMesh ;
     private         DCounter    counter;
@@ -45,42 +44,13 @@ public class DController extends JFrame {
 
 
 
-    // Récupérer la taille de l'écran
-    private final   Toolkit     toolkit         = Toolkit.getDefaultToolkit();
-    private final   Dimension   screenSize      = toolkit.getScreenSize();
-    private final   int         SCREENWIDTH     = screenSize.width;
-    private final   int         SCREENHEIGHT    = screenSize.height;
-
-
-
-
     /**
      * Constructor
      */
     public DController() {
 
-        // Setting up global style
-        ImageIcon   logoIcon        = new ImageIcon("./img/mine.png");
-        Image       logo            = logoIcon.getImage();
-        this        .setIconImage   (logo);
-        this        .setName        ("AdrienG's deminer");
-        this        .setTitle       ("AdrienG's deminer");
-
-
-        // Setting up the GUI and adding it up to the Frame
-        this.gui = new GUI(this);
-        this.setContentPane(gui);
-
-
-        // Calculing size after its content and setting window visible
-        this.setSize            (new Dimension(SCREENWIDTH / 2, 2 * SCREENHEIGHT / 3));
-        this.setPreferredSize   (new Dimension(SCREENWIDTH / 2, 2 * SCREENHEIGHT / 3));
-        this.setMinimumSize     (new Dimension(SCREENWIDTH / 2, 2 * SCREENHEIGHT / 3));
-        this.setVisible         (true);
-
-
-        // Setting up action on click on the close button
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        // Setting up the GUI
+        this.gui    = new DGUI(this);
 
     }
 
@@ -90,10 +60,11 @@ public class DController extends JFrame {
     /**
      * Init method
      */
-    private void init() {
-
+    public void init() {
+        
         // Creating a new classic (random difficulty) game
-        int nb = random.nextInt(2);
+        Random  random  = new Random();
+        int     nb      = random.nextInt(2);
         switch (nb) {
             case 0 -> gameLevel = DLevel.EASY;
             case 1 -> gameLevel = DLevel.MEDIUM;
@@ -143,7 +114,7 @@ public class DController extends JFrame {
 
 
 
-     /**
+    /**
      * Creating a new game with a classic difficulty
      */
     public void newClassicGame() {
@@ -429,36 +400,5 @@ public class DController extends JFrame {
 
     }
     
-
-
-
-    /**
-     * Fonction main
-     * 
-     * @param   args        not used
-     * @throws  Exception   it's not my problem
-     */
-    public static void main(String[] args) throws Exception {
-
-        // Starting point
-        System.out.println("DEMINER : Starting point");
-
-
-        // Theme application
-        // DTheme.highlightCoefficient();
-
-
-        // App instanciation
-        DController app = new DController();
-        app.init();
-
-        // DeminerDialogInfo test = new DeminerDialogInfo(app, "Invalid parameters", new String[]{"<html><span>&#128681;</span></html>"});
-        // test.setVisible(true);
-
-
-        // Ending point
-        System.out.println("DEMINER : Ending point");
-
-    }
 }
  
