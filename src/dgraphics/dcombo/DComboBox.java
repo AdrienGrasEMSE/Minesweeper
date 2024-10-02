@@ -10,8 +10,8 @@ import java.awt.RenderingHints;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JComboBox;
-
 import dgraphics.DFont;
+import dgraphics.dtheme.DColors_CBO;
 
 
 /**
@@ -51,7 +51,7 @@ public class DComboBox<E> extends JComboBox<E> {
       * @param boxFlyoverColor  color on flyover
       * @param boxActiveColor   color on click
       */
-    public DComboBox(E[] items, int fontSize, Color fontDefaultColor, Color fontActiveColor, Color boxDefaultColor, Color boxFlyoverColor, Color boxActiveColor) {
+    public DComboBox(E[] items, int fontSize, DColors_CBO colorSet) {
 
         // Herited constructor
         super(items);
@@ -59,11 +59,11 @@ public class DComboBox<E> extends JComboBox<E> {
 
         // Getting attributes
         this.fontSize           = fontSize;
-        this.fontDefaultColor   = fontDefaultColor;
-        this.fontActiveColor    = fontActiveColor;
-        this.boxDefaultColor    = boxDefaultColor;
-        this.boxFlyoverColor    = boxFlyoverColor;
-        this.boxActiveColor     = boxActiveColor;
+        this.fontDefaultColor   = colorSet.FNT_D;
+        this.fontActiveColor    = colorSet.FNT_L;
+        this.boxDefaultColor    = colorSet.BCK_D;
+        this.boxFlyoverColor    = colorSet.BCK_N;
+        this.boxActiveColor     = colorSet.BCK_L;
 
 
         // Setting up UI

@@ -12,7 +12,8 @@ import javax.swing.border.EmptyBorder;
 import dgraphics.DButton;
 import dgraphics.DFont;
 import dgraphics.DLabel;
-import dgraphics.DTheme;
+import dgraphics.dtheme.DColors_UI;
+import dgraphics.dtheme.DTheme;
 
 
 /**
@@ -20,6 +21,9 @@ import dgraphics.DTheme;
  * 
  * @author  AdrienG
  * @version 0.0
+ * 
+ * 
+ * Generate a dialog that display some informations and with a OK button to close it
  */
 public class DDialogInfo extends JDialog {
 
@@ -37,21 +41,22 @@ public class DDialogInfo extends JDialog {
      * @param message           Dialog message
      * @param listInfos         list of info that will be displayed on different line
      */
-    public DDialogInfo(JFrame parent, String title, String[] listInfos) {
+    public DDialogInfo(JFrame parent, String title, String[] listInfos,  DColors_UI colorSet) {
 
         // Herited constructor
         super(parent, "", true);
-        this.setUndecorated(true);
+        this.setUndecorated (true);
+        this.setBackground  (DTheme.TRSPCOL);
 
 
         // Creating the main JPanel
         mainPanel.setBorder     (new EmptyBorder(10, 10, 10, 10));
-        mainPanel.setBackground (DTheme.GUI_DRK_L);
+        mainPanel.setBackground (colorSet.BCK_N);
         mainPanel.setLayout     (new BorderLayout());
 
 
         // Creating the label for the title
-        DLabel titleLabel             = new DLabel(title, DFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_N);
+        DLabel titleLabel             = new DLabel(title, DFont.JOST_SEMIBOLD, 18, DTheme.LAB_TRS);
         titleLabel  .setHorizontalAlignment (SwingConstants.CENTER);
         mainPanel   .add                    (titleLabel, BorderLayout.NORTH);
 
@@ -61,7 +66,7 @@ public class DDialogInfo extends JDialog {
 
        
         // Creating the ok button
-        DButton okButton  = new DButton("Ok",   DFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_N, DTheme.BTN_NTL_D, DTheme.BTN_NTL_N, DTheme.BTN_NTL_L);
+        DButton okButton  = new DButton("Ok",   DFont.JOST_SEMIBOLD, 18, DTheme.BTN_NTL);
          
         
         // Button action
@@ -95,14 +100,14 @@ public class DDialogInfo extends JDialog {
         // Creating a new panel that will hold all infos
         JPanel infoPanel = new JPanel(new GridLayout(listInfo.length, 1));
         infoPanel.setBorder(new EmptyBorder(10, 0, 10, 0));
-        infoPanel.setBackground (DTheme.GUI_DRK_L);
+        infoPanel.setBackground (DTheme.TRSPCOL);
 
 
         // Crossing listInfo
         for (String info : listInfo) {
 
             // Creating the label for the message
-            DLabel infoLabel              = new DLabel(info, DFont.JOST_LIGHT, 16, DTheme.FNT_NTL_D);
+            DLabel infoLabel              = new DLabel(info, DFont.JOST_LIGHT, 16, DTheme.LAB_TRS);
             infoLabel   .setHorizontalAlignment (SwingConstants.CENTER);
             infoPanel   .add                    (infoLabel);
 

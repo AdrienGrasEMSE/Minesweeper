@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import dgraphics.dtheme.DColors_FLD;
 
 
 /**
@@ -46,7 +47,7 @@ public class DStringField extends JTextField implements MouseListener {
      * @param defaultColor  Default background color
      * @param flyoverColor  Fylover background color
      */
-    public DStringField(DFont selectedFont, int fontSize, Color fontColor, Color defaultColor, Color flyoverColor) {
+    public DStringField(DFont selectedFont, int fontSize, DColors_FLD colorSet) {
 
         // Herited constructor
         super();
@@ -74,12 +75,12 @@ public class DStringField extends JTextField implements MouseListener {
 
 
         // Getting attributes
-        this.defaultColor = defaultColor;
-        this.flyoverColor = flyoverColor;
+        this.defaultColor = colorSet.BCK_D;
+        this.flyoverColor = colorSet.BCK_L;
 
 
         // Applying colors
-        this.setForeground(fontColor);
+        this.setForeground(colorSet.FNT_N);
         this.setBackground(defaultColor);
 
 

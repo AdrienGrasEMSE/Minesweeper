@@ -14,7 +14,7 @@ import java.io.IOException;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import dgraphics.DFont;
-import dgraphics.DTheme;
+import dgraphics.dtheme.DTheme;
 
 
 /**
@@ -33,7 +33,7 @@ public class Square extends JPanel implements MouseListener{
     private final   App     app;
     private final   int     posX;
     private final   int     posY;
-    private         Color   mainColor   = DTheme.SQR_NTL_N;
+    private         Color   mainColor   = DTheme.SQR_NTL.BCK_N;
     private         boolean isRevealed  = false;
     private         boolean isLocked    = false;
     private         int     sqSize;
@@ -154,7 +154,7 @@ public class Square extends JPanel implements MouseListener{
 
 
         // Background color
-        this.setBackground(DTheme.GUI_NTL_N);
+        this.setBackground(DTheme.GUI_NTL.BCK_N);
 
 
         // Use Graphics2D to get anti-aliasing
@@ -178,7 +178,7 @@ public class Square extends JPanel implements MouseListener{
             FontMetrics metrics = g2d.getFontMetrics(font);
             switch (coefficient) {
                 case -1 -> {
-                    g2d.setColor(DTheme.FNT_COF_M);
+                    g2d.setColor(DTheme.SQR_NTL.FNT_M);
                     g2d.drawString(
                             "¤",
                             (getWidth()     - metrics.stringWidth("¤")) / 2,
@@ -188,7 +188,7 @@ public class Square extends JPanel implements MouseListener{
                 }
 
                 case 1 -> {
-                    g2d.setColor(DTheme.FNT_COF_1);
+                    g2d.setColor(DTheme.SQR_NTL.FNT_1);
                     g2d.drawString(
                             String.valueOf(coefficient),
                             (getWidth()     - metrics.stringWidth(String.valueOf(coefficient))) / 2,
@@ -197,7 +197,7 @@ public class Square extends JPanel implements MouseListener{
                 }
                 
                 case 2 -> {
-                    g2d.setColor(DTheme.FNT_COF_2);
+                    g2d.setColor(DTheme.SQR_NTL.FNT_2);
                     g2d.drawString(
                             String.valueOf(coefficient),
                             (getWidth()     - metrics.stringWidth(String.valueOf(coefficient))) / 2,
@@ -206,7 +206,7 @@ public class Square extends JPanel implements MouseListener{
                 }
 
                 case 3 -> {
-                    g2d.setColor(DTheme.FNT_COF_3);
+                    g2d.setColor(DTheme.SQR_NTL.FNT_3);
                     g2d.drawString(
                             String.valueOf(coefficient),
                             (getWidth()     - metrics.stringWidth(String.valueOf(coefficient))) / 2,
@@ -215,7 +215,7 @@ public class Square extends JPanel implements MouseListener{
                 }
 
                 case 4 -> {
-                    g2d.setColor(DTheme.FNT_COF_4);
+                    g2d.setColor(DTheme.SQR_NTL.FNT_4);
                     g2d.drawString(
                             String.valueOf(coefficient),
                             (getWidth()     - metrics.stringWidth(String.valueOf(coefficient))) / 2,
@@ -224,7 +224,7 @@ public class Square extends JPanel implements MouseListener{
                 }
 
                 case 5 -> {
-                    g2d.setColor(DTheme.FNT_COF_5);
+                    g2d.setColor(DTheme.SQR_NTL.FNT_5);
                     g2d.drawString(
                             String.valueOf(coefficient),
                             (getWidth()     - metrics.stringWidth(String.valueOf(coefficient))) / 2,
@@ -233,7 +233,7 @@ public class Square extends JPanel implements MouseListener{
                 }
 
                 case 6 -> {
-                    g2d.setColor(DTheme.FNT_COF_6);
+                    g2d.setColor(DTheme.SQR_NTL.FNT_6);
                     g2d.drawString(
                             String.valueOf(coefficient),
                             (getWidth()     - metrics.stringWidth(String.valueOf(coefficient))) / 2,
@@ -242,7 +242,7 @@ public class Square extends JPanel implements MouseListener{
                 }
 
                 case 7 -> {
-                    g2d.setColor(DTheme.FNT_COF_7);
+                    g2d.setColor(DTheme.SQR_NTL.FNT_7);
                     g2d.drawString(
                             String.valueOf(coefficient),
                             (getWidth()     - metrics.stringWidth(String.valueOf(coefficient))) / 2,
@@ -251,7 +251,7 @@ public class Square extends JPanel implements MouseListener{
                 }
 
                 case 8 -> {
-                    g2d.setColor(DTheme.FNT_COF_8);
+                    g2d.setColor(DTheme.SQR_NTL.FNT_8);
                     g2d.drawString(
                             String.valueOf(coefficient),
                             (getWidth()     - metrics.stringWidth(String.valueOf(coefficient))) / 2,
@@ -268,7 +268,7 @@ public class Square extends JPanel implements MouseListener{
             g2d.setFont(font);
             FontMetrics metrics = g2d.getFontMetrics(font);
             g2d.setFont(new Font("Serif", Font.PLAIN, fontSize));
-            g2d.setColor(DTheme.FNT_NTL_L);
+            g2d.setColor(DTheme.SQR_NTL.BCK_L);
             g2d.drawString(
                     "⚑",
                     (getWidth()     - metrics.stringWidth("⚑")) / 2,
@@ -299,9 +299,9 @@ public class Square extends JPanel implements MouseListener{
 
             // Applying the color according to its type (mine or not)
             if (coefficient != -1) {
-                mainColor   = DTheme.SQR_NTL_D;
+                mainColor   = DTheme.SQR_NTL.BCK_D;
             } else {
-                mainColor   = DTheme.SQR_NTL_M;
+                mainColor   = DTheme.SQR_NTL.BCK_M;
             }
             repaint();
 
@@ -411,7 +411,7 @@ public class Square extends JPanel implements MouseListener{
 
         // Changing color if it's not revealed
         if (!isRevealed) {
-            mainColor = DTheme.SQR_NTL_L;
+            mainColor = DTheme.SQR_NTL.BCK_L;
             repaint(); 
         }
     }
@@ -427,7 +427,7 @@ public class Square extends JPanel implements MouseListener{
 
         // Reseting color according to its state
         if (!isRevealed) {
-            mainColor = DTheme.SQR_NTL_N;
+            mainColor = DTheme.SQR_NTL.BCK_N;
         }
         repaint();
     }

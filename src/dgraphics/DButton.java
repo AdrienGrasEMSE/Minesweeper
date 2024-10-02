@@ -15,6 +15,8 @@ import java.io.IOException;
 import javax.swing.JButton;
 import javax.swing.border.EmptyBorder;
 
+import dgraphics.dtheme.DColors_BTN;
+
 
 /**
  * Class Button, created in order to simplify style application
@@ -53,7 +55,7 @@ public class DButton extends JButton implements MouseListener{
      * @param colorFlyover  fylover color
      * @param colorActive   active color (on click)
      */
-    public DButton(String text, DFont selectedFont, int fontSize, Color colorFont, Color colorDefault, Color colorFlyover, Color colorActive) {
+    public DButton(String text, DFont selectedFont, int fontSize, DColors_BTN colorSet) {
 
         // Setting text
         this.setText(text);
@@ -81,13 +83,13 @@ public class DButton extends JButton implements MouseListener{
 
 
         // Setting font color
-        this.setForeground(colorFont);
+        this.setForeground(colorSet.FNT_D);
 
 
         // Getting attributes
-        this.colorDefault   = colorDefault;
-        this.colorFlyover   = colorFlyover;
-        this.colorActive    = colorActive;
+        this.colorDefault   = colorSet.BCK_D;
+        this.colorFlyover   = colorSet.BCK_N;
+        this.colorActive    = colorSet.BCK_L;
 
 
         // Setting default backgroud color

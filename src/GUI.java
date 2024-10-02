@@ -1,6 +1,5 @@
 // Import
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -9,6 +8,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import javax.swing.JMenuBar;
+import javax.swing.BoxLayout;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -21,8 +21,8 @@ import ddialog.EndGame;
 import dgraphics.DButton;
 import dgraphics.DFont;
 import dgraphics.DLabel;
-import dgraphics.DTheme;
 import dgraphics.dcombo.DComboBox;
+import dgraphics.dtheme.DTheme;
 
 
 /**
@@ -37,7 +37,8 @@ public class GUI extends JPanel implements ActionListener{
      * GUI main objects
      */ 
     private final   App         app;
-    private         GUIType     guiType = GUIType.GUI_SOLO;
+    private         GUIType     guiType         = GUIType.GUI_SOLO;
+    private         GUIType     guiPreviousType = GUIType.GUI_SOLO;
     private         Square[][]  squareMesh;
     private         int         previousLevelIndex;
 
@@ -45,8 +46,8 @@ public class GUI extends JPanel implements ActionListener{
     /**
      * GUI main panels
      */
-    private final JPanel    northPanel      = new JPanel(new GridLayout(1, 2, 100, 0));
-    private final JPanel    southPanel      = new JPanel(new FlowLayout());
+    private final JPanel    northPanel      = new JPanel();
+    private final JPanel    southPanel      = new JPanel();
     private final JPanel    centerPanel     = new JPanel();
 
 
@@ -70,20 +71,14 @@ public class GUI extends JPanel implements ActionListener{
     /**
      * North panels elements
      */
-    private final DLabel labScore         = new DLabel("Score",         DFont.JOST_REGULAR,   18, DTheme.FNT_NTL_D);
-    private final DLabel labLevel         = new DLabel("Level",         DFont.JOST_REGULAR,   18, DTheme.FNT_NTL_D);
-    private final DLabel labTime          = new DLabel("Time",          DFont.JOST_REGULAR,   18, DTheme.FNT_NTL_D);
-    private final DLabel labTimeMax       = new DLabel("Time limit",    DFont.JOST_REGULAR,   18, DTheme.FNT_NTL_D);
-    private final DLabel valScore         = new DLabel("",              DFont.JOST_LIGHT,     18, DTheme.FNT_NTL_N, DTheme.BTN_VAR_N);
-    private final DLabel valTime          = new DLabel("00:00",         DFont.JOST_LIGHT,     18, DTheme.FNT_NTL_N, DTheme.BTN_VAR_N);
-    private final DLabel valTimeMax       = new DLabel("",              DFont.JOST_LIGHT,     18, DTheme.FNT_NTL_N, DTheme.BTN_VAR_N);
-    private final DComboBox<Level> valLevel     = new DComboBox<>(  Level.values(),
-                                                                                18,
-                                                                                DTheme.FNT_NTL_D,
-                                                                                DTheme.FNT_NTL_N,
-                                                                                DTheme.BTN_VAR_D,
-                                                                                DTheme.BTN_VAR_N,
-                                                                                DTheme.BTN_VAR_L);
+    private final DLabel labScore         = new DLabel("Score",         DFont.JOST_REGULAR,   18, DTheme.LAB_TRS);
+    private final DLabel labLevel         = new DLabel("Level",         DFont.JOST_REGULAR,   18, DTheme.LAB_TRS);
+    private final DLabel labTime          = new DLabel("Time",          DFont.JOST_REGULAR,   18, DTheme.LAB_TRS);
+    private final DLabel labTimeMax       = new DLabel("Time limit",    DFont.JOST_REGULAR,   18, DTheme.LAB_TRS);
+    private final DLabel valScore         = new DLabel("",              DFont.JOST_LIGHT,     18, DTheme.LAB_NTL);
+    private final DLabel valTime          = new DLabel("00:00",         DFont.JOST_LIGHT,     18, DTheme.LAB_NTL);
+    private final DLabel valTimeMax       = new DLabel("",              DFont.JOST_LIGHT,     18, DTheme.LAB_NTL);
+    private final DComboBox<Level> valLevel     = new DComboBox<>(  Level.values(), 18, DTheme.CBO_VAR);
 
 
 
@@ -91,9 +86,16 @@ public class GUI extends JPanel implements ActionListener{
     /**
      * South panels elements
      */
-    private final DButton quitButton      = new DButton("Quit",     DFont.JOST_SEMIBOLD, 24, Color.WHITE, DTheme.BTN_RED_D, DTheme.BTN_RED_N, DTheme.BTN_RED_L);
-    private final DButton newGameButton   = new DButton("New game", DFont.JOST_SEMIBOLD, 24, Color.WHITE, DTheme.BTN_GRN_D, DTheme.BTN_GRN_D, DTheme.BTN_GRN_D);
+    private final DButton backButton      = new DButton("Back",     DFont.JOST_SEMIBOLD, 24, DTheme.BTN_RED);
+    private final DButton quitButton      = new DButton("Quit",     DFont.JOST_SEMIBOLD, 24, DTheme.BTN_RED);
+    private final DButton newGameButton   = new DButton("New game", DFont.JOST_SEMIBOLD, 24, DTheme.BTN_GRN);
 
+
+
+    /**
+     * Component listener
+     */
+    private ComponentAdapter centerPanelSizeCheck;
 
 
 
@@ -110,6 +112,10 @@ public class GUI extends JPanel implements ActionListener{
         this.setLayout(new BorderLayout());
 
 
+        // Setting up listener
+        this.listenerInit();
+
+
         // Setting up menus
         this.menuGameSetup();
         this.menuModSetup();
@@ -121,6 +127,32 @@ public class GUI extends JPanel implements ActionListener{
 
         // Setting up panels
         this.panelSetup(guiType);
+
+    }
+
+
+
+
+    /**
+     * Listener initialisation
+     */
+    private void listenerInit() {
+
+        // Listener that check if if the centerPanel change size
+        centerPanelSizeCheck = new ComponentAdapter() {
+                    
+            // On size change
+            @Override
+            public void componentResized(ComponentEvent e) {
+
+                // If size adaptating is enable
+                if (sizeAdaptation) {
+                    displayMesh();
+                }
+                
+            }
+            
+        };
 
     }
 
@@ -211,7 +243,16 @@ public class GUI extends JPanel implements ActionListener{
         mOption.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO : display the option screen
+                
+                // Switching UI if needed
+                if (guiType != GUIType.GUI_OPTION) {
+
+                    // Swicthing UI
+                    guiPreviousType     = guiType;
+                    guiType             = GUIType.GUI_OPTION;
+                    panelSetup          (guiType);
+
+                }
 
             }
 
@@ -273,14 +314,15 @@ public class GUI extends JPanel implements ActionListener{
                 if (guiType != GUIType.GUI_SOLO) {
 
                     // Swicthing UI
-                    guiType     = GUIType.GUI_SOLO;
-                    panelSetup  (guiType);
+                    guiPreviousType     = guiType;
+                    guiType             = GUIType.GUI_SOLO;
+                    panelSetup          (guiType);
 
 
                     // Lauching a new easy game
-                    app.setLevel    (Level.EASY);
-                    newClassicGame  (false);
-                    updateLevel     ();
+                    app.setLevel        (Level.EASY);
+                    newClassicGame      (false);
+                    updateLevel         ();
 
                 }
 
@@ -298,8 +340,9 @@ public class GUI extends JPanel implements ActionListener{
                 if (guiType != GUIType.GUI_ONLINE) {
 
                     // Swicthing UI
-                    guiType     = GUIType.GUI_ONLINE;
-                    panelSetup  (guiType);
+                    guiPreviousType     = guiType;
+                    guiType             = GUIType.GUI_ONLINE;
+                    panelSetup          (guiType);
 
 
                     // TODO : Implémenting server actions
@@ -345,11 +388,15 @@ public class GUI extends JPanel implements ActionListener{
                 break;
         
             case GUIType.GUI_OPTION:
-                
+                this.northPanelSetup    (GUIType.GUI_OPTION);
+                this.southPanelSetup    (GUIType.GUI_OPTION);
+                this.centerPanelSetup   (GUIType.GUI_OPTION);
                 break;
 
             case GUIType.GUI_ONLINE:
-                
+                this.northPanelSetup    (GUIType.GUI_ONLINE);
+                this.southPanelSetup    (GUIType.GUI_ONLINE);
+                this.centerPanelSetup   (GUIType.GUI_ONLINE);
                 break;
         }
 
@@ -375,14 +422,15 @@ public class GUI extends JPanel implements ActionListener{
 
                 // Plotting panel and set VFX
                 this.add(northPanel,BorderLayout.NORTH);
-                northPanel          .setBackground  (DTheme.GUI_VAR_N);
+                northPanel          .setLayout      (new GridLayout(1, 2, 100, 0));
+                northPanel          .setBackground  (DTheme.GUI_VAR.BCK_N);
                 northPanel          .setBorder      (new EmptyBorder(0, 0, 0, 0));
 
 
                 // Score panel
                 JPanel scorePanel   = new JPanel    (new GridLayout(2, 2, 0, 5));
                 scorePanel          .setBorder      (new EmptyBorder(10, 10, 10, 10));
-                scorePanel          .setBackground(DTheme.GUI_VAR_N);
+                scorePanel          .setBackground  (DTheme.GUI_VAR.BCK_N);
                 scorePanel          .add(labLevel);
                 scorePanel          .add(valLevel);
                 scorePanel          .add(labScore);
@@ -392,7 +440,7 @@ public class GUI extends JPanel implements ActionListener{
                 // Time panel
                 JPanel timelPanel   = new JPanel    (new GridLayout(2, 2, 0, 5));
                 timelPanel          .setBorder      (new EmptyBorder(10, 10, 10, 10));
-                timelPanel          .setBackground  (DTheme.GUI_VAR_N);
+                timelPanel          .setBackground  (DTheme.GUI_VAR.BCK_N);
                 timelPanel          .add(labTime);
                 timelPanel          .add(valTime);
                 timelPanel          .add(labTimeMax);
@@ -450,6 +498,15 @@ public class GUI extends JPanel implements ActionListener{
                     
                 });
                 break;
+
+
+            case GUIType.GUI_OPTION:
+
+                // Plotting panel and set VFX
+                this                .add            (northPanel,BorderLayout.NORTH);
+                northPanel          .setBackground  (DTheme.GUI_VAR.BCK_N);
+                northPanel          .setBorder      (new EmptyBorder(0, 0, 0, 0));
+                break;
         
             default:
                 break;
@@ -476,8 +533,9 @@ public class GUI extends JPanel implements ActionListener{
             case GUIType.GUI_SOLO:
 
                 // Plotting panel and set VFX
-                this.add(southPanel,BorderLayout.SOUTH);
-                southPanel          .setBackground  (DTheme.GUI_DRK_N);
+                this                .add            (southPanel,BorderLayout.SOUTH);
+                southPanel          .setLayout      (new FlowLayout());
+                southPanel          .setBackground  (DTheme.GUI_DRK.BCK_N);
 
 
                 // Plotting elements inside
@@ -488,6 +546,22 @@ public class GUI extends JPanel implements ActionListener{
                 // Setting up listeners
                 quitButton          .addActionListener(this);
                 newGameButton       .addActionListener(this);
+                break;
+
+
+            case GUIType.GUI_OPTION:
+
+                // Plotting panel and set VFX
+                this                .add            (southPanel,BorderLayout.SOUTH);
+                southPanel          .setBackground  (DTheme.GUI_DRK.BCK_N);
+
+
+                // Plotting elements inside
+                southPanel          .add            (backButton);
+
+
+                // Setting up listeners
+                backButton          .addActionListener(this);
                 break;
         
             default:
@@ -508,6 +582,7 @@ public class GUI extends JPanel implements ActionListener{
 
         // Clearing the centerpanel
         centerPanel.removeAll();
+        centerPanel.removeComponentListener(centerPanelSizeCheck);
 
 
         // Setting up centerpanel according to the GUI Type
@@ -515,25 +590,25 @@ public class GUI extends JPanel implements ActionListener{
             case GUIType.GUI_SOLO:
 
                 // Plotting panel and set VFX
-                this.add(centerPanel,   BorderLayout.CENTER);
-                centerPanel             .setBackground(DTheme.GUI_NTL_N);
+                this                    .add            (centerPanel,   BorderLayout.CENTER);
+                centerPanel             .setLayout      (new FlowLayout());
+                centerPanel             .setBackground  (DTheme.GUI_NTL.BCK_N);
 
 
                 // Adding the listener to check size changement
-                centerPanel.addComponentListener(new ComponentAdapter() {
-                    
-                    // On size change
-                    @Override
-                    public void componentResized(ComponentEvent e) {
+                centerPanel.addComponentListener(centerPanelSizeCheck);
+                break;
+            
+            case GUIType.GUI_OPTION:
 
-                        // If size adaptating is enable
-                        if (sizeAdaptation) {
-                            displayMesh();
-                        }
-                        
-                    }
-                    
-                });
+                // Plotting panel and set VFX
+                this                    .add            (centerPanel,   BorderLayout.CENTER);
+                centerPanel             .setLayout      (new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+                centerPanel             .setBackground  (DTheme.GUI_NTL.BCK_D);
+
+
+                // Creating the 
+
                 break;
         
             default:
@@ -700,7 +775,7 @@ public class GUI extends JPanel implements ActionListener{
 
 
             // Dialog to start a new game
-            DDialogBinary newGame = new DDialogBinary(app, "Do you want to start a new game ?");
+            DDialogBinary newGame = new DDialogBinary(app, "Do you want to start a new game ?", DTheme.DLG_DRK);
             newGame.setVisible(true);
 
 
@@ -743,7 +818,7 @@ public class GUI extends JPanel implements ActionListener{
         } else {
 
             // Dialog to confirm
-            DDialogBinary confirm = new DDialogBinary(app, "Confirm ?");
+            DDialogBinary confirm = new DDialogBinary(app, "Confirm ?", DTheme.DLG_DRK);
             confirm.setVisible(true);
 
 
@@ -777,12 +852,15 @@ public class GUI extends JPanel implements ActionListener{
 
             // Infos
             if (!param.getParamValid() && param.getUserConfirm()) {
-                DDialogInfo info = new DDialogInfo(app, "Invalid parameters", new String[]{ "- Width and Height must be between",
-                                                                                                                "5 and 20",
-                                                                                                                "",
-                                                                                                                "- Number of mines must be between",
-                                                                                                                "1 and 75% of (Width * Height)"
-                                                                                                            });
+                DDialogInfo info = new DDialogInfo( app,
+                                                    "Invalid parameters",
+                                                    new String[]{ "- Width and Height must be between",
+                                                    "5 and 20",
+                                                    "",
+                                                    "- Number of mines must be between",
+                                                    "1 and 75% of (Width * Height)"
+                                                    },
+                                                    DTheme.DLG_DRK);
                 info.setVisible(true);
             }
 
@@ -803,7 +881,7 @@ public class GUI extends JPanel implements ActionListener{
             } else {
 
                 // Dialog to confirm
-                DDialogBinary confirm = new DDialogBinary(app, "Confirm ?");
+                DDialogBinary confirm = new DDialogBinary(app, "Confirm ?", DTheme.DLG_DRK);
                 confirm.setVisible(true);
 
 
@@ -883,7 +961,7 @@ public class GUI extends JPanel implements ActionListener{
         } else {
 
             // Dialog to confirm
-            DDialogBinary confirm = new DDialogBinary(app, "Confirm ?");
+            DDialogBinary confirm = new DDialogBinary(app, "Confirm ?", DTheme.DLG_DRK);
             confirm.setVisible(true);
 
 
@@ -925,7 +1003,7 @@ public class GUI extends JPanel implements ActionListener{
         // Creating the grid to display mines and coefficient
         JPanel minesPanel   = new JPanel();
         minesPanel          .setLayout(new GridLayout(squareMesh.length, squareMesh[0].length));
-        minesPanel          .setBackground(DTheme.GUI_NTL_N);
+        minesPanel          .setBackground(DTheme.GUI_NTL.BCK_N);
 
 
         // Getting the size of the new square
@@ -942,7 +1020,7 @@ public class GUI extends JPanel implements ActionListener{
 
                 // Plotting the square in a JPanel to get border
                 JPanel squareHolder = new JPanel();
-                squareHolder        .setBackground(DTheme.GUI_NTL_N);
+                squareHolder        .setBackground(DTheme.GUI_NTL.BCK_N);
                 squareHolder        .add(square);
                 minesPanel          .add(squareHolder);
 
@@ -1037,6 +1115,16 @@ public class GUI extends JPanel implements ActionListener{
             // New custom game phase
             newCustomGame(false);
             return;
+
+
+        } else if (e.getSource() == backButton) {
+
+            // Setting up panels
+            guiType         = guiPreviousType;
+            guiPreviousType = GUIType.GUI_OPTION;
+            this            .panelSetup(guiType);
+            return;
+
 
         }
 

@@ -2,9 +2,9 @@
 package dgraphics;
 
 // Import
-import java.awt.Color;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import dgraphics.dtheme.DColors_FLD;
 
 
 /**
@@ -27,10 +27,10 @@ public class DIntegerField extends DStringField {
      * @param defaultColor  Default background color
      * @param flyoverColor  Fylover background color
      */
-    public DIntegerField(DFont selectedFont, int fontSize, Color fontColor, Color defaultColor, Color flyoverColor) {
+    public DIntegerField(DFont selectedFont, int fontSize, DColors_FLD colorSet) {
 
         // Herited constructor
-        super(selectedFont, fontSize, fontColor, defaultColor, flyoverColor);
+        super(selectedFont, fontSize, colorSet);
         init();
     }
 

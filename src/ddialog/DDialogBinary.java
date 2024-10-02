@@ -11,14 +11,18 @@ import javax.swing.border.EmptyBorder;
 import dgraphics.DButton;
 import dgraphics.DFont;
 import dgraphics.DLabel;
-import dgraphics.DTheme;
+import dgraphics.dtheme.DColors_UI;
+import dgraphics.dtheme.DTheme;
 
 
 /**
- * Class Binary Dialog (binary question popup, with yes/no answer)
+ * Class Binary Dialog
  * 
  * @author  AdrienG
  * @version 0.0
+ * 
+ * 
+ * Generate a Dialog with a yes and no question, and of course, the yes and no button
  */
 public class DDialogBinary extends JDialog {
 
@@ -36,22 +40,23 @@ public class DDialogBinary extends JDialog {
      * @param parent            JFrame that own the dialog
      * @param message           Dialog message
      */
-    public DDialogBinary(JFrame parent, String message) {
+    public DDialogBinary(JFrame parent, String message, DColors_UI colorSet) {
 
         // Herited constructor
         super(parent, "", true);
-        this.setUndecorated(true);
+        this.setUndecorated (true);
+        this.setBackground  (DTheme.TRSPCOL);
 
 
         // Creating the main JPanel
         JPanel panel = new JPanel();
         panel.setBorder     (new EmptyBorder(10, 10, 10, 10));
-        panel.setBackground (DTheme.GUI_DRK_L);
+        panel.setBackground (colorSet.BCK_N);
         panel.setLayout     (new BorderLayout());
 
 
         // Creating the label for the message
-        DLabel messageLabel = new DLabel(message, DFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_D);
+        DLabel messageLabel = new DLabel(message, DFont.JOST_SEMIBOLD, 18, DTheme.LAB_TRS);
         messageLabel.setHorizontalAlignment (SwingConstants.CENTER);
         panel       .add                    (messageLabel, BorderLayout.NORTH);
 
@@ -59,12 +64,12 @@ public class DDialogBinary extends JDialog {
         // Creating the panel for the yes and no buttons
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBorder       (new EmptyBorder(15, 0, 0, 0));
-        buttonPanel.setBackground   (DTheme.GUI_DRK_L);
+        buttonPanel.setBackground   (DTheme.TRSPCOL);
 
 
         // Creating the yes and no buttons
-        DButton noButton  = new DButton("No",   DFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_D, DTheme.BTN_RED_D, DTheme.BTN_RED_N, DTheme.BTN_RED_L);
-        DButton yesButton = new DButton("Yes",  DFont.JOST_SEMIBOLD, 18, DTheme.FNT_NTL_D, DTheme.BTN_GRN_D, DTheme.BTN_GRN_N, DTheme.BTN_GRN_L);
+        DButton noButton  = new DButton("No",   DFont.JOST_SEMIBOLD, 18, DTheme.BTN_RED);
+        DButton yesButton = new DButton("Yes",  DFont.JOST_SEMIBOLD, 18, DTheme.BTN_GRN);
         
         
         // No button action
