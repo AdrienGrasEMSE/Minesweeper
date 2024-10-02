@@ -208,6 +208,83 @@ public class DTheme {
 
 
 
+    
+    /**
+     * Apply default theme
+     */
+    public static void lightMode() {
+
+        /**
+         * Transparent color
+         */
+        TRSPCOL = new Color(0, 0, 0, 0);
+        
+
+        /**
+         * GUI colors
+         */
+        GUI_VAR = new DColors_UI(0xE6A397, 0xD76C58, 0x7F5056);
+        GUI_NTL = new DColors_UI(0x6f7474, 0xb1bab9, 0xcfd9d7);
+        GUI_DRK = new DColors_UI(0x0f3431, 0x18534F, 0x226D68);
+        
+
+        /**
+         * Dialog interface colors
+         */
+        DLG_DRK = new DColors_UI(0xE00f3431, 0xE018534F, 0xE0226D68);
+
+
+        /**
+         * Button colors
+         */
+        BTN_RED = new DColors_BTN(0xCB4335, 0xE74C3C, 0xEA5E50, 0xD5D8DC, 0xEAECEE);
+        BTN_GRN = new DColors_BTN(0x239B56, 0x28B463, 0x2ECC71, 0xD5D8DC, 0xEAECEE);
+        BTN_VAR = new DColors_BTN(0x8E5556, 0xAB5E57, 0xC86758, 0xD5D8DC, 0xEAECEE);
+        BTN_NTL = new DColors_BTN(0x2e6f64, 0x397268, 0x517670, 0xD5D8DC, 0xEAECEE);
+        BTN_DRK = new DColors_BTN(0x0F1219, 0x11151D, 0x2F3239, 0xD5D8DC, 0xEAECEE);
+
+
+        /**
+         * Field colors
+         */
+        FLD_NTL = new DColors_FLD(0x2e6f64, 0x397268, 0xEAECEE);
+
+
+        /**
+         * Label colors
+         */
+        LAB_TRS = new DColors_LAB(0x00000000, 0xD5D8DC);
+        LAB_NTL = new DColors_LAB(0xAB5E57, 0xD5D8DC);
+
+
+        /**
+         * Combo colors
+         */
+        CBO_VAR = new DColors_CBO(0x8E5556, 0xAB5E57, 0xC86758, 0xD5D8DC, 0xEAECEE);
+
+
+        /**
+         * Square colors
+         */
+        SQR_NTL = new DColors_SQR(  0x9ba3a2,
+                                    0x6f7474,
+                                    0x585d5c,
+                                    0xCB4335,
+                                    0x2470a2,
+                                    0x107864,
+                                    0x148d75,
+                                    0x239955,
+                                    0xf1c40f,
+                                    0xf39c12,
+                                    0xe67e22,
+                                    0xd35400,
+                                    0xF9EBEA,
+                                    0x373737);
+
+    }
+
+
+
 
     /**
      * Apply the highlightCoefficient theme
