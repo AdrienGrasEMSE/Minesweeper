@@ -26,6 +26,7 @@ public class DReader implements Runnable{
     private DataInputStream     stream      = null;
     private Queue<String>       readQueue   = null;
     private boolean             ready       = false;
+    private boolean             active      = true;
 
 
 
@@ -73,13 +74,23 @@ public class DReader implements Runnable{
 
 
     /**
+     * Stop the thread
+     */
+    public void stop() {
+        active = false;
+    }
+
+
+    
+    
+    /**
      * Thread method
      */
     @Override
     public void run () {
 
         // Stop condition
-        while (service != null) {
+        while (service != null && this.active) {
 
             // Data reading
             try {
