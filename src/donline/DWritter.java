@@ -3,6 +3,7 @@ package donline;
 
 // Import
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 
 
@@ -60,6 +61,33 @@ public class DWritter {
      */
     public boolean isReady() {
         return ready;
+    }
+
+
+
+
+    /**
+     * Method that close all
+     */
+    public boolean stop() {
+
+        // Closing all
+        try {
+
+            // Closing stream
+            stream.close();
+            return true;
+
+
+        } catch (IOException e) {
+
+            // Printing exception
+            System.out.println(e);
+
+        }
+
+        return false;
+        
     }
 
 

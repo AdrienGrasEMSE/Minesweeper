@@ -74,10 +74,28 @@ public class DReader implements Runnable{
 
 
     /**
-     * Stop the thread
+     * Method that close all
      */
-    public void stop() {
-        active = false;
+    public boolean stop() {
+
+        // Closing all
+        try {
+
+            // Closing stream
+            stream.close();
+            active = false;
+            return true;
+
+
+        } catch (IOException e) {
+
+            // Printing exception
+            System.out.println(e);
+
+        }
+
+        return false;
+        
     }
 
 
