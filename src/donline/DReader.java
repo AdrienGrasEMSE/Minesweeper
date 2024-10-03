@@ -114,15 +114,17 @@ public class DReader implements Runnable{
             try {
 
                 // New data
-                if (stream.available() > 0) {
-                    readQueue.add(stream.readUTF());
+                synchronized (readQueue) {
+                    if (stream.available() > 0) {
+                        readQueue.add(stream.readUTF());
+                    }
                 }
 
 
             } catch (IOException e) {
 
                 // Printing exception
-                System.out.println(e);
+                // System.out.println(e);
 
             }            
                       

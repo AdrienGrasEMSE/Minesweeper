@@ -1,0 +1,8 @@
+Data shape :
+
+{<@ID@><$REQUEST_TYPE$><#CONTENT#>}
+
+
+
+
+

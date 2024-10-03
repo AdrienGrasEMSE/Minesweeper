@@ -147,7 +147,6 @@ public class DInterpreter {
         int     i               = rOpening;
         String  requestType_    = "";
         while (i < rEnding && (request.charAt(i) != '<' || request.charAt(i + 1) != '$')) {
-            System.out.println(i + " : " + request.charAt(i));
             i++;
         }
 
@@ -329,7 +328,7 @@ public class DInterpreter {
      * @return
      */
     public String build(String senderUUID, DRequestType requestType, String content) {
-        return "{<@" + senderUUID + "@><$" + requestType.getString() + "$><#" + content;
+        return "{<@" + senderUUID + "@><$" + requestType.getString() + "$><#" + content + "#>}";
     }
 
 }

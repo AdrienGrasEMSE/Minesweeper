@@ -16,7 +16,9 @@ public enum DRequestType {
     /**
      * Elements
      */
-    HELLO       ("HELLO"),
+    CLT_HELLO   ("CLT_HELLO"),
+    SRV_HELLO   ("SRV_HELLO"),
+    DISCONNECT  ("DISCONNECT"),
     UNRECOGNIZED("UNRECOGNIZED");
 
 
