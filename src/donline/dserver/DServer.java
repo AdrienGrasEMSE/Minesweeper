@@ -122,8 +122,44 @@ public class DServer implements Runnable{
      * 
      * @param request
      */
-    public synchronized void addRequest(String request) {
-        requestQueue.add(request);
+    public void addRequest(String request) {
+        synchronized (requestQueue) {
+            requestQueue.add(request);
+        }
+    }
+
+
+
+
+    /**
+     * Stop server
+     */
+    public void stop() {
+
+        // Closing all
+        srvListener.stop();
+        serverOnline = false;
+
+    }
+
+
+
+
+    /**
+     * Disconnect a client for a specific reason
+     * 
+     * @param uuid
+     * @param reason
+     */
+    public void disconnectClient(String uuid, String reason) {
+        synchronized (clientList) {
+
+            // Sending the stop request
+            clientList.get(uuid).addRequest(interpret.build("SERVER", DRequestType.DISCONNECT, reason));
+            clientList.get(uuid).shutDown();
+
+        }
+
     }
 
 
@@ -153,11 +189,16 @@ public class DServer implements Runnable{
                 // Client holder creation
                 String newId = idGeneration();
                 DClientHandler clientHandler = new DClientHandler(newId, socket, this);
-                clientList.put(newId, clientHandler);
+                synchronized (clientList) {
+                    clientList.put(newId, clientHandler);
+                }
 
 
                 // Init dialog
-                clientHandler.addServerRequest(interpret.build("SERVER", DRequestType.SRV_HELLO, clientHandler.getUUID()));
+                clientHandler.addRequest(interpret.build("SERVER", DRequestType.SRV_HELLO, clientHandler.getUUID()));
+
+
+                this.disconnectClient(newId, "Server full");
                 
                 
                 
@@ -174,8 +215,6 @@ public class DServer implements Runnable{
 
 
 
-
-    public void getClientHandler(String uuid) {}
 
 
     public static void main(String [] args) {

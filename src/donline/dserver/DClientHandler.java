@@ -14,13 +14,13 @@ import java.net.Socket;
 
 
 /**
- * Class Client Holder
+ * Class Client Handler
  * 
  * @author AdrienG
  * @version 0.0
  * 
  * 
- * Class that can hold a client by sending and receiving message
+ * Class wich can hold a client by sending and receiving message
  */
 public class DClientHandler implements DConnexionHandler{
 
@@ -126,7 +126,6 @@ public class DClientHandler implements DConnexionHandler{
      * @param name
      */
     public void setPlayerName(String name) {
-        System.out.println(name);
         playerName = name;
     }
 
@@ -169,6 +168,14 @@ public class DClientHandler implements DConnexionHandler{
      * Stop the client handler
      */
     public void shutDown() {
+
+        // Sending all data before closing all
+        synchronized (writeQueue) {
+            while (!writeQueue.isEmpty()) {}
+        }
+
+
+        // Disconnecting
         connected = false;
     }
 

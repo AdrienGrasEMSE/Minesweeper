@@ -113,13 +113,14 @@ public class DClient implements DConnexionHandler {
         } catch (IOException e) {
 
             // Printing exception
-            System.err.println(e);
+            System.out.println(e);
         
         }
 
 
         // Not connected
-        connected =  false;
+        this.connected  = false;
+        this.service    = null;
         return false;
 
     }
@@ -237,6 +238,15 @@ public class DClient implements DConnexionHandler {
                 // Server answer : taking it into account
                 this.pingService.answerPing();
                 break;
+
+            
+            // Server disconnect client
+            case DRequestType.DISCONNECT:
+
+                // Server answer : taking it into account
+                this.shutDown();
+                System.out.println(interpret.getContent());
+                break;
         
                 
             default:
@@ -313,6 +323,22 @@ public class DClient implements DConnexionHandler {
 
         DClient client = new DClient("AdrienG");
         client.connect("localhost", 10000);
+
+
+        // // Test
+        // try {
+
+        //     // 15sec
+        //     Thread.sleep(15000);
+
+        // } catch (InterruptedException e) {
+
+        //     //
+        //     e.printStackTrace();
+
+        // }
+        // client.addRequest(client.interpret.build(client.uuid, DRequestType.DISCONNECT, ""));
+        // client.shutDown();
 
 
         // Ending point

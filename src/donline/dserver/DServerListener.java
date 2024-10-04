@@ -71,8 +71,6 @@ public class DServerListener implements Runnable{
         // Stop condition
         while (service != null && serverOnline) {
 
-
-            // 
             synchronized (requestQueue) {
 
                 // Reading request
@@ -121,6 +119,16 @@ public class DServerListener implements Runnable{
                             // Client answer : taking it into account
                             synchronized (clientList) {
                                 clientList.get(interpret.getSenderUUID()).pingReceived();
+                            }
+                            break;
+
+                        
+                        // Client disconnect request received
+                        case DRequestType.DISCONNECT:
+
+                            // Client answer : taking it into account
+                            synchronized (clientList) {
+                                clientList.get(interpret.getSenderUUID()).shutDown();
                             }
                             break;
                     
