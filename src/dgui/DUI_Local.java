@@ -548,7 +548,6 @@ public class DUI_Local extends JPanel implements ActionListener {
                 info.setVisible(true);
             }
 
-
         }while (!param.getParamValid() && param.getUserConfirm());
 
 
