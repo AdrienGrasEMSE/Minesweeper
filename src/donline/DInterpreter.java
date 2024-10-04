@@ -40,6 +40,33 @@ public class DInterpreter {
 
 
 
+    
+    /**
+     * In case of bad request
+     */
+    private void badRequest(boolean idUsable) {
+
+        // If the id is recognized
+        if (!idUsable) {
+            this.senderUUID     = "";
+        }
+        this.requestType    = DRequestType.UNRECOGNIZED;
+        this.content        = "";
+
+    }
+
+
+
+
+    /**
+     * Reset its field
+     */
+    public void clear() {
+        this.badRequest(false);
+    }
+
+
+
 
     /**
      * Getter : to get te request type
@@ -60,23 +87,6 @@ public class DInterpreter {
      */
     public String getContent() {
         return content;
-    }
-
-
-
-
-    /**
-     * In case of bad request
-     */
-    private void badRequest(boolean idUsable) {
-
-        // If the id is recognized
-        if (!idUsable) {
-            this.senderUUID     = "";
-        }
-        this.requestType    = DRequestType.UNRECOGNIZED;
-        this.content        = "";
-
     }
 
 
@@ -257,6 +267,10 @@ public class DInterpreter {
      * @param request
      */
     public void interpret(String request) {
+
+        // Cleaning
+        this.clear();
+
 
         // Declaration
         int rOpening    = -1;
