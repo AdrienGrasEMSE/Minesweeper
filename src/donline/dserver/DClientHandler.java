@@ -4,6 +4,9 @@ package donline.dserver;
 // Import
 import java.util.LinkedList;
 import java.util.Queue;
+
+import donline.DConnexionHandler;
+import donline.DPing;
 import donline.DReader;
 import donline.DWritter;
 import java.io.IOException;
@@ -19,15 +22,16 @@ import java.net.Socket;
  * 
  * Class that can hold a client by sending and receiving message
  */
-public class DClientHandler implements Runnable{
+public class DClientHandler implements DConnexionHandler{
 
     /**
      * Attributes
      */
-    private final   Thread          service;
+    private         Thread          service;
     private final   Socket          socket;
     private final   String          uuid;
     private final   DServer         server;
+    private         DPing           pingService;
     private         boolean         connected   = true;
     private         String          playerName  = "";
 
@@ -77,8 +81,9 @@ public class DClientHandler implements Runnable{
         }
 
 
-        // Starting service
-        this.service = new Thread(this);
+        // Starting services
+        this.pingService    = new DPing(uuid, this);
+        this.service        = new Thread(this);
         this.service.start();
 
     }
@@ -103,7 +108,7 @@ public class DClientHandler implements Runnable{
      * 
      * @param request
      */
-    public void addServerRequest(String request) {
+    public void addRequest(String request) {
 
         // Adding the request to the queue
         synchronized (writeQueue) {
@@ -121,12 +126,92 @@ public class DClientHandler implements Runnable{
      * @param name
      */
     public void setPlayerName(String name) {
+        System.out.println(name);
         playerName = name;
     }
 
 
 
+
+    /**
+     * Getter : to get the player pseudo
+     * 
+     * @return playerName
+     */
+    public String getPlayerName() {
+        return playerName;
+    }
+
+
+
+
+    /**
+     * Start ping service
+     */
+    public void startPinging() {
+        pingService.start();
+    }
+
+
+
+
+    /**
+     * Valid ping response
+     */
+    public void pingReceived() {
+        pingService.answerPing();
+    }
+
+
+
+
+    /**
+     * Stop the client handler
+     */
+    public void shutDown() {
+        connected = false;
+    }
+
+
+
+
+    /**
+     * Closing all
+     */
+    public void disconnect() {
+
+        // TODO : info
+        System.out.println("Disconnecting " + this.uuid);
+
+
+        // Trying to stop all properly
+        if (reader.stop() && writter.stop()) {
+
+            // Trying to close the socket
+            try {
+
+                // Closing socket
+                socket.close();
+
+            } catch (IOException e) {
+
+                // TODO : handle this one (omg)
+                System.out.println(e);
+
+            }
+
+        }
+
+
+        // Shutting down service
+        this.service = null;
+        this.pingService.stop();
+
+    }
+
     
+
+
     /**
      * Thread method
      */
@@ -164,22 +249,8 @@ public class DClientHandler implements Runnable{
 
             } else {
 
-                // TODO : disconnect
-                System.out.println("Disconnecting");
-
-
-                // Closing all
-                if (reader.stop() && writter.stop()) {
-
-                    // Closing the socket
-                    try {
-                        socket.close();
-                    } catch (IOException e) {
-                        // TODO : handle this one (omg)
-                        System.out.println(e);;
-                    }
-
-                }
+                // Disconnect
+                this.disconnect();
 
             }
                       

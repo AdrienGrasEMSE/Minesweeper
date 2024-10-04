@@ -18,7 +18,7 @@ import java.util.Queue;
  * 
  * Class wich communicate with a server
  */
-public class DClient implements Runnable {
+public class DClient implements DConnexionHandler {
 
     /**
      * Client attribute
@@ -29,7 +29,8 @@ public class DClient implements Runnable {
     /**
      * Attributes
      */
-    private final   Thread          service;
+    private         Thread          service;
+    private         DPing           pingService;
     private         Socket          socket;
     private         String          uuid;
     private         boolean         connected   = false;
@@ -127,11 +128,58 @@ public class DClient implements Runnable {
 
 
     /**
+     * Stop the client
+     */
+    public void shutDown() {
+        connected = false;
+    }
+
+
+
+
+    /**
+     * Closing all
+     */
+    public void disconnect() {
+
+        // TODO : info
+        System.out.println("Disconnecting " + this.uuid);
+
+
+        // Trying to stop all properly
+        if (reader.stop() && writter.stop()) {
+
+            // Trying to close the socket
+            try {
+
+                // Closing socket
+                socket.close();
+
+            } catch (IOException e) {
+
+                // TODO : handle this one (omg)
+                System.out.println(e);
+
+            }
+
+        }
+
+
+        // Shutting down service
+        this.service = null;
+        this.pingService.stop();
+
+    }
+
+    
+
+
+    /**
      * Method to send a request to the server
      * 
      * @param request
      */
-    public void sendRequest(String request) {
+    public void addRequest(String request) {
         synchronized (writeQueue) {
             writeQueue.add(request);
         }
@@ -151,6 +199,10 @@ public class DClient implements Runnable {
         interpret.interpret(request);
 
 
+        // TODO Clean this shit
+        // System.out.println(interpret.getRequestType().getString());
+
+
         // Action according to the request type
         switch (interpret.getRequestType()) {
 
@@ -161,8 +213,29 @@ public class DClient implements Runnable {
                 this.uuid = interpret.getContent();
 
 
+                // Creating ping service
+                this.pingService = new DPing(uuid, this);
+                this.pingService.start();
+
+
                 // Launching the client hello
-                this.sendRequest(interpret.build(this.uuid, DRequestType.CLT_HELLO, name));
+                this.addRequest(interpret.build(this.uuid, DRequestType.CLT_HELLO, name));
+                break;
+
+
+            // Server ping
+            case DRequestType.PING:
+
+                // Ansewering the ping
+                this.addRequest(interpret.build(this.uuid, DRequestType.PINGANSWER, ""));
+                break;
+
+            
+            // Server ping answer
+            case DRequestType.PINGANSWER:
+
+                // Server answer : taking it into account
+                this.pingService.answerPing();
                 break;
         
                 
@@ -204,30 +277,22 @@ public class DClient implements Runnable {
                     if (!writeQueue.isEmpty()) {
 
                         // Sending data
-                        writter.write(writeQueue.poll());
+                        synchronized (writter) {
+                            synchronized (writeQueue) {
+                                writter.write(writeQueue.poll());
+                            }
+                            
+                        }
                         
                     }
+
                 }
 
 
             } else {
 
-                // TODO : disconnect
-                System.out.println("Disconnecting");
-
-
-                // Closing all
-                if (reader.stop() && writter.stop()) {
-
-                    // Closing the socket
-                    try {
-                        socket.close();
-                    } catch (IOException e) {
-                        // TODO : handle this one (omg)
-                        System.out.println(e);;
-                    }
-
-                }
+                // Disconnect
+                this.disconnect();
 
             }
                       

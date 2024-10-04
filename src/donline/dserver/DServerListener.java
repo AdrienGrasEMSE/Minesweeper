@@ -1,13 +1,11 @@
 // Package declaration
 package donline.dserver;
 
-import java.util.HashMap;
-import java.util.Map;
 // Import
+import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
-
 import donline.DInterpreter;
+import donline.DRequestType;
 
 
 /**
@@ -80,7 +78,15 @@ public class DServerListener implements Runnable{
                 // Reading request
                 if (!requestQueue.isEmpty()) {
 
-                    System.out.println(requestQueue.peek());
+                    // TODO : clear this shit
+                    String str = requestQueue.peek();
+                    System.out.println(str);
+                    // interpret.interpret(str);
+                    // System.err.println(interpret.getSenderUUID());
+                    // System.err.println(interpret.getRequestType().getString());
+                    // System.err.println(interpret.getContent());
+
+
 
                     // Request interpretation
                     interpret.interpret(requestQueue.poll());
@@ -90,12 +96,36 @@ public class DServerListener implements Runnable{
                     switch (interpret.getRequestType()) {
 
                         // Client hello
-                        case CLT_HELLO:
+                        case DRequestType.CLT_HELLO:
 
                             // Get the client handler and apply it the name
-                            clientList.get(interpret.getSenderUUID()).setPlayerName(interpret.getContent());
+                            synchronized (clientList) {
+                                clientList.get(interpret.getSenderUUID()).setPlayerName(interpret.getContent());
+                                clientList.get(interpret.getSenderUUID()).startPinging();
+                            }
+                            break;
+
+
+                        // Client ping
+                        case DRequestType.PING:
+
+                            // Answering the ping
+                            synchronized (clientList) {
+                                clientList.get(interpret.getSenderUUID()).addRequest(interpret.build("SERVER", DRequestType.PINGANSWER, ""));                            }
+                            break;
+
+                        
+                        // Client ping received
+                        case DRequestType.PINGANSWER:
+
+                            // Client answer : taking it into account
+                            synchronized (clientList) {
+                                clientList.get(interpret.getSenderUUID()).pingReceived();
+                            }
                             break;
                     
+
+                        // Default
                         default:
                             break;
                     }
