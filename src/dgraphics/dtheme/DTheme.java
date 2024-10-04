@@ -64,14 +64,14 @@ public class DTheme {
      * GUI colors
      */
     public static DColors_UI    GUI_VAR = new DColors_UI(0xE6A397, 0xD76C58, 0x7F5056);
-    public static DColors_UI    GUI_NTL = new DColors_UI(0x828897, 0x374158, 0x222D41);
-    public static DColors_UI    GUI_DRK = new DColors_UI(0x1D1F24, 0x11151D, 0x0F1219);
+    public static DColors_UI    GUI_NTL = new DColors_UI(0x222D41, 0x374158, 0x828897);
+    public static DColors_UI    GUI_DRK = new DColors_UI(0x0F1219, 0x11151D, 0x1D1F24);
     
 
     /**
      * Dialog interface colors
      */
-    public static DColors_UI    DLG_DRK = new DColors_UI(0xE01D1F24, 0xE011151D, 0xE00F1219);
+    public static DColors_UI    DLG_DRK = new DColors_UI(0xE00F1219, 0xE011151D, 0xE01D1F24);
 
 
     /**
@@ -147,14 +147,14 @@ public class DTheme {
          * GUI colors
          */
         GUI_VAR = new DColors_UI(0xE6A397, 0xD76C58, 0x7F5056);
-        GUI_NTL = new DColors_UI(0x828897, 0x374158, 0x222D41);
-        GUI_DRK = new DColors_UI(0x1D1F24, 0x11151D, 0x0F1219);
+        GUI_NTL = new DColors_UI(0x222D41, 0x374158, 0x828897);
+        GUI_DRK = new DColors_UI(0x0F1219, 0x11151D, 0x1D1F24);
         
 
         /**
          * Dialog interface colors
          */
-        DLG_DRK = new DColors_UI(0xE01D1F24, 0xE011151D, 0xE00F1219);
+        DLG_DRK = new DColors_UI(0xE00F1219, 0xE011151D, 0xE01D1F24);
 
 
         /**
