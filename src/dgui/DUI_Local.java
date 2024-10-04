@@ -50,7 +50,7 @@ public class DUI_Local extends JPanel implements ActionListener {
 
 
     /**
-     * GUI main panels
+     * UI main panels
      */
     private final   JPanel      northPanel          = new JPanel();
     private final   JPanel      southPanel          = new JPanel();
@@ -89,6 +89,7 @@ public class DUI_Local extends JPanel implements ActionListener {
     /**
      * Constructor
      * 
+     * @param gui
      * @param controller in order to transmit data or action performed
      */
     public DUI_Local(DGUI gui, DController controller) {

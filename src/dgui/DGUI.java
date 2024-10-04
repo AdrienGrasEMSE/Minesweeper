@@ -18,6 +18,7 @@ import ddialog.EndGame;
 import deminer.DController;
 import deminer.DLevel;
 import deminer.DSprite;
+import dgui.dui_online.DUI_Online;
 
 
 /**
@@ -86,7 +87,7 @@ public class DGUI extends JFrame {
     /**
      * Constructor
      * 
-     * @param controller the controller controller
+     * @param controller
      */
     public DGUI(DController controller) {
 
@@ -117,8 +118,8 @@ public class DGUI extends JFrame {
 
 
         // Setting up the main panel
-        this.mainPanel          .setLayout(mainLayout);
         this                    .add(mainPanel);
+        this.mainPanel          .setLayout(mainLayout);
 
 
         // Setting up UIs
@@ -391,6 +392,8 @@ public class DGUI extends JFrame {
     }
 
 
+
+
     /**
      * Switch to the local UI
      */
@@ -459,25 +462,36 @@ public class DGUI extends JFrame {
      */
     public void switchUIPrevious() {
 
-        // Switching back to the previous UI
-        currentUI   = previousUI;
+        // Exception management
+        if (    (currentUI == DUI_Type.UI_ONLINE && previousUI == DUI_Type.UI_OPTION) ||
+                (currentUI == previousUI)) {
+
+            // Back to the local UI
+            this.switchUILocal();
+
+
+        } else {
+
+            // Switching back to the previous UI
+            currentUI   = previousUI;
 
         
-        // Switching
-        switch (currentUI) {
-            case DUI_Type.UI_LOCAL:
-                this.switchUILocal();
-                break;
-        
-            case DUI_Type.UI_OPTION:
-                this.switchUIOption();
-                break;
+            // Switching
+            switch (currentUI) {
+                case DUI_Type.UI_LOCAL:
+                    this.switchUILocal();
+                    break;
+            
+                case DUI_Type.UI_OPTION:
+                    this.switchUIOption();
+                    break;
 
-            case DUI_Type.UI_ONLINE:
-                this.switchUIOnline();
-                break;
+                case DUI_Type.UI_ONLINE:
+                    this.switchUIOnline();
+                    break;
+            }
+        
         }
-        
 
     }
 

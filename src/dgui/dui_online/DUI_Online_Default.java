@@ -1,13 +1,21 @@
-// Package declaration
-package dgui;
+// Pakcage declaration
+package dgui.dui_online;
 
 // Import
-import java.awt.Component;
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
 import dgraphics.DButton;
 import dgraphics.DFont;
 import dgraphics.DLabel;
@@ -15,20 +23,20 @@ import dgraphics.dtheme.DTheme;
 
 
 /**
- * Class Option UI
+ * Class Default Online UI
  * 
  * @author  AdrienG
  * @version 0.0
  * 
  * 
- * This class represent the UI when the user goes in the option screen.
+ * This class represent the default screen when the user play in multiplayer mode.
  */
-public class DUI_Option extends JPanel implements ActionListener {
+public class DUI_Online_Default extends JPanel implements ActionListener {
 
     /**
      * UI main objects
-     */ 
-    private final   DGUI        gui;
+     */
+    private final   DUI_Online  mainUI;
 
 
     /**
@@ -40,17 +48,11 @@ public class DUI_Option extends JPanel implements ActionListener {
 
 
     /**
-     * South panel elements
+     * South panels elements
      */
     private final   DButton     backButton          = new DButton("Back",           DFont.JOST_SEMIBOLD, 24, DTheme.BTN_RED);
-    private final   DButton     saveButton          = new DButton("Save settings",  DFont.JOST_SEMIBOLD, 24, DTheme.BTN_GRN);
-
-
-    /**
-     * Center panel elements
-     */
-    private final   DButton     darkMode            = new DButton("☾", DFont.NONE, 24, DTheme.BTN_DRK);
-    private final   DButton     lightMode           = new DButton("☀", DFont.NONE, 24, DTheme.BTN_VAR);
+    private final   DButton     createGameButton    = new DButton("Create a game",  DFont.JOST_SEMIBOLD, 24, DTheme.BTN_GRN);
+    private final   DButton     joinGameButton      = new DButton("Join a game",    DFont.JOST_SEMIBOLD, 24, DTheme.BTN_GRN);
 
 
 
@@ -58,12 +60,12 @@ public class DUI_Option extends JPanel implements ActionListener {
     /**
      * Constructor
      * 
-     * @param gui
+     * @param controller in order to transmit data or action performed
      */
-    public DUI_Option(DGUI gui) {
+    public DUI_Online_Default(DUI_Online mainUI) {
 
         // Getting the gui and the controller
-        this.gui        = gui;
+        this.mainUI = mainUI;
 
 
         // Setting up layout and VFX
@@ -78,6 +80,8 @@ public class DUI_Option extends JPanel implements ActionListener {
     }
 
 
+
+
     /**
      * Setting up north panel
     */
@@ -88,9 +92,9 @@ public class DUI_Option extends JPanel implements ActionListener {
         northPanel          .setLayout      (new FlowLayout());
         northPanel          .setBackground  (DTheme.GUI_VAR.BCK_N);
 
-
+        
         // Creaing title label
-        DLabel titleLabel   = new DLabel("Options", DFont.JOST_SEMIBOLD, 40, DTheme.LAB_NTL);
+        DLabel titleLabel   = new DLabel("Multiplayer", DFont.JOST_SEMIBOLD, 40, DTheme.LAB_NTL);
         titleLabel          .setAlignmentX(Component.CENTER_ALIGNMENT);
         northPanel          .add(titleLabel);
 
@@ -104,10 +108,6 @@ public class DUI_Option extends JPanel implements ActionListener {
     */
     private void southPanelSetup() {
 
-        // Clearing the southpanel
-        southPanel.removeAll();
-
-
         // Plotting panel and set VFX
         this                .add            (southPanel,BorderLayout.SOUTH);
         southPanel          .setLayout      (new FlowLayout());
@@ -116,12 +116,10 @@ public class DUI_Option extends JPanel implements ActionListener {
 
         // Plotting elements inside
         southPanel          .add(backButton);
-        southPanel          .add(saveButton);
 
 
         // Setting up listeners
         backButton          .addActionListener(this);
-        saveButton          .addActionListener(this);
 
     }
 
@@ -135,14 +133,46 @@ public class DUI_Option extends JPanel implements ActionListener {
 
         // Plotting panel and set VFX
         this                    .add            (centerPanel,   BorderLayout.CENTER);
-        centerPanel             .setLayout      (new FlowLayout());
+        centerPanel             .setLayout      (new GridBagLayout());
         centerPanel             .setBackground  (DTheme.GUI_NTL.BCK_N);
 
-        centerPanel.add(darkMode);
-        centerPanel.add(lightMode);
 
-        darkMode.addActionListener(this);
-        lightMode.addActionListener(this);
+        // Constraint creation
+        GridBagConstraints gbc  = new GridBagConstraints();
+        gbc.gridx               = 0;
+        gbc.gridy               = 0;
+        gbc.weightx             = 1.0;
+        gbc.weighty             = 1.0;
+        gbc.anchor              = GridBagConstraints.CENTER;
+
+
+        // Centered panel
+        JPanel centeredPanel    = new JPanel();
+        centeredPanel           .setLayout      (new BoxLayout(centeredPanel, BoxLayout.Y_AXIS));
+        centeredPanel           .setBorder      (new EmptyBorder(30, 30, 30, 30));
+        centeredPanel           .setBackground  (DTheme.GUI_NTL.BCK_D);
+
+
+        // Game creation panel
+        JPanel createPanel      = new JPanel    (new FlowLayout());
+        createPanel             .setBackground  (DTheme.GUI_NTL.BCK_D);
+        createPanel             .add            (createGameButton);
+
+
+        // Game join panel
+        JPanel joinPanel        = new JPanel    (new FlowLayout());
+        joinPanel               .setBackground  (DTheme.GUI_NTL.BCK_D);
+        joinPanel               .add            (joinGameButton);
+
+
+        // Plotting panels
+        centeredPanel           .add(createPanel);
+        centeredPanel           .add(Box.createRigidArea(new Dimension(10, 30)));
+        centeredPanel           .add(joinPanel);
+
+
+        // Plotting the centered panel
+        centerPanel             .add(centeredPanel, gbc);
 
     }
 
@@ -159,23 +189,7 @@ public class DUI_Option extends JPanel implements ActionListener {
         if (e.getSource() == backButton) {
 
             // Getting back to the previous screen
-            gui.switchUIPrevious();
-            return;
-
-
-        } else if (e.getSource() == darkMode) {
-
-            // Applying dark mode
-            DTheme.default_();
-            gui.updateTheme();
-            return;
-
-
-        } else if (e.getSource() == lightMode) {
-
-            // Applying dark mode
-            DTheme.lightMode();
-            gui.updateTheme();
+            mainUI.switchUIPrevious();
             return;
 
 
