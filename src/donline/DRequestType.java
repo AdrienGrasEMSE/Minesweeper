@@ -16,8 +16,11 @@ public enum DRequestType {
     /**
      * Elements
      */
-    CLT_HELLO   ("CLT_HELLO"),
+    CLT_HELLO   ("CLT_HELLO"),      // Client hello :
     SRV_HELLO   ("SRV_HELLO"),
+
+    PING        ("PING"),
+    PINGANSWER  ("PINGANSWER"),
     DISCONNECT  ("DISCONNECT"),
     UNRECOGNIZED("UNRECOGNIZED");
 

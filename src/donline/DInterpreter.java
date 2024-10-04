@@ -328,6 +328,12 @@ public class DInterpreter {
      * @return
      */
     public String build(String senderUUID, DRequestType requestType, String content) {
+
+        // Avoiding empty content
+        if (content.equals("")) {
+            content = "0";
+        }
+
         return "{<@" + senderUUID + "@><$" + requestType.getString() + "$><#" + content + "#>}";
     }
 
