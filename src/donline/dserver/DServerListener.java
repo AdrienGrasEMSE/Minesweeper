@@ -22,6 +22,7 @@ public class DServerListener implements Runnable{
     /**
      * Attribute
      */
+    private final   DServer                     server;
     private final   Thread                      service;
     private final   Queue<String>               requestQueue;
     private final   Map<String, DClientHandler> clientList;
@@ -36,9 +37,10 @@ public class DServerListener implements Runnable{
      * 
      * @param serverQueue
      */
-    public DServerListener(Queue<String> serverQueue, Map<String, DClientHandler> clientList) {
+    public DServerListener(DServer server, Queue<String> serverQueue, Map<String, DClientHandler> clientList) {
 
         // Getting attribute
+        this.server         = server;
         this.requestQueue   = serverQueue;
         this.clientList     = clientList;
 
@@ -94,7 +96,7 @@ public class DServerListener implements Runnable{
                     switch (interpret.getRequestType()) {
 
                         // Client hello
-                        case DRequestType.CLT_HELLO:
+                        case DRequestType.HELLO_CLT:
 
                             // Get the client handler and apply it the name
                             synchronized (clientList) {
@@ -109,12 +111,13 @@ public class DServerListener implements Runnable{
 
                             // Answering the ping
                             synchronized (clientList) {
-                                clientList.get(interpret.getSenderUUID()).addRequest(interpret.build("SERVER", DRequestType.PINGANSWER, ""));                            }
+                                clientList.get(interpret.getSenderUUID()).addRequest(interpret.build("SERVER", DRequestType.PING_ANSWER, ""));
+                            }
                             break;
 
                         
                         // Client ping received
-                        case DRequestType.PINGANSWER:
+                        case DRequestType.PING_ANSWER:
 
                             // Client answer : taking it into account
                             synchronized (clientList) {
@@ -129,6 +132,30 @@ public class DServerListener implements Runnable{
                             // Client answer : taking it into account
                             synchronized (clientList) {
                                 clientList.get(interpret.getSenderUUID()).shutDown();
+                            }
+                            break;
+
+
+                        // Client ask owner ship
+                        case DRequestType.OWNERSHIP_ASK:
+
+                            // Answering the client
+                            synchronized (clientList) {
+
+                                // Verifying the UUID sent
+                                if (interpret.getContent().equals(server.getUUID())) {
+
+                                    // Ownership granted
+                                    clientList.get(interpret.getSenderUUID()).addRequest(interpret.build("SERVER", DRequestType.OWNERSHIP_GRANTED, ""));
+
+                                    
+                                } else {
+
+                                    // Ownership refused
+                                    clientList.get(interpret.getSenderUUID()).addRequest(interpret.build("SERVER", DRequestType.OWNERSHIP_REFUSED, ""));
+
+                                }
+
                             }
                             break;
                     

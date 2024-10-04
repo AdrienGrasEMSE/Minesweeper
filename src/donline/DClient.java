@@ -208,7 +208,7 @@ public class DClient implements DConnexionHandler {
         switch (interpret.getRequestType()) {
 
             // Server hello
-            case DRequestType.SRV_HELLO:
+            case DRequestType.HELLO_SRV:
 
                 // Getting the given ID
                 this.uuid = interpret.getContent();
@@ -220,7 +220,7 @@ public class DClient implements DConnexionHandler {
 
 
                 // Launching the client hello
-                this.addRequest(interpret.build(this.uuid, DRequestType.CLT_HELLO, name));
+                this.addRequest(interpret.build(this.uuid, DRequestType.HELLO_CLT, name));
                 break;
 
 
@@ -228,12 +228,12 @@ public class DClient implements DConnexionHandler {
             case DRequestType.PING:
 
                 // Ansewering the ping
-                this.addRequest(interpret.build(this.uuid, DRequestType.PINGANSWER, ""));
+                this.addRequest(interpret.build(this.uuid, DRequestType.PING_ANSWER, ""));
                 break;
 
             
             // Server ping answer
-            case DRequestType.PINGANSWER:
+            case DRequestType.PING_ANSWER:
 
                 // Server answer : taking it into account
                 this.pingService.answerPing();
@@ -325,20 +325,19 @@ public class DClient implements DConnexionHandler {
         client.connect("localhost", 10000);
 
 
-        // // Test
-        // try {
+        // Test
+        try {
 
-        //     // 15sec
-        //     Thread.sleep(15000);
+            // 1sec
+            Thread.sleep(1000);
 
-        // } catch (InterruptedException e) {
+        } catch (InterruptedException e) {
 
-        //     //
-        //     e.printStackTrace();
+            //
+            e.printStackTrace();
 
-        // }
-        // client.addRequest(client.interpret.build(client.uuid, DRequestType.DISCONNECT, ""));
-        // client.shutDown();
+        }
+        client.addRequest(client.interpret.build(client.uuid, DRequestType.OWNERSHIP_ASK, "1234"));
 
 
         // Ending point

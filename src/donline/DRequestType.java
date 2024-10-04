@@ -20,27 +20,58 @@ public enum DRequestType {
      * 
      * 
      * 
-     * EMpty content = "0"
+     * Empty content = "0"
      */
 
-    // Hello phase
-    SRV_HELLO   ("SRV_HELLO"),      // Server hello : {<@SERVER@><$SRV_HELLO$><#__client_id__#>}
-    CLT_HELLO   ("CLT_HELLO"),      // Client hello : {<@__client_id__@><$CLT_HELLO$><#__player_pseudo__#>}
+    /**
+     * Hello phase
+     * - Server hello   : {<@SERVER@><$SRV_HELLO$><#__client_id__#>}
+     * - Client hello   : {<@__ID__@><$CLT_HELLO$><#__player_pseudo__#>}
+     */
+    HELLO_SRV           ("HELLO_SRV"),
+    HELLO_CLT           ("HELLO_CLT"),
 
 
-    // Ping request
-    PING        ("PING"),           // Ping request : {<@__ID__@><$PING$><#0#>}
-    PINGANSWER  ("PINGANSWER"),     // Ping request : {<@__ID__@><$PINGANSWER$><#0#>}
+    /**
+     * Ping requests
+     * - Ping request   : {<@__ID__@><$PING$><#0#>}
+     * - Ping answer    : {<@__ID__@><$PINGANSWER$><#0#>}
+     */
+    PING                ("PING"),
+    PING_ANSWER         ("PING_ANSWER"),
 
 
-    // Disconnect request :
-    //  - For client, its purpose is to inform the server that tha client is disconnecting
-    //  - For server, its purpose is to force disconnect the client
-    DISCONNECT  ("DISCONNECT"),
+    /**
+     * Disconnect request
+     * - Server request : {<@SERVER@><$DISCONNECT$><#__reason__#>}
+     *      -> force disconnect a client for a reason
+     * - Client request : {<@__ID__@><$DISCONNECT$><#0#>}
+     *      -> Inform the server that the client is disconnecting
+     */
+    DISCONNECT          ("DISCONNECT"),
+
+
+    /**
+     * Server ownership
+     * - ASKOWNERSHIP       : {<@__ID__@><$CLT_HELLO$><#__SERVER_ID_#>}
+     * - OWNERSHIPREFUSED   : {<@SERVER@><$OWNERSHIPREFUSED$><#0#>}
+     * - OWNERSHIPGRANTED   : {<@SERVER@><$OWNERSHIPGRANTED$><#0#>}
+     * 
+     * Explanation :
+     *      The server is owned by an application. But by default, no one is connected,
+     * including the app which launch the server. So we need a system of ownership.
+     *      The application which created the server now its UUID. So, when asking
+     * ownership, it transmit the server UUID which has been never send to anyone.
+     *      If the server UUID and the sent one are the same, then the ownership is
+     * granted.
+     */
+    OWNERSHIP_ASK       ("OWNERSHIP_ASK"),
+    OWNERSHIP_REFUSED   ("OWNERSHIP_REFUSED"),
+    OWNERSHIP_GRANTED   ("OWNERSHIP_GRANTED"),
 
 
     // For unrecognized request
-    UNRECOGNIZED("UNRECOGNIZED");
+    UNRECOGNIZED        ("UNRECOGNIZED");
 
 
     /**

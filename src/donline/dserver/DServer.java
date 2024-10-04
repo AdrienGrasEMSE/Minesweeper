@@ -2,7 +2,7 @@
 package donline.dserver;
 
 // Import
-import java.util.UUID;
+import deminer.DUUID;
 import donline.DInterpreter;
 import donline.DRequestType;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ import java.net.Socket;
 
 
 /**
- * Class server listener
+ * Class server
  * 
  * @author  AdrienG
  * @version 0.0
@@ -29,10 +29,11 @@ public class DServer implements Runnable{
     /**
      * Attributes
      */
-    private         boolean                     serverOnline;
     private final   Thread                      service;
-    private         ServerSocket                gestSock        = null;
     private final   Map<String, DClientHandler> clientList      = new HashMap<>();
+    private final   String                      uuid;
+    private         ServerSocket                gestSock        = null;
+    private         boolean                     serverOnline;
 
 
     /**
@@ -48,7 +49,11 @@ public class DServer implements Runnable{
     /**
      * Constructor
      */
-    public DServer() {
+    public DServer(String uuid) {
+
+        // Getting server id
+        this.uuid = uuid;
+
 
         // New thread
         service = new Thread(this);
@@ -70,7 +75,7 @@ public class DServer implements Runnable{
 
 
             // Activating listening service
-            srvListener = new DServerListener(requestQueue, clientList);
+            srvListener = new DServerListener(this, requestQueue, clientList);
 
             
         } catch (IOException e) {
@@ -90,6 +95,18 @@ public class DServer implements Runnable{
 
 
     /**
+     * Getter : to get the server UUID
+     * 
+     * @return
+     */
+    public String getUUID() {
+        return uuid;
+    }
+
+
+
+
+    /**
      * Getter : to check if the server is online or not
      * 
      * @return serverOnline : flag that show if the server online or not
@@ -102,16 +119,14 @@ public class DServer implements Runnable{
 
 
     /**
-     * ID generation using a UUID method (thanks ChatGPT)
+     * Remove a client handler from the client list
      * 
-     * @return
+     * @param uuid
      */
-    private String idGeneration() {
-
-        // UUID (Universally Unique Identifier)
-        UUID uuid = UUID.randomUUID();
-        return uuid.toString();
-        
+    public void removeHandler(String uuid) {
+        synchronized (clientList) {
+            clientList.remove(uuid);
+        }
     }
 
 
@@ -187,7 +202,7 @@ public class DServer implements Runnable{
 
 
                 // Client holder creation
-                String newId = idGeneration();
+                String newId = DUUID.generate();
                 DClientHandler clientHandler = new DClientHandler(newId, socket, this);
                 synchronized (clientList) {
                     clientList.put(newId, clientHandler);
@@ -195,10 +210,10 @@ public class DServer implements Runnable{
 
 
                 // Init dialog
-                clientHandler.addRequest(interpret.build("SERVER", DRequestType.SRV_HELLO, clientHandler.getUUID()));
+                clientHandler.addRequest(interpret.build("SERVER", DRequestType.HELLO_SRV, clientHandler.getUUID()));
 
 
-                this.disconnectClient(newId, "Server full");
+                // this.disconnectClient(newId, "Server full");
                 
                 
                 
@@ -224,19 +239,19 @@ public class DServer implements Runnable{
 
 
         // Starting server
-        DServer srv = new DServer();
+        DServer srv = new DServer("1234");
 
 
         // Checking if the server is online
         if (srv.isOnline()) {
-            System.out.println("SERVER : Online");
+            System.out.println("SERVER : Online, UUID = " + srv.getUUID());
         } else {
             System.out.println("SERVER : Disconnected");
         }
 
 
         // Ending point
-        System.out.println("SERVER : Ending point");
+        // System.out.println("SERVER : Ending point");
 
     }
 

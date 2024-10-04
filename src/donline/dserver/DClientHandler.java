@@ -214,6 +214,10 @@ public class DClientHandler implements DConnexionHandler{
         this.service = null;
         this.pingService.stop();
 
+
+        // Removing the handler from the server
+        server.removeHandler(uuid);
+
     }
 
     
