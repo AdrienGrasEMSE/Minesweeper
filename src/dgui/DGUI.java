@@ -2,25 +2,23 @@
 package dgui;
 
 // Import
-import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.CardLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Map;
-
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import ddialog.EndGame;
 import deminer.DController;
 import deminer.DLevel;
 import deminer.DSprite;
 import dgui.dui_online.DUI_Online;
+import java.awt.CardLayout;
+import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.util.Map;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 
 
 /**
@@ -150,128 +148,75 @@ public class DGUI extends JFrame {
     private void menuGameSetup() {
 
         // mNewEasyGame action
-        mNewEasyGame.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                // Lauching a new easy game
-                controller.setLevel     (DLevel.EASY);
-                uiLocal.updateLevel     (false);
-                uiLocal.newClassicGame  (false);
-
-            }
-
+        mNewEasyGame.addActionListener((ActionEvent e) -> {
+            // Lauching a new easy game
+            controller.setLevel     (DLevel.EASY);
+            uiLocal.updateLevel     (false);
+            uiLocal.newClassicGame  (false);
         });
 
 
         // mNewMediumGame action
-        mNewMediumGame.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                // Lauching a new medium game
-                controller.setLevel     (DLevel.MEDIUM);
-                uiLocal.updateLevel     (false);
-                uiLocal.newClassicGame  (false);
-
-            }
-
+        mNewMediumGame.addActionListener((ActionEvent e) -> {
+            // Lauching a new medium game
+            controller.setLevel     (DLevel.MEDIUM);
+            uiLocal.updateLevel     (false);
+            uiLocal.newClassicGame  (false);
         });
 
 
         // mNewHardGame action
-        mNewHardGame.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                // Lauching a new hard game
-                controller.setLevel     (DLevel.HARD);
-                uiLocal.updateLevel     (false);
-                uiLocal.newClassicGame  (false);
-
-            }
-
+        mNewHardGame.addActionListener((ActionEvent e) -> {
+            // Lauching a new hard game
+            controller.setLevel     (DLevel.HARD);
+            uiLocal.updateLevel     (false);
+            uiLocal.newClassicGame  (false);
         });
 
 
         // mNewHardGame action
-        mNewCustomGame.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                // Lauching a new custom game
-                controller.setLevel     (DLevel.CUSTOM);
-                uiLocal.updateLevel     (false);
-                uiLocal.newCustomGame   (true);
-
-            }
-
+        mNewCustomGame.addActionListener((ActionEvent e) -> {
+            // Lauching a new custom game
+            controller.setLevel     (DLevel.CUSTOM);
+            uiLocal.updateLevel     (false);
+            uiLocal.newCustomGame   (true);
         });
 
 
         // mLevelEasy action
-        mLevelEasy.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                // Change to easy difficulty
-                controller.setLevel     (DLevel.EASY);
-                uiLocal.updateLevel     (true);
-
-            }
-
+        mLevelEasy.addActionListener((ActionEvent e) -> {
+            // Change to easy difficulty
+            controller.setLevel     (DLevel.EASY);
+            uiLocal.updateLevel     (true);
         });
 
 
         // mLevelMedium action
-        mLevelMedium.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                // Change to medium difficulty
-                controller.setLevel     (DLevel.MEDIUM);
-                uiLocal.updateLevel     (true);
-
-            }
-
+        mLevelMedium.addActionListener((ActionEvent e) -> {
+            // Change to medium difficulty
+            controller.setLevel     (DLevel.MEDIUM);
+            uiLocal.updateLevel     (true);
         });
 
 
         // mLevelHard action
-        mLevelHard.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                // Change to hard difficulty
-                controller.setLevel     (DLevel.HARD);
-                uiLocal.updateLevel     (true);
-
-            }
-
+        mLevelHard.addActionListener((ActionEvent e) -> {
+            // Change to hard difficulty
+            controller.setLevel     (DLevel.HARD);
+            uiLocal.updateLevel     (true);
         });
 
 
         // mOption action
-        mOption.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                
-                // Switching to the option interface
-                switchUIOption();
-
-            }
-
+        mOption.addActionListener((ActionEvent e) -> {
+            // Switching to the option interface
+            switchUIOption();
         });
 
 
         // mQuit action
-        mQuit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                uiLocal.quitConfirm(false);
-
-            }
-            
+        mQuit.addActionListener((ActionEvent e) -> {
+            uiLocal.quitConfirm(false);
         });
 
 
@@ -309,31 +254,18 @@ public class DGUI extends JFrame {
     private void menuModSetup() {
         
         // mSolo action
-        mSolo.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                // Switching to the local interface
-                switchUILocal();
-                controller.setLevel(DLevel.EASY);
-                uiLocal.updateLevel(false);
-                uiLocal.newClassicGame(true);
-
-            }
-
+        mSolo.addActionListener((ActionEvent e) -> {
+            // Switching to the local interface
+            switchUILocal();
+            controller.setLevel(DLevel.EASY);
+            uiLocal.updateLevel(false);
+            uiLocal.newClassicGame(true);
         });
 
 
         // mMultiPlayer action
-        mMultiPlayer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                
-                // TODO : Multiplayer interface
-                switchUIOnline();
-
-            }
-
+        mMultiPlayer.addActionListener((ActionEvent e) -> {
+            switchUIOnline();
         });
 
 
@@ -377,17 +309,11 @@ public class DGUI extends JFrame {
         // Switching to the current UI
         DUI_Type buffer_ = previousUI;
         switch (currentUI) {
-            case DUI_Type.UI_LOCAL:
-                this.switchUILocal();
-                break;
+            case DUI_Type.UI_LOCAL -> this.switchUILocal();
         
-            case DUI_Type.UI_OPTION:
-                this.switchUIOption();
-                break;
+            case DUI_Type.UI_OPTION -> this.switchUIOption();
 
-            case DUI_Type.UI_ONLINE:
-                this.switchUIOnline();
-                break;
+            case DUI_Type.UI_ONLINE -> this.switchUIOnline();
         }
         previousUI = buffer_;
 
@@ -480,17 +406,11 @@ public class DGUI extends JFrame {
         
             // Switching
             switch (currentUI) {
-                case DUI_Type.UI_LOCAL:
-                    this.switchUILocal();
-                    break;
+                case DUI_Type.UI_LOCAL -> this.switchUILocal();
             
-                case DUI_Type.UI_OPTION:
-                    this.switchUIOption();
-                    break;
+                case DUI_Type.UI_OPTION -> this.switchUIOption();
 
-                case DUI_Type.UI_ONLINE:
-                    this.switchUIOnline();
-                    break;
+                case DUI_Type.UI_ONLINE -> this.switchUIOnline();
             }
         
         }
@@ -512,7 +432,7 @@ public class DGUI extends JFrame {
     public void updateTime          (int timeSpent)             {uiLocal.updateTime         (timeSpent);};
     public void updateTimeLimit     (int timeLimit)             {uiLocal.updateTimeLimit    (timeLimit);};
     public void setSizeAdaptation   (boolean enable)            {uiLocal.setSizeAdaptation  (enable);};
-    public void setSpriteMesh       (DSprite[][] spriteMesh)    {uiLocal.setSpriteMesh      (spriteMesh);};
+    public void setSpriteMeshLocal  (DSprite[][] spriteMesh)    {uiLocal.setSpriteMesh      (spriteMesh);};
     public void displayMesh         ()                          {uiLocal.displayMesh        ();};
     public void endGamePhase        (EndGame endGameType)       {uiLocal.endGamePhase       (endGameType);};
 
@@ -526,13 +446,13 @@ public class DGUI extends JFrame {
      * 
      * =====================================================================================================================
      */
-    public void gameCreated(boolean succeed, String failInfo) {uiOnline.gameCreated(succeed, failInfo);}
-    public void gameJoinned(boolean succeed, String failInfo) {uiOnline.gameJoinned(succeed, failInfo);}
+    public void gameCreated         (boolean succeed, String failInfo)                  {uiOnline.gameCreated(succeed, failInfo);}
+    public void gameJoinned         (boolean succeed, String failInfo)                  {uiOnline.gameJoinned(succeed, failInfo);}
 
-    public void updatePlayerList(Map<String, String> playerList, String ownerUUID) {
-        uiOnline.updatePlayerList(playerList, ownerUUID);
-    }
+    public void updatePlayerList    (Map<String, String> playerList, String ownerUUID)  {uiOnline.updatePlayerList(playerList, ownerUUID);}
 
-    public void switchIngameUI() {uiOnline.switchSubUIIngame();}
+    public void switchIngameUI      ()                                                  {uiOnline.switchSubUIIngame();}
+
+    public void setSpriteMeshOnline (DSprite[][] spriteMesh)                            {uiOnline.setSpriteMesh(spriteMesh);}
 
 }

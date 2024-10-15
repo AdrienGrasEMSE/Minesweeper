@@ -2,19 +2,18 @@
 package donline.dserver;
 
 import deminer.DLevel;
-// Import
 import deminer.DMinefield;
 import deminer.DUUID;
 import donline.DInterpreter;
 import donline.DRequestType;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 
 
 /**
@@ -239,7 +238,7 @@ public class DServer implements Runnable{
     public void newOnlineGame() {
 
         // Creating the empty field
-        field.newCustomEmptyField(DLevel.CUSTOM, 20, 20, 75);
+        field.newCustomEmptyField(DLevel.CUSTOM, 20, 20, 50);
 
 
         // Reveal a random sprite
@@ -249,36 +248,28 @@ public class DServer implements Runnable{
         field           .fillField      (startX, startY);
 
 
-        // Senting the field size
+        // Sending the field size
         this.sendToAll(interpreter.build("SERVER", DRequestType.FIELD_SIZE,     field.getLenght() + ":" + field.getWidth()));
         this.sendToAll(interpreter.build("SERVER", DRequestType.MINE_NUMBER,    String.valueOf(field.getNumberOfMine())));
+        this.sendToAll(interpreter.build("SERVER", DRequestType.FIELD_READY,    ""));
 
 
-        // Little pause
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            // Handle the exception
-            e.printStackTrace();
-        }
-
-
-        // Generating the request content with all mine positions
+        // Generating the content for the mines position
         String content = "";
 
 
-        // Getting all the mines positions
+        // Getting all the mine position
         for (int posX = 0; posX < field.getLenght(); posX++) {
             for (int posY = 0; posY < field.getWidth(); posY++) {
 
-                // Indicating mines
+                // If it's a mine
                 if (field.isMine(posX, posY)) {
                     
                     // In case of empty content
                     if (content.isEmpty()) {
-                        content =   posX + ":" + posY + ";";
+                        content = posX + ":" + posY + ";";
                     } else {
-                        content +=  posX + ":" + posY + ";";
+                        content += posX + ":" + posY + ";";
                     }
 
                 }
@@ -288,12 +279,18 @@ public class DServer implements Runnable{
         }
 
 
-        // Sending all mines positions
+        // Sending mine positions
         this.sendToAll(interpreter.build("SERVER", DRequestType.MINE_POSITION, content));
 
 
-        // Senting the field size
+        // Sending the gamle ready tag
         this.sendToAll(interpreter.build("SERVER", DRequestType.GAME_READY, ""));
+
+
+        // Revealing the start sprite
+        if (!field.isMine(startX, startY)) {
+            this.sendToAll(interpreter.build("SERVER", DRequestType.SPRITE_REVEAL, startX + ":" + startY + "=" + field.mineDetection(startX, startY)));
+        }
 
     }
 

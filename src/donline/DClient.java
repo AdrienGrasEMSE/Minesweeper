@@ -2,15 +2,14 @@
 package donline;
 
 // Import
+import deminer.DController;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
-
-import deminer.DController;
 
 
 /**
@@ -73,7 +72,7 @@ public class DClient implements DConnexionHandler {
     int nbMines;
 
 
-
+    
 
     /**
      * Constructor
@@ -191,6 +190,7 @@ public class DClient implements DConnexionHandler {
     /**
      * Stop the client
      */
+    @Override
     public void shutDown() {
         connected = false;
     }
@@ -239,10 +239,7 @@ public class DClient implements DConnexionHandler {
      * Ask server to launch the game
      */
     public void launchGame() {
-
-        // Asking ownership
         this.addRequest(interpreter.build(uuid, DRequestType.GAME_LAUNCH_ASK, ""));
-
     }
 
 
@@ -254,10 +251,7 @@ public class DClient implements DConnexionHandler {
      * @param serverUUID needed to validate server ownership
      */
     public void askOwnership(String serverUUID) {
-
-        // Asking ownership
         this.addRequest(interpreter.build(uuid, DRequestType.OWNERSHIP_ASK, serverUUID));
-
     }
 
 
@@ -268,6 +262,7 @@ public class DClient implements DConnexionHandler {
      * 
      * @param request
      */
+    @Override
     public void addRequest(String request) {
         synchronized (writeQueue) {
             writeQueue.add(request);
@@ -433,23 +428,169 @@ public class DClient implements DConnexionHandler {
 
 
     /**
-     * Extract mines positions
+     * Extract mine positions
      * 
      * @param content
      */
-    private void extractMinePositions(String content) {
+    private void extractMinePosition(String content) {
 
-        // Buffer variables
+        // Buffer variable
         String  posX_   = "";
         String  posY_   = "";
         int     i       = 0;
+        boolean isPosX  = true;
 
 
-        // Traverse the content
+        // Getting all mines
         while (i < content.length()) {
-            
-            //
+
+            // Switching data type
+            if (i < content.length() && content.charAt(i) == ':') {
+
+                // Switching to posX data
+                isPosX = false;
+                i++;
+
+
+            } else if (i < content.length() && content.charAt(i) == ';') {
+
+                // Switching to posY data
+                isPosX = true;
+                i++;
+
+
+                // Saving data
+                controller.fillField(Integer.parseInt(posX_), Integer.parseInt(posY_));
+                posX_ = "";
+                posY_ = "";
+
+            }
+
+
+            // Saving posX
+            if (i < content.length() && isPosX) {
+
+                // In case of empty buffer
+                if (posX_.isEmpty()) {
+                    posX_ = String.valueOf(content.charAt(i));
+                } else {
+                    posX_ += String.valueOf(content.charAt(i));
+                }
+
+            }
+
+
+            // Saving posX
+            if (i < content.length() && !isPosX) {
+
+                // In case of empty buffer
+                if (posY_.isEmpty()) {
+                    posY_ = String.valueOf(content.charAt(i));
+                } else {
+                    posY_ += String.valueOf(content.charAt(i));
+                }
+
+            }
+
+
+            // Incrementing
+            i++;
+
         }
+
+    }
+
+
+
+
+    /**
+     * Extract the sprite position and the sprite values
+     * 
+     * @param content
+     */
+    private void extractSpritePosition(String content) {
+
+        // Variable buffer
+        int     i               = 0;
+        String  posX_           = "";
+        String  posY_           = "";
+        String  spriteValue_    = "";
+
+
+        // Data localisation variables
+        boolean isPosX          = true;
+        boolean isCoordinate    = true;
+
+
+        // Getting the sprite position
+        while (i < content.length()) {
+
+            // Switching data type
+            if (i < content.length() && content.charAt(i) == ':') {
+
+                // Switching to posY
+                isPosX = false;
+                i++;
+
+
+            } else if (i < content.length() && content.charAt(i) == '=') {
+
+                // Switching to spriteValue
+                isCoordinate = false;
+                i++;
+
+            }
+
+
+            // Getting posX
+            if (i < content.length() && isCoordinate && isPosX) {
+
+                // In case of empty buffer
+                if (posX_.isEmpty()) {
+                    posX_ = String.valueOf(content.charAt(i));
+                } else {
+                    posX_ += String.valueOf(content.charAt(i));
+                }
+
+
+            }
+            
+            
+            // Getting posY
+            if (i < content.length() && isCoordinate && !isPosX) {
+
+                // In case of empty buffer
+                if (posY_.isEmpty()) {
+                    posY_ = String.valueOf(content.charAt(i));
+                } else {
+                    posY_ += String.valueOf(content.charAt(i));
+                }
+
+
+            }
+            
+            
+            // Getting spriteValue
+            if (i < content.length() && !isCoordinate) {
+
+                // In case of empty buffer
+                if (spriteValue_.isEmpty()) {
+                    spriteValue_ = String.valueOf(content.charAt(i));
+                } else {
+                    spriteValue_ += String.valueOf(content.charAt(i));
+                }
+
+            }
+
+
+            // Incrementing
+            i ++;
+
+        }
+
+
+        // Display the sprite position and spriteValue
+        this.controller.spriteReveal(Integer.parseInt(posX_), Integer.parseInt(posY_), Integer.parseInt(spriteValue_));
 
     }
 
@@ -469,107 +610,125 @@ public class DClient implements DConnexionHandler {
 
         // Action according to the request type
         switch (interpreter.getRequestType()) {
-
-            // Server hello
-            case DRequestType.HELLO_SRV:
+            case DRequestType.HELLO_SRV -> {
 
                 // Getting the given ID
                 this.uuid       = interpreter.getContent();
                 this.registered = true;
-
-
+                
+                
                 // Creating ping service
                 this.pingService = new DPing(uuid, this);
                 this.pingService.start();
-
-
+                
+                
                 // Launching the client hello
                 this.addRequest(interpreter.build(this.uuid, DRequestType.HELLO_CLT, name));
-                break;
 
 
-            // Server ping
-            case DRequestType.PING:
+            }
+            case DRequestType.PING -> {
 
                 // Ansewering the ping
                 this.addRequest(interpreter.build(this.uuid, DRequestType.PING_ANSWER, ""));
-                break;
 
-            
-            // Server ping answer
-            case DRequestType.PING_ANSWER:
+
+            }
+            case DRequestType.PING_ANSWER -> {
 
                 // Server answer : taking it into account
                 this.pingService.answerPing();
-                break;
 
-            
-            // Server disconnect client
-            case DRequestType.DISCONNECT:
+
+            }
+            case DRequestType.DISCONNECT -> {
 
                 // Server answer : taking it into account
                 this.shutDown();
                 System.out.println(interpreter.getContent());
-                break;
 
 
-            // Server answer : server ownership granted
-            case DRequestType.OWNERSHIP_GRANTED:
+            }
+            case DRequestType.OWNERSHIP_GRANTED -> {
 
                 // Ownership granted
                 this.serverOwner    = true;
                 this.playerList.put (this.uuid, this.name);
                 this.ownerUUID      = this.uuid;
-                break;
 
-            
-            // Server answer : server ownership refused
-            case DRequestType.OWNERSHIP_REFUSED:
+
+            }
+            case DRequestType.OWNERSHIP_REFUSED -> {
 
                 // Ownership granted
                 this.serverOwner = false;
-                break;
 
-            
-            // Player list sent by the server
-            case DRequestType.PLAYER_LIST:
+
+            }
+            case DRequestType.PLAYER_LIST -> {
 
                 // Extract player list
                 this.extractPlayerList(interpreter.getContent());
                 controller.updatePlayerList(playerList, ownerUUID);
-                break;
 
-            
-            // Server owner sent by the server
-            case DRequestType.SERVER_OWNER:
+
+            }
+            case DRequestType.SERVER_OWNER -> {
 
                 // Saving the server owner
                 ownerUUID = interpreter.getContent();
                 controller.updatePlayerList(playerList, ownerUUID);
-                break;
 
 
-            // Field size sent by the server
-            case DRequestType.FIELD_SIZE:
+            }
+            case DRequestType.FIELD_SIZE -> {
 
                 // Saving the field size
                 this.extractFieldSize(interpreter.getContent());
-                break;
 
 
-            // Number of mines sent by the server
-            case DRequestType.MINE_NUMBER:
+            }
+            case DRequestType.MINE_NUMBER -> {
 
                 // Saving the mine number
-                this.nbMines    = Integer.parseInt(interpreter.getContent());
-                this.controller .initOnlineGame(fieldLenght, fieldWidth, nbMines);
-                break;
+                this.nbMines = Integer.parseInt(interpreter.getContent());
+
+
+            }
+            case DRequestType.MINE_POSITION -> {
+
+                // Saving the mine number
+                this.extractMinePosition(interpreter.getContent());
+
+
+            }
+            case DRequestType.FIELD_READY -> {
+
+                // Saving the mine number
+                this.controller.initOnlineField(fieldLenght, fieldWidth, nbMines);
+
+
+            }
+            case DRequestType.GAME_READY -> {
+
+                // Saving the mine number
+                this.controller.gameStart();
+
+
+            }
+            case DRequestType.SPRITE_REVEAL -> {
+
+                // Revealing the sprite
+                this.extractSpritePosition(interpreter.getContent());
+
+
+            }
         
                 
-            default:
-                break;
+            default -> {
+            }
         }
-
+        
     }
 
 

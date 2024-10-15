@@ -2,28 +2,22 @@
 package dgui.dui_online;
 
 // Import
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
-import ddialog.DDialogInfo;
-import ddialog.DDialogLoad;
-import ddialog.DDialogStringInput;
 import deminer.DController;
+import deminer.DSprite;
 import dgraphics.DButton;
 import dgraphics.DFont;
 import dgraphics.DLabel;
 import dgraphics.dtheme.DTheme;
 import dgui.DGUI;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import javax.swing.JPanel;
 
 
 /**
@@ -43,6 +37,8 @@ public class DUI_Online_Ingame extends JPanel implements ActionListener {
     private final   DController controller;
     private final   DGUI        gui;
     private final   DUI_Online  uiOnline;
+    private         DSprite[][] spriteMesh;
+    private         boolean     sizeAdaptation      = false;
 
 
     /**
@@ -56,16 +52,13 @@ public class DUI_Online_Ingame extends JPanel implements ActionListener {
     /**
      * South panels elements
      */
-    private final   DButton     backButton          = new DButton("Back",           DFont.JOST_SEMIBOLD, 24, DTheme.BTN_RED);
-    private final   DButton     createGameButton    = new DButton("Create a game",  DFont.JOST_SEMIBOLD, 24, DTheme.BTN_GRN);
-    private final   DButton     joinGameButton      = new DButton("Join a game",    DFont.JOST_SEMIBOLD, 24, DTheme.BTN_GRN);
+    private final   DButton     leaveButton         = new DButton("Leave game",     DFont.JOST_SEMIBOLD, 24, DTheme.BTN_RED);
 
-
+    
     /**
-     * Load dialog
+     * Component listener
      */
-    private final   DDialogLoad serverCreation;
-    private final   DDialogLoad serverJoin;
+    private         ComponentAdapter    centerPanelSizeCheck;
 
 
 
@@ -92,9 +85,33 @@ public class DUI_Online_Ingame extends JPanel implements ActionListener {
         this.centerPanelSetup   ();
 
 
-        // Load dialog setup
-        serverCreation  = new DDialogLoad(gui, "Creating server", DTheme.DLG_DRK);
-        serverJoin      = new DDialogLoad(gui, "Joinning server", DTheme.DLG_DRK);
+        // Listener init
+        this.listenerInit       ();
+
+    }
+
+
+    
+    /**
+     * Listener initialisation
+     */
+    private void listenerInit() {
+
+        // Listener that check if if the centerPanel change size
+        centerPanelSizeCheck = new ComponentAdapter() {
+                    
+            // On size change
+            @Override
+            public void componentResized(ComponentEvent e) {
+
+                // If size adaptation enable
+                if (sizeAdaptation) {
+                    displayMesh();
+                }
+
+            }
+            
+        };
 
     }
 
@@ -107,15 +124,15 @@ public class DUI_Online_Ingame extends JPanel implements ActionListener {
     private void northPanelSetup() {
 
         // Plotting panel and set VFX
-        this                .add(northPanel,BorderLayout.NORTH);
+        this                .add            (northPanel,BorderLayout.NORTH);
         northPanel          .setLayout      (new FlowLayout());
         northPanel          .setBackground  (DTheme.GUI_VAR.BCK_N);
 
         
         // Creaing title label
-        DLabel titleLabel   = new DLabel("Multiplayer", DFont.JOST_SEMIBOLD, 40, DTheme.LAB_NTL);
-        titleLabel          .setAlignmentX(Component.CENTER_ALIGNMENT);
-        northPanel          .add(titleLabel);
+        DLabel titleLabel   = new DLabel    ("Multiplayer game", DFont.JOST_SEMIBOLD, 40, DTheme.LAB_NTL);
+        titleLabel          .setAlignmentX  (Component.CENTER_ALIGNMENT);
+        northPanel          .add            (titleLabel);
 
     }
 
@@ -134,11 +151,11 @@ public class DUI_Online_Ingame extends JPanel implements ActionListener {
 
 
         // Plotting elements inside
-        southPanel          .add(backButton);
+        southPanel          .add(leaveButton);
 
 
         // Setting up listeners
-        backButton          .addActionListener(this);
+        leaveButton         .addActionListener(this);
 
     }
 
@@ -151,52 +168,14 @@ public class DUI_Online_Ingame extends JPanel implements ActionListener {
     private void centerPanelSetup() {
 
         // Plotting panel and set VFX
-        this                    .add            (centerPanel,   BorderLayout.CENTER);
-        centerPanel             .setLayout      (new GridBagLayout());
-        centerPanel             .setBackground  (DTheme.GUI_NTL.BCK_N);
+        this        .add                    (centerPanel,   BorderLayout.CENTER);
+        centerPanel .removeComponentListener(centerPanelSizeCheck);
+        centerPanel .setLayout              (new FlowLayout());
+        centerPanel .setBackground          (DTheme.GUI_NTL.BCK_N);
 
 
-        // Constraint creation
-        GridBagConstraints gbc  = new GridBagConstraints();
-        gbc.gridx               = 0;
-        gbc.gridy               = 0;
-        gbc.weightx             = 1.0;
-        gbc.weighty             = 1.0;
-        gbc.anchor              = GridBagConstraints.CENTER;
-
-
-        // Centered panel
-        JPanel centeredPanel    = new JPanel();
-        centeredPanel           .setLayout      (new BoxLayout(centeredPanel, BoxLayout.Y_AXIS));
-        centeredPanel           .setBorder      (new EmptyBorder(30, 30, 30, 30));
-        centeredPanel           .setBackground  (DTheme.GUI_NTL.BCK_D);
-
-
-        // Game creation panel
-        JPanel createPanel      = new JPanel    (new FlowLayout());
-        createPanel             .setBackground  (DTheme.GUI_NTL.BCK_D);
-        createPanel             .add            (createGameButton);
-
-
-        // Game join panel
-        JPanel joinPanel        = new JPanel    (new FlowLayout());
-        joinPanel               .setBackground  (DTheme.GUI_NTL.BCK_D);
-        joinPanel               .add            (joinGameButton);
-
-
-        // Plotting panels
-        centeredPanel           .add(createPanel);
-        centeredPanel           .add(Box.createRigidArea(new Dimension(10, 30)));
-        centeredPanel           .add(joinPanel);
-
-
-        // Plotting the centered panel
-        centerPanel             .add(centeredPanel, gbc);
-
-
-        // Adding button listener
-        createGameButton        .addActionListener(this);
-        joinGameButton          .addActionListener(this);
+        // Adding the listener to check size changement
+        centerPanel .addComponentListener   (centerPanelSizeCheck);
 
     }
 
@@ -204,81 +183,18 @@ public class DUI_Online_Ingame extends JPanel implements ActionListener {
 
 
     /**
-     * Create a new online game
-     */
-    private void gameCreation() {
-
-        // Dialog to get custom parameters
-        DDialogStringInput param = new DDialogStringInput(gui, "Enter your pseudo", "Pseudo :");
-        do {
-
-            // Display dialog
-            param.setVisible(true);
-
-
-            // Infos
-            if (!param.getParamValid() && param.getUserConfirm()) {
-                DDialogInfo info = new DDialogInfo( gui,
-                                                    "Invalid parameters",
-                                                    new String[]{ "The pseudo must be not",
-                                                    "empty..."
-                                                    },
-                                                    DTheme.DLG_DRK);
-                info.setVisible(true);
-            }
-
-
-        }while (!param.getParamValid() && param.getUserConfirm());
-
-
-        // Cancel operation
-        if (!param.getUserConfirm()) {
-            return;
-        }
-
-
-        // Server creation
-        controller.newServer(param.getInputString());
-
-
-        // Loading : waiting for the server to be online
-        serverCreation.setVisible(true);
-
-    }
-
-
-
-
-    /**
-     * Make an action on the server creation
+     * Setter : to set the new sprite mesh
      * 
-     * @param succeed indicate if the server creation is succesful
+     * @param spriteMesh
      */
-    public void gameCreated(boolean succeed, String failInfo) {
+    public void setSpriteMesh(DSprite[][] spriteMesh) {
 
-        // Close the dialog and connexion
-        SwingUtilities.invokeLater(() -> {
-            serverCreation.dispose();
-        });
+        // Getting the mesh
+        this.spriteMesh = spriteMesh;
 
 
-        // Accoding to the sucess status
-        if (succeed) {
-
-            // Display the wait screen
-            this.uiOnline.switchSubUIWait();
-
-
-        } else {
-
-            // Infos
-            DDialogInfo info = new DDialogInfo( gui,
-                                                    "Server creation aborted",
-                                                    new String[]{failInfo},
-                                                    DTheme.DLG_DRK);
-            info.setVisible(true);
-
-        }
+        // Displaying the mesh
+        this.displayMesh();
 
     }
 
@@ -286,124 +202,98 @@ public class DUI_Online_Ingame extends JPanel implements ActionListener {
 
 
     /**
-     * Joinning game phase
-     */
-    private void joinGame() {
-
-        // Dialog to get custom parameters
-        DDialogStringInput serverIP = new DDialogStringInput(gui, "Enter server IP", "IP :");
-        do {
-
-            // Display dialog
-            serverIP.setVisible(true);
-
-
-            // Infos
-            if (!serverIP.getParamValid() && serverIP.getUserConfirm()) {
-                DDialogInfo info = new DDialogInfo( gui,
-                                                    "Invalid parameters",
-                                                    new String[]{ "The server ip must be",
-                                                    "not empty..."
-                                                    },
-                                                    DTheme.DLG_DRK);
-                info.setVisible(true);
-            }
-
-
-        }while (!serverIP.getParamValid() && serverIP.getUserConfirm());
-
-
-        // Cancel operation
-        if (!serverIP.getUserConfirm()) {
-            return;
-        }
-
-
-        // Dialog to get custom parameters
-        DDialogStringInput pseudo = new DDialogStringInput(gui, "Enter your pseudo", "Pseudo :");
-        do {
-
-            // Display dialog
-            pseudo.setVisible(true);
-
-
-            // Infos
-            if (!pseudo.getParamValid() && pseudo.getUserConfirm()) {
-                DDialogInfo info = new DDialogInfo( gui,
-                                                    "Invalid parameters",
-                                                    new String[]{ "The pseudo must be not",
-                                                    "empty..."
-                                                    },
-                                                    DTheme.DLG_DRK);
-                info.setVisible(true);
-            }
-
-
-        }while (!pseudo.getParamValid() && pseudo.getUserConfirm());
-
-
-        // Cancel operation
-        if (!pseudo.getUserConfirm()) {
-            return;
-        }
-
-
-        // Join game
-        controller.joinGame(serverIP.getInputString(), pseudo.getInputString());
-
-
-        // Loading : waiting for the client to be connected
-        serverJoin.setVisible(true);
-
-    }
-
-
-
-
-    /**
-     * Game joinned phase
+     * Calcul the sprite size according to the size of the centerPanel
      * 
-     * @param succeed
-     * @param failInfo
+     * @return calcSize, the calculed size
      */
-    public void gameJoinned(boolean succeed, String failInfo) {
+    private int spriteSizeCalcul() {
 
-        // Accoding to the sucess status
-        if (succeed) {
-
-            // Display the wait screen
-            this.uiOnline.switchSubUIWait();
+        // Calculed size
+        int calcSize;
 
 
-        } else {
-
-            // Infos
-            DDialogInfo info = new DDialogInfo( gui,
-                                                    "Connexion to the server aborted",
-                                                    new String[]{failInfo},
-                                                    DTheme.DLG_DRK);
-            info.setVisible(true);
-
-        }
-
-
-        /**
-         * In today episod of wtf is going in there :
+        // Getting the right coefficient
+        /**Explanation :
          * 
-         * I think that the serverJoin dialog is displayed after
-         * the fail or succes to connect.
+         * This calcul is not too crazy when you know what's going on here
          * 
-         * WHY IS THAT ? I DON'T FUCKING KNOW
+         * Each sprite is plotted in a JPanel. I do not know why, but these JPanel
+         * create a border. These border have their thickness fixed and non relative
+         * to the sprite.
          * 
+         * So i must consider it in my calcul of height and width available.
          * 
-         * That's why the dialog close is at the end of this...
+         * I found out that 11px might the best controllerroximation for these border
          */
-        
-        // Close the dialog and connexion
-        SwingUtilities.invokeLater(() -> {
-            serverJoin.dispose();
-        });
+        int heightCalcul    = (int) ((centerPanel.getHeight()   - spriteMesh    .length * 11 )      / spriteMesh      .length);
+        int widthCalcul     = (int) ((centerPanel.getWidth()    - spriteMesh[0] .length * 11 )      / spriteMesh[0]   .length);
 
+
+        // Saving the smaller one
+        if (heightCalcul < widthCalcul) {
+            calcSize = heightCalcul;
+        } else {
+            calcSize = widthCalcul;
+        }
+
+
+        // Min and max condition
+        if (calcSize < 20) {
+            calcSize = 20;
+        }
+
+
+        // Returning the size
+        return calcSize;
+
+    }
+
+
+
+
+    /**
+     * Displaying the mine field using the sprite class
+     */
+    private void displayMesh() {
+       
+        // Removing everything from the center panel and reset the score
+        centerPanel.removeAll();
+
+
+        // Creating the grid to display mines and coefficient
+        JPanel minesPanel   = new JPanel    ();
+        minesPanel          .setLayout      (new GridLayout(spriteMesh.length, spriteMesh[0].length));
+        minesPanel          .setBackground  (DTheme.GUI_NTL.BCK_N);
+
+
+        // Getting the size of the new sprite
+        int sqSize = this.spriteSizeCalcul();
+
+
+        // Filling up the grid
+        for (DSprite[] spriteMeshLine : spriteMesh) {
+            for (DSprite sprite : spriteMeshLine) {
+
+                // Setting up sprite size
+                sprite.setSpriteSize(sqSize);
+
+
+                // Plotting the sprite in a JPanel to get border
+                JPanel spriteHolder = new JPanel();
+                spriteHolder        .setBackground(DTheme.GUI_NTL.BCK_N);
+                spriteHolder        .add(sprite);
+                minesPanel          .add(spriteHolder);
+
+            }
+
+        }
+
+
+        // Rafraîchir l'affichage
+        centerPanel.add(minesPanel);
+        centerPanel.revalidate();
+        centerPanel.repaint();
+        
     }
 
 
@@ -416,24 +306,12 @@ public class DUI_Online_Ingame extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         // Actions according to the source
-        if (e.getSource() == backButton) {
+        if (e.getSource() == leaveButton) {
 
             // Getting back to the previous screen
             gui.switchUIPrevious();
             return;
 
-
-        } else if (e.getSource() == createGameButton) {
-
-            // Lauching a new game
-            gameCreation();
-            return;
-
-        } else if (e.getSource() == joinGameButton) {
-
-            // Lauching a new game
-            joinGame();
-            return;
 
         }
 

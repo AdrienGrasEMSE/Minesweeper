@@ -47,8 +47,6 @@ public class DMinefield {
      * @return Lenght of the field
      */
     public int getLenght() {
-        
-        // Value
         return field.length;
     }
 
@@ -61,8 +59,6 @@ public class DMinefield {
      * @return Width of the field
      */
     public int getWidth() {
-
-        // Value
         return field[0].length;
     }
 

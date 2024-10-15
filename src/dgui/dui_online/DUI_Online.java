@@ -2,11 +2,12 @@
 package dgui.dui_online;
 
 // Import
-import java.awt.CardLayout;
-import javax.swing.JPanel;
-import java.util.Map;
 import deminer.DController;
+import deminer.DSprite;
 import dgui.DGUI;
+import java.awt.CardLayout;
+import java.util.Map;
+import javax.swing.JPanel;
 
 
 /**
@@ -111,12 +112,21 @@ public class DUI_Online extends JPanel {
      * 
      * =====================================================================================================================
      */
-    public void gameCreated(boolean succeed, String failInfo) {uiDefault.gameCreated(succeed, failInfo);}
-    public void gameJoinned(boolean succeed, String failInfo) {uiDefault.gameJoinned(succeed, failInfo);}
+    public void gameCreated     (boolean succeed, String failInfo)                  {uiDefault.gameCreated(succeed, failInfo);}
+    public void gameJoinned     (boolean succeed, String failInfo)                  {uiDefault.gameJoinned(succeed, failInfo);}
+    public void updatePlayerList(Map<String, String> playerList, String ownerUUID)  {uiWait.updatePlayerList(playerList, ownerUUID);}
 
 
-    public void updatePlayerList(Map<String, String> playerList, String ownerUUID) {
-        uiWait.updatePlayerList(playerList, ownerUUID);
-    }
+
+
+
+    /**
+     * =====================================================================================================================
+     * 
+     * Wiring with the ingame UI
+     * 
+     * =====================================================================================================================
+     */
+    public void setSpriteMesh(DSprite[][] spriteMesh) {uiIngame.setSpriteMesh(spriteMesh);}
 
 }

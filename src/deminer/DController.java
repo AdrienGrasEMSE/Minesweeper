@@ -2,14 +2,14 @@
 package deminer;
 
 // Import
-import java.awt.event.ActionEvent;
-import java.util.Map;
-import java.util.Random;
-import javax.swing.Timer;
 import ddialog.EndGame;
 import dgui.DGUI;
 import donline.DClient;
 import donline.dserver.DServer;
+import java.awt.event.ActionEvent;
+import java.util.Map;
+import java.util.Random;
+import javax.swing.Timer;
 
 
 /**
@@ -38,17 +38,23 @@ public class DController {
     /**
      * Game attribute
      */
-    private int     sqRevealed  = 0;
-    private int     score       = 0;
-    private int     winScore    = 0;
-    private int     timeSpent   = 0;
-    private int     timeLimit   = 0;
+    private         int         sqRevealed  = 0;
+    private         int         score       = 0;
+    private         int         winScore    = 0;
+    private         int         timeSpent   = 0;
+    private         int         timeLimit   = 0;
+
+
+    /**
+     * 
+     */
+    private         boolean     onlineGame  = false;
     
 
     /**
      * Multiplayer attributes
      */
-    private         DClient         client;
+    private         DClient     client;
 
 
 
@@ -63,6 +69,127 @@ public class DController {
 
     }
 
+
+
+
+    /**
+     * =====================================================================================================================
+     * 
+     * Common method
+     * 
+     * =====================================================================================================================
+     */
+
+
+
+
+    /**
+     * Sprite mesh initialization
+     */
+    private void meshInit() {
+
+        // Generate the sprite mesh
+        spriteMesh = new DSprite[field.getLenght()][field.getWidth()];
+        for (int posX = 0; posX < field.getLenght(); posX ++) {
+            for (int posY = 0; posY < field.getWidth(); posY ++) {
+
+                // Setting up content
+                spriteMesh[posX][posY] = new DSprite(this, posX, posY, 50);
+
+            }
+            
+        }
+
+
+        // Transmit the sprite mesh to the GUI
+        if (onlineGame) {
+            gui.setSpriteMeshOnline(spriteMesh);
+        } else {
+            gui.setSpriteMeshLocal(spriteMesh);
+        }
+
+    }
+
+
+
+
+    /**
+     * Method to take into account a mouse click on a certain sprite
+     * 
+     * @param posX
+     * @param posy
+     */
+    public void clickEvent(int posX, int posY) {
+
+        // Action according to the game type
+        if (onlineGame) {
+
+            
+
+
+        } else {
+
+            // In case it's the first click
+            if (sqRevealed == 0) {
+
+                // Setting up field
+                field.fillField(posX, posY);
+
+
+                // Modifying sprite
+                for (int posX_ = 0; posX_ < field.getLenght(); posX_ ++) {
+                    for (int posY_ = 0; posY_ < field.getWidth(); posY_ ++) {
+                        
+                        // If it's a mine or a coefficient
+                        if (field.isMine(posX_, posY_)) {
+                            spriteMesh[posX_][posY_].setCoefficient(-1);
+                        } else {
+                            spriteMesh[posX_][posY_].setCoefficient(field.mineDetection(posX_, posY_));
+                        }
+
+                    }
+
+                }
+
+                // Start counter
+                counter = new DCounter(this);
+
+            }
+
+
+            // Reveal the sprite if it's not a mine
+            if (!field.isMine(posX, posY)) {
+
+                // Reveal and propagate
+                propagation(posX, posY);
+
+
+            } else {
+
+                // Stop counter
+                counter.stop();
+
+
+                // Reveal all and start loose phase
+                revealAll();
+
+
+                // Little pause to see the mine field
+                Timer timer = new Timer(1000, (ActionEvent e) -> {
+
+                    // End game phase
+                    gui.endGamePhase(EndGame.MINES_CLIKED);
+                    ((Timer) e.getSource()).stop();
+
+                });
+                timer.setRepeats(false);
+                timer.start();
+
+            }
+
+        }
+
+    }
 
 
 
@@ -189,103 +316,6 @@ public class DController {
         gui.displayMesh     ();
         gui.updateTimeLimit (this.timeLimit);
         gui.updateTime      (this.timeSpent);
-
-    }
-
-
-
-
-    /**
-     * Sprite mesh initialization
-     */
-    private void meshInit() {
-
-        // Generate the sprite mesh
-        spriteMesh = new DSprite[field.getLenght()][field.getWidth()];
-        for (int posX = 0; posX < field.getLenght(); posX ++) {
-            for (int posY = 0; posY < field.getWidth(); posY ++) {
-
-                // Setting up content
-                spriteMesh[posX][posY] = new DSprite(this, posX, posY, 50);
-
-            }
-            
-        }
-
-
-        // Transmit the sprite mesh to the GUI
-        gui.setSpriteMesh(spriteMesh);
-
-    }
-
-
-
-
-    /**
-     * Method to take into account a mouse click on a certain sprite
-     * 
-     * @param posX
-     * @param posy
-     */
-    public void clickEvent(int posX, int posY) {
-
-        // In case it's the first click
-        if (sqRevealed == 0) {
-
-            // Setting up field
-            field.fillField(posX, posY);
-
-
-            // Modifying sprite
-            for (int posX_ = 0; posX_ < field.getLenght(); posX_ ++) {
-                for (int posY_ = 0; posY_ < field.getWidth(); posY_ ++) {
-                    
-                    // If it's a mine or a coefficient
-                    if (field.isMine(posX_, posY_)) {
-                        spriteMesh[posX_][posY_].setCoefficient(-1);
-                    } else {
-                        spriteMesh[posX_][posY_].setCoefficient(field.mineDetection(posX_, posY_));
-                    }
-
-                }
-
-            }
-
-            // Start counter
-            counter = new DCounter(this);
-
-        }
-
-
-        // Reveal the sprite if it's not a mine
-        if (!field.isMine(posX, posY)) {
-
-            // Reveal and propagate
-            propagation(posX, posY);
-
-
-        } else {
-
-            // Stop counter
-            counter.stop();
-
-
-            // Reveal all and start loose phase
-            revealAll();
-
-
-            // Little pause to see the mine field
-            Timer timer = new Timer(1000, (ActionEvent e) -> {
-
-                // End game phase
-                gui.endGamePhase(EndGame.MINES_CLIKED);
-                ((Timer) e.getSource()).stop();
-
-            });
-            timer.setRepeats(false);
-            timer.start();
-
-        }
 
     }
 
@@ -519,6 +549,7 @@ public class DController {
 
                         // Asking the gui to display the nextstep
                         gui.gameCreated(true, "");
+                        onlineGame = true;
 
 
                     } else {
@@ -604,12 +635,12 @@ public class DController {
 
                 // Game joinned
                 gui.gameJoinned(true, "");
+                onlineGame = true;
 
 
             } else {
 
                 // Diconnect client
-                // TODO client disconnection phase
                 gui.gameJoinned(false, "Unable to connect to the server...");
 
             }
@@ -629,22 +660,11 @@ public class DController {
 
 
     /**
-     * Creating the client mine field
+     * Updating the player list
      * 
-     * @param fieldLenght
-     * @param fieldWidth
+     * @param playerList
+     * @param ownerUUID
      */
-    public void initOnlineGame(int fieldLenght, int fieldWidth, int nbMines) {
-
-        // Creating the new field
-        this.field.newCustomEmptyField(DLevel.CUSTOM, fieldLenght, fieldWidth, nbMines);
-        this.gui.switchIngameUI();
-
-    }
-
-
-
-
     public void updatePlayerList(Map<String, String> playerList, String ownerUUID) {
         gui.updatePlayerList(playerList, ownerUUID);
     }
@@ -652,8 +672,73 @@ public class DController {
 
 
 
+    /**
+     * Get the client to ask to launch the game
+     */
     public void launchGame() {
         client.launchGame();
+    }
+
+
+
+
+    /**
+     * Creating the client mine field
+     * 
+     * @param fieldLenght
+     * @param fieldWidth
+     */
+    public void initOnlineField(int fieldLenght, int fieldWidth, int nbMines) {
+
+        // Creating the new field
+        this.field.newCustomEmptyField(DLevel.CUSTOM, fieldLenght, fieldWidth, nbMines);
+
+    }
+
+
+    
+
+    /**
+     * Filling the field mines
+     * 
+     * @param posX
+     * @param posY
+     */
+    public void fillField(int posX, int posY) {
+
+        // Filling the mine at posX : posY
+        field.setMine(posX, posY);
+
+    }
+
+
+
+
+    /**
+     * Start the new game
+     */
+    public void gameStart() {
+
+        // Init the mesh
+        this.meshInit();
+        this.gui.switchIngameUI();
+
+    }
+
+
+
+
+    /**
+     * Reveal a square att posX, posY
+     * 
+     * @param posX
+     * @param posY
+     */
+    public void spriteReveal(int posX, int posY, int spriteValue) {
+
+        System.out.println(posX + " : " + posY + " : " + spriteValue);
+
+        spriteMesh[posX][posY].reveal();
     }
 
 }

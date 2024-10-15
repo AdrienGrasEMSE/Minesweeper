@@ -90,7 +90,15 @@ public enum DRequestType {
      */
     FIELD_SIZE          ("FIELD_SIZE"),
     MINE_NUMBER         ("MINE_NUMBER"),
+    FIELD_READY         ("FIELD_READY"),
     MINE_POSITION       ("MINE_POSITION"),
+
+
+    /**
+     * Ingame action
+     */
+    SPRITE_REVEAL       ("SPRITE_REVEAL"),
+    SPRITE_CLICKED      ("SPRITE_CLICKED"),
 
 
     /**
@@ -99,10 +107,12 @@ public enum DRequestType {
     UNRECOGNIZED        ("UNRECOGNIZED");
 
 
+
+
     /**
      * Attribut to stock the string equivalent of the request type
      */
-    private String string;
+    private final String string;
 
 
 
