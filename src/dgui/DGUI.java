@@ -8,6 +8,8 @@ import java.awt.Toolkit;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Map;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -125,7 +127,7 @@ public class DGUI extends JFrame {
         // Setting up UIs
         this.uiLocal            = new DUI_Local(this, this.controller);
         this.uiOption           = new DUI_Option(this);
-        this.uiOnline           = new DUI_Online(this);
+        this.uiOnline           = new DUI_Online(this, this.controller);
 
 
         // Plotting UIs
@@ -363,7 +365,7 @@ public class DGUI extends JFrame {
         // Setting up UIs
         this.uiLocal            = new DUI_Local(this, this.controller);
         this.uiOption           = new DUI_Option(this);
-        this.uiOnline           = new DUI_Online(this);
+        this.uiOnline           = new DUI_Online(this, this.controller);
 
 
         // Plotting UIs
@@ -513,5 +515,24 @@ public class DGUI extends JFrame {
     public void setSpriteMesh       (DSprite[][] spriteMesh)    {uiLocal.setSpriteMesh      (spriteMesh);};
     public void displayMesh         ()                          {uiLocal.displayMesh        ();};
     public void endGamePhase        (EndGame endGameType)       {uiLocal.endGamePhase       (endGameType);};
+
+
+
+
+    /**
+     * =====================================================================================================================
+     * 
+     * Wiring with the online UI
+     * 
+     * =====================================================================================================================
+     */
+    public void gameCreated(boolean succeed, String failInfo) {uiOnline.gameCreated(succeed, failInfo);}
+    public void gameJoinned(boolean succeed, String failInfo) {uiOnline.gameJoinned(succeed, failInfo);}
+
+    public void updatePlayerList(Map<String, String> playerList, String ownerUUID) {
+        uiOnline.updatePlayerList(playerList, ownerUUID);
+    }
+
+    public void switchIngameUI() {uiOnline.switchSubUIIngame();}
 
 }

@@ -70,7 +70,32 @@ public enum DRequestType {
     OWNERSHIP_GRANTED   ("OWNERSHIP_GRANTED"),
 
 
-    // For unrecognized request
+    /**
+     * Waiting screen infos
+     */
+    PLAYER_LIST         ("PLAYER_LIST"), 
+    SERVER_OWNER        ("SERVER_OWNER"),
+
+
+    /**
+     * Game launch
+     */
+    GAME_LAUNCH_ASK     ("GAME_LAUNCH_ASK"),
+    GAME_LAUNCH         ("GAME_LAUNCH"),
+    GAME_READY          ("GAME_READY"),
+
+
+    /**
+     * Field info
+     */
+    FIELD_SIZE          ("FIELD_SIZE"),
+    MINE_NUMBER         ("MINE_NUMBER"),
+    MINE_POSITION       ("MINE_POSITION"),
+
+
+    /**
+     * For unrecognized request
+     */
     UNRECOGNIZED        ("UNRECOGNIZED");
 
 

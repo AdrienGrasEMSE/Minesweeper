@@ -110,6 +110,10 @@ public class DReader implements Runnable{
         // Stop condition
         while (service != null && this.active) {
 
+            // Get the start time of the loop iteration
+            long startTime = System.currentTimeMillis();
+
+
             // Data reading
             try {
 
@@ -126,7 +130,37 @@ public class DReader implements Runnable{
                 // Printing exception
                 // System.out.println(e);
 
-            }            
+            }
+
+
+
+
+            // THREAD LIMITER
+            // ====================================================================================
+            
+            // Calculate how long the operations took
+            long elapsedTime = System.currentTimeMillis() - startTime;
+
+
+            // Calculate the remaining time to sleep
+            long sleepTime = 100 - elapsedTime;
+
+
+            // If there is still time left in the 100ms window, sleep
+            if (sleepTime > 0) {
+                try {
+
+                    // Pause
+                    Thread.sleep(sleepTime);
+
+
+                } catch (InterruptedException e) {
+
+                    // Handle the exception
+                    e.printStackTrace();
+
+                }
+            }
                       
         }
 

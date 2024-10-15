@@ -42,6 +42,71 @@ public class DMinefield {
 
 
     /**
+     * getLenght : getter for the lenght of the field
+     * 
+     * @return Lenght of the field
+     */
+    public int getLenght() {
+        
+        // Value
+        return field.length;
+    }
+
+
+
+
+    /**
+     * getWidth : getter for the width of the field
+     * 
+     * @return Width of the field
+     */
+    public int getWidth() {
+
+        // Value
+        return field[0].length;
+    }
+
+
+    
+
+    /**
+     * Getter : to check the time limit
+     * 
+     * @return timeLimit
+     */
+    public int getTimeLimit() {
+        return timeLimit;
+    }
+
+
+
+
+    /**
+     * getNumberOfMine : getter for the number of mine
+     * 
+     * @return Number of mine in the field
+     */
+    public int getNumberOfMine() {
+        return numberOfMine;
+    }
+
+
+
+
+    /**
+     * Setter : set a mines at posX:posY
+     * 
+     * @param posX
+     * @param posY
+     */
+    public void setMine(int posX, int posY) {
+        field[posX][posY] = true;
+    }
+
+    
+
+
+    /**
      * Reseting for a classic difficulty game, without plotting mines
      */
     public int newClassicEmptyField(DLevel selectedLevel) {
@@ -93,58 +158,6 @@ public class DMinefield {
 
         }
 
-    }
-
-
-
-
-    /**
-     * getLenght : getter for the lenght of the field
-     * 
-     * @return Lenght of the field
-     */
-    public int getLenght() {
-        
-        // Value
-        return field.length;
-    }
-
-
-
-
-    /**
-     * getWidth : getter for the width of the field
-     * 
-     * @return Width of the field
-     */
-    public int getWidth() {
-
-        // Value
-        return field[0].length;
-    }
-
-
-
-
-    /**
-     * getNumberOfMine : getter for the number of mine
-     * 
-     * @return Number of mine in the field
-     */
-    public int getNumberOfMine() {
-        return numberOfMine;
-    }
-
-
-
-
-    /**
-     * Getter : to check the time limit
-     * 
-     * @return timeLimit
-     */
-    public int getTimeLimit() {
-        return timeLimit;
     }
 
 

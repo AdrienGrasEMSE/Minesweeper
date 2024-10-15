@@ -9,7 +9,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import dgraphics.DFont;
-import dgraphics.DLabel;
 import dgraphics.DLoadLabel;
 import dgraphics.dtheme.DColors_UI;
 import dgraphics.dtheme.DTheme;
@@ -55,12 +54,6 @@ public class DDialogLoad extends JDialog {
         mainPanel.setLayout     (new BorderLayout());
 
 
-        // Creating the label for the title
-        DLabel titleLabel   = new DLabel            (title, DFont.JOST_SEMIBOLD, 18, DTheme.LAB_TRS);
-        titleLabel          .setHorizontalAlignment (SwingConstants.CENTER);
-        mainPanel           .add                    (titleLabel, BorderLayout.NORTH);
-
-
         // Creating the label for the wait animation
         this.wait           = new DLoadLabel        (title, DFont.JOST_SEMIBOLD, 18, DTheme.LAB_TRS);
         wait                .setHorizontalAlignment (SwingConstants.CENTER);
@@ -87,12 +80,12 @@ public class DDialogLoad extends JDialog {
     @Override
     public void dispose() {
 
-        // Herited method
-        super.dispose();
-
-
         // Stoping the label
         wait.stop();
+        
+
+        // Herited method
+        super.dispose();
 
     }
 

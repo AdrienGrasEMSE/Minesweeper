@@ -33,6 +33,8 @@ public class DClientHandler implements DConnexionHandler{
     private final   DServer         server;
     private         DPing           pingService;
     private         boolean         connected   = true;
+    private         boolean         serverOwner = false;
+    private         boolean         ready       = false;
     private         String          playerName  = "";
 
 
@@ -86,6 +88,30 @@ public class DClientHandler implements DConnexionHandler{
         this.service        = new Thread(this);
         this.service.start();
 
+    }
+
+
+
+
+    /**
+     * Getter : to check client ownership
+     * 
+     * @return
+     */
+    public boolean isServerOwner() {
+        return serverOwner;
+    }
+
+
+
+
+    /**
+     * To change client ownership
+     * 
+     * @param serverOwner
+     */
+    public void setOwnership(boolean serverOwner) {
+        this.serverOwner = serverOwner;
     }
 
 
@@ -224,6 +250,30 @@ public class DClientHandler implements DConnexionHandler{
 
 
     /**
+     * Setter : to change the client state
+     * 
+     * @param ready
+     */
+    public void setReady(boolean ready) {
+        this.ready = ready;
+    }
+
+
+
+
+    /**
+     * Getter : to check if the client is ready or not
+     * 
+     * @return ready
+     */
+    public boolean getReady() {
+        return this.ready;
+    }
+
+
+
+
+    /**
      * Thread method
      */
     @Override
@@ -231,6 +281,10 @@ public class DClientHandler implements DConnexionHandler{
 
         // Stop condition
         while (service != null) {
+
+            // Get the start time of the loop iteration
+            long startTime = System.currentTimeMillis();
+
 
             // While connected
             if (connected) {
@@ -240,8 +294,10 @@ public class DClientHandler implements DConnexionHandler{
                     if (!readQueue.isEmpty()) {
 
                         // Reading data
-                        server.addRequest(readQueue.poll());
-
+                        synchronized (server) {
+                            server.addRequest(readQueue.poll());
+                        }
+                        
                     }
                 }
 
@@ -263,6 +319,35 @@ public class DClientHandler implements DConnexionHandler{
                 // Disconnect
                 this.disconnect();
 
+            }
+
+
+
+            // THREAD LIMITER
+            // ====================================================================================
+            
+            // Calculate how long the operations took
+            long elapsedTime = System.currentTimeMillis() - startTime;
+
+
+            // Calculate the remaining time to sleep
+            long sleepTime = 100 - elapsedTime;
+
+
+            // If there is still time left in the 100ms window, sleep
+            if (sleepTime > 0) {
+                try {
+
+                    // Pause
+                    Thread.sleep(sleepTime);
+
+
+                } catch (InterruptedException e) {
+
+                    // Handle the exception
+                    e.printStackTrace();
+
+                }
             }
                       
         }

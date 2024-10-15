@@ -1,7 +1,9 @@
 // Package declaration
 package donline.dserver;
 
+import deminer.DLevel;
 // Import
+import deminer.DMinefield;
 import deminer.DUUID;
 import donline.DInterpreter;
 import donline.DRequestType;
@@ -9,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Random;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -30,8 +33,9 @@ public class DServer implements Runnable{
      * Attributes
      */
     private final   Thread                      service;
-    private final   Map<String, DClientHandler> clientList      = new HashMap<>();
     private final   String                      uuid;
+    private final   Map<String, DClientHandler> clientList      = new HashMap<>();
+    private         DClientHandler              owner;
     private         ServerSocket                gestSock        = null;
     private         boolean                     serverOnline;
 
@@ -39,10 +43,15 @@ public class DServer implements Runnable{
     /**
      * Requests
      */
-    private final   DInterpreter        interpret       = new DInterpreter();
-    private final   Queue<String>       requestQueue    = new LinkedList<>();
-    private         DServerListener     srvListener     = null;
+    private final   DInterpreter        interpreter             = new DInterpreter();
+    private final   Queue<String>       requestQueue            = new LinkedList<>();
+    private         DServerListener     srvListener             = null;
 
+
+    /**
+     * Game attributes
+     */
+    private final   DMinefield          field                   = new DMinefield();
 
 
     
@@ -107,6 +116,30 @@ public class DServer implements Runnable{
 
 
     /**
+     * Getter : to check who is the server owner
+     * 
+     * @return
+     */
+    public DClientHandler getOwner() {
+        return owner;
+    }
+
+
+
+
+    /**
+     * Setter : to change server owner
+     * 
+     * @param owner
+     */
+    public void setOwner(DClientHandler owner) {
+        this.owner = owner;
+    }
+
+
+
+    
+    /**
      * Getter : to check if the server is online or not
      * 
      * @return serverOnline : flag that show if the server online or not
@@ -170,10 +203,97 @@ public class DServer implements Runnable{
         synchronized (clientList) {
 
             // Sending the stop request
-            clientList.get(uuid).addRequest(interpret.build("SERVER", DRequestType.DISCONNECT, reason));
+            clientList.get(uuid).addRequest(interpreter.build("SERVER", DRequestType.DISCONNECT, reason));
             clientList.get(uuid).shutDown();
 
         }
+
+    }
+
+
+
+
+    /**
+     * Send a request to all client
+     * 
+     * @param request
+     */
+    public void sendToAll(String request) {
+
+        // Iteration over the client list
+        synchronized (clientList) {
+            for (DClientHandler client : clientList.values()) {
+                client.addRequest(request);
+            }
+
+        }
+
+    }
+
+
+
+
+    /**
+     * Online game creation
+     */
+    public void newOnlineGame() {
+
+        // Creating the empty field
+        field.newCustomEmptyField(DLevel.CUSTOM, 20, 20, 75);
+
+
+        // Reveal a random sprite
+        Random  random  = new Random    ();
+        int     startX  = random.nextInt(field.getLenght());
+        int     startY  = random.nextInt(field.getWidth());
+        field           .fillField      (startX, startY);
+
+
+        // Senting the field size
+        this.sendToAll(interpreter.build("SERVER", DRequestType.FIELD_SIZE,     field.getLenght() + ":" + field.getWidth()));
+        this.sendToAll(interpreter.build("SERVER", DRequestType.MINE_NUMBER,    String.valueOf(field.getNumberOfMine())));
+
+
+        // Little pause
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            // Handle the exception
+            e.printStackTrace();
+        }
+
+
+        // Generating the request content with all mine positions
+        String content = "";
+
+
+        // Getting all the mines positions
+        for (int posX = 0; posX < field.getLenght(); posX++) {
+            for (int posY = 0; posY < field.getWidth(); posY++) {
+
+                // Indicating mines
+                if (field.isMine(posX, posY)) {
+                    
+                    // In case of empty content
+                    if (content.isEmpty()) {
+                        content =   posX + ":" + posY + ";";
+                    } else {
+                        content +=  posX + ":" + posY + ";";
+                    }
+
+                }
+
+            }
+
+        }
+
+
+        // Sending all mines positions
+        this.sendToAll(interpreter.build("SERVER", DRequestType.MINE_POSITION, content));
+
+
+        // Senting the field size
+        this.sendToAll(interpreter.build("SERVER", DRequestType.GAME_READY, ""));
 
     }
 
@@ -188,6 +308,10 @@ public class DServer implements Runnable{
 
         // Stop condition
         while (service != null && serverOnline) {
+
+            // Get the start time of the loop iteration
+            long startTime = System.currentTimeMillis();
+
 
             // Waiting connection
             try {
@@ -210,7 +334,7 @@ public class DServer implements Runnable{
 
 
                 // Init dialog
-                clientHandler.addRequest(interpret.build("SERVER", DRequestType.HELLO_SRV, clientHandler.getUUID()));
+                clientHandler.addRequest(interpreter.build("SERVER", DRequestType.HELLO_SRV, clientHandler.getUUID()));
 
 
                 // this.disconnectClient(newId, "Server full");
@@ -223,35 +347,37 @@ public class DServer implements Runnable{
                 System.out.println(e);
 
             }
+
+
+
+            // THREAD LIMITER
+            // ====================================================================================
+            
+            // Calculate how long the operations took
+            long elapsedTime = System.currentTimeMillis() - startTime;
+
+
+            // Calculate the remaining time to sleep
+            long sleepTime = 50 - elapsedTime;
+
+
+            // If there is still time left in the 50s window, sleep
+            if (sleepTime > 0) {
+                try {
+
+                    // Pause
+                    Thread.sleep(sleepTime);
+
+
+                } catch (InterruptedException e) {
+
+                    // Handle the exception
+                    e.printStackTrace();
+
+                }
+            }
                       
         }
-
-    }
-
-
-
-
-
-    public static void main(String [] args) {
-
-        // Starting point
-        System.out.println("SERVER : Starting point");
-
-
-        // Starting server
-        DServer srv = new DServer("1234");
-
-
-        // Checking if the server is online
-        if (srv.isOnline()) {
-            System.out.println("SERVER : Online, UUID = " + srv.getUUID());
-        } else {
-            System.out.println("SERVER : Disconnected");
-        }
-
-
-        // Ending point
-        // System.out.println("SERVER : Ending point");
 
     }
 

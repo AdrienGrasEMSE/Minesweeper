@@ -10,16 +10,20 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
-
+import ddialog.DDialogInfo;
+import ddialog.DDialogLoad;
+import ddialog.DDialogStringInput;
+import deminer.DController;
 import dgraphics.DButton;
 import dgraphics.DFont;
 import dgraphics.DLabel;
 import dgraphics.dtheme.DTheme;
+import dgui.DGUI;
 
 
 /**
@@ -36,7 +40,9 @@ public class DUI_Online_Default extends JPanel implements ActionListener {
     /**
      * UI main objects
      */
-    private final   DUI_Online  mainUI;
+    private final   DController controller;
+    private final   DGUI        gui;
+    private final   DUI_Online  uiOnline;
 
 
     /**
@@ -55,17 +61,25 @@ public class DUI_Online_Default extends JPanel implements ActionListener {
     private final   DButton     joinGameButton      = new DButton("Join a game",    DFont.JOST_SEMIBOLD, 24, DTheme.BTN_GRN);
 
 
+    /**
+     * Load dialog
+     */
+    private final   DDialogLoad serverCreation;
+    private final   DDialogLoad serverJoin;
+
 
 
     /**
      * Constructor
      * 
-     * @param controller in order to transmit data or action performed
+     * @param gui in order to transmit data or action performed
      */
-    public DUI_Online_Default(DUI_Online mainUI) {
+    public DUI_Online_Default(DGUI gui, DUI_Online uiOnline, DController controller) {
 
         // Getting the gui and the controller
-        this.mainUI = mainUI;
+        this.controller = controller;
+        this.gui        = gui;
+        this.uiOnline   = uiOnline;
 
 
         // Setting up layout and VFX
@@ -76,6 +90,11 @@ public class DUI_Online_Default extends JPanel implements ActionListener {
         this.northPanelSetup    ();
         this.southPanelSetup    ();
         this.centerPanelSetup   ();
+
+
+        // Load dialog setup
+        serverCreation  = new DDialogLoad(gui, "Creating server", DTheme.DLG_DRK);
+        serverJoin      = new DDialogLoad(gui, "Joinning server", DTheme.DLG_DRK);
 
     }
 
@@ -174,6 +193,217 @@ public class DUI_Online_Default extends JPanel implements ActionListener {
         // Plotting the centered panel
         centerPanel             .add(centeredPanel, gbc);
 
+
+        // Adding button listener
+        createGameButton        .addActionListener(this);
+        joinGameButton          .addActionListener(this);
+
+    }
+
+
+
+
+    /**
+     * Create a new online game
+     */
+    private void gameCreation() {
+
+        // Dialog to get custom parameters
+        DDialogStringInput param = new DDialogStringInput(gui, "Enter your pseudo", "Pseudo :");
+        do {
+
+            // Display dialog
+            param.setVisible(true);
+
+
+            // Infos
+            if (!param.getParamValid() && param.getUserConfirm()) {
+                DDialogInfo info = new DDialogInfo( gui,
+                                                    "Invalid parameters",
+                                                    new String[]{ "The pseudo must be not",
+                                                    "empty..."
+                                                    },
+                                                    DTheme.DLG_DRK);
+                info.setVisible(true);
+            }
+
+
+        }while (!param.getParamValid() && param.getUserConfirm());
+
+
+        // Cancel operation
+        if (!param.getUserConfirm()) {
+            return;
+        }
+
+
+        // Server creation
+        controller.newServer(param.getInputString());
+
+
+        // Loading : waiting for the server to be online
+        serverCreation.setVisible(true);
+
+    }
+
+
+
+
+    /**
+     * Make an action on the server creation
+     * 
+     * @param succeed indicate if the server creation is succesful
+     */
+    public void gameCreated(boolean succeed, String failInfo) {
+
+        // Close the dialog and connexion
+        SwingUtilities.invokeLater(() -> {
+            serverCreation.dispose();
+        });
+
+
+        // Accoding to the sucess status
+        if (succeed) {
+
+            // Display the wait screen
+            this.uiOnline.switchSubUIWait();
+
+
+        } else {
+
+            // Infos
+            DDialogInfo info = new DDialogInfo( gui,
+                                                    "Server creation aborted",
+                                                    new String[]{failInfo},
+                                                    DTheme.DLG_DRK);
+            info.setVisible(true);
+
+        }
+
+    }
+
+
+
+
+    /**
+     * Joinning game phase
+     */
+    private void joinGame() {
+
+        // Dialog to get custom parameters
+        DDialogStringInput serverIP = new DDialogStringInput(gui, "Enter server IP", "IP :");
+        do {
+
+            // Display dialog
+            serverIP.setVisible(true);
+
+
+            // Infos
+            if (!serverIP.getParamValid() && serverIP.getUserConfirm()) {
+                DDialogInfo info = new DDialogInfo( gui,
+                                                    "Invalid parameters",
+                                                    new String[]{ "The server ip must be",
+                                                    "not empty..."
+                                                    },
+                                                    DTheme.DLG_DRK);
+                info.setVisible(true);
+            }
+
+
+        }while (!serverIP.getParamValid() && serverIP.getUserConfirm());
+
+
+        // Cancel operation
+        if (!serverIP.getUserConfirm()) {
+            return;
+        }
+
+
+        // Dialog to get custom parameters
+        DDialogStringInput pseudo = new DDialogStringInput(gui, "Enter your pseudo", "Pseudo :");
+        do {
+
+            // Display dialog
+            pseudo.setVisible(true);
+
+
+            // Infos
+            if (!pseudo.getParamValid() && pseudo.getUserConfirm()) {
+                DDialogInfo info = new DDialogInfo( gui,
+                                                    "Invalid parameters",
+                                                    new String[]{ "The pseudo must be not",
+                                                    "empty..."
+                                                    },
+                                                    DTheme.DLG_DRK);
+                info.setVisible(true);
+            }
+
+
+        }while (!pseudo.getParamValid() && pseudo.getUserConfirm());
+
+
+        // Cancel operation
+        if (!pseudo.getUserConfirm()) {
+            return;
+        }
+
+
+        // Join game
+        controller.joinGame(serverIP.getInputString(), pseudo.getInputString());
+
+
+        // Loading : waiting for the client to be connected
+        serverJoin.setVisible(true);
+
+    }
+
+
+
+
+    /**
+     * Game joinned phase
+     * 
+     * @param succeed
+     * @param failInfo
+     */
+    public void gameJoinned(boolean succeed, String failInfo) {
+
+        // Accoding to the sucess status
+        if (succeed) {
+
+            // Display the wait screen
+            this.uiOnline.switchSubUIWait();
+
+
+        } else {
+
+            // Infos
+            DDialogInfo info = new DDialogInfo( gui,
+                                                    "Connexion to the server aborted",
+                                                    new String[]{failInfo},
+                                                    DTheme.DLG_DRK);
+            info.setVisible(true);
+
+        }
+
+
+        /**
+         * In today episod of wtf is going in there :
+         * 
+         * I think that the serverJoin dialog is displayed after
+         * the fail or succes to connect.
+         * 
+         * WHY IS THAT ? I DON'T FUCKING KNOW
+         * 
+         * 
+         * That's why the dialog close is at the end of this...
+         */
+        
+        // Close the dialog and connexion
+        SwingUtilities.invokeLater(() -> {
+            serverJoin.dispose();
+        });
+
     }
 
 
@@ -189,9 +419,21 @@ public class DUI_Online_Default extends JPanel implements ActionListener {
         if (e.getSource() == backButton) {
 
             // Getting back to the previous screen
-            mainUI.switchUIPrevious();
+            gui.switchUIPrevious();
             return;
 
+
+        } else if (e.getSource() == createGameButton) {
+
+            // Lauching a new game
+            gameCreation();
+            return;
+
+        } else if (e.getSource() == joinGameButton) {
+
+            // Lauching a new game
+            joinGame();
+            return;
 
         }
 

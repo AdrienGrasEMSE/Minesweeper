@@ -73,61 +73,40 @@ public class DLoadLabel extends DLabel implements Runnable {
      */
     @Override
     public void run() {
+
+        // Counter
+        int counter = 0;
+
         
         // Stop condition
         while (animationService != null) {
 
-            // Counting
-            try {
+            // Making the animation
+            switch (counter) {
+                case 0:
+                    this.setText(label + ".");
+                    break;
 
-                // 0.5 sec pause
-                sleep(500);
-                this.setText(label + ".");
+                case 5:
+                    this.setText(label + "..");
+                    break;
 
-            } catch(InterruptedException e) {
+                case 10:
+                    this.setText(label + "...");
+                    break;
 
-                // Printing exception
-                System.err.println(e);
-
-            }
-
-
-            // Couting
-            try {
-
-                // 0.5 sec pause
-                sleep(500);
-                this.setText(label + "..");
-
-            } catch(InterruptedException e) {
-
-                // Printing exception
-                System.err.println(e);
-
+                case 15:
+                    this.setText(label);
+                    break;
             }
 
 
             // Counting
             try {
 
-                // 0.5 sec pause
-                sleep(500);
-                this.setText(label + "...");
-
-            } catch(InterruptedException e) {
-
-                // Printing exception
-                System.err.println(e);
-
-            }
-
-
-            // Counting
-            try {
-
-                // 0.5 sec pause
-                sleep(500);
-                this.setText(label);
+                // 100 ms pause
+                sleep(100);
+                counter ++;
 
             } catch(InterruptedException e) {
 

@@ -26,7 +26,7 @@ public class DServerListener implements Runnable{
     private final   Thread                      service;
     private final   Queue<String>               requestQueue;
     private final   Map<String, DClientHandler> clientList;
-    private final   DInterpreter                interpret       = new DInterpreter();
+    private final   DInterpreter                interpreter     = new DInterpreter();
     private         boolean                     serverOnline    = true;
 
 
@@ -73,6 +73,10 @@ public class DServerListener implements Runnable{
         // Stop condition
         while (service != null && serverOnline) {
 
+            // Get the start time of the loop iteration
+            long startTime = System.currentTimeMillis();
+            
+
             synchronized (requestQueue) {
 
                 // Reading request
@@ -89,19 +93,69 @@ public class DServerListener implements Runnable{
 
 
                     // Request interpretation
-                    interpret.interpret(requestQueue.poll());
+                    interpreter.interpret(requestQueue.poll());
 
 
                     // Request answer
-                    switch (interpret.getRequestType()) {
+                    switch (interpreter.getRequestType()) {
 
                         // Client hello
                         case DRequestType.HELLO_CLT:
 
                             // Get the client handler and apply it the name
                             synchronized (clientList) {
-                                clientList.get(interpret.getSenderUUID()).setPlayerName(interpret.getContent());
-                                clientList.get(interpret.getSenderUUID()).startPinging();
+
+                                // Getting the client handler
+                                DClientHandler client = clientList.get(interpreter.getSenderUUID());
+                                
+
+                                // If the client exist
+                                if (client != null) {
+
+                                    // Set player pseudo and start pinging
+                                    client.setPlayerName(interpreter.getContent());
+                                    client.startPinging();
+
+
+                                    // Creating the new player list
+                                    boolean first       = true;
+                                    String  playerList  = "";
+                                    for (DClientHandler client_ : clientList.values()) {
+
+                                        // To prevet for getting and null string
+                                        if (first) {
+
+                                            // Adding the client uuid and player name
+                                            playerList += client_.getUUID();
+                                            playerList += ":";
+                                            playerList += client_.getPlayerName();
+                                            playerList += ";";
+
+                                        } else {
+
+                                            // Adding the client uuid and player name
+                                            playerList += client_.getUUID();
+                                            playerList += ":";
+                                            playerList += client_.getPlayerName();
+                                            playerList += ";";
+
+                                        }
+
+                                    }
+
+
+                                    // Sending the player list to everyone
+                                    server.sendToAll(interpreter.build("SERVER", DRequestType.PLAYER_LIST,  playerList));
+
+
+                                    // If there is a server owner
+                                    DClientHandler owner = server.getOwner();
+                                    if (owner != null) {
+                                        server.sendToAll(interpreter.build("SERVER", DRequestType.SERVER_OWNER, owner.getUUID()));
+                                    }
+
+                                }
+
                             }
                             break;
 
@@ -111,7 +165,19 @@ public class DServerListener implements Runnable{
 
                             // Answering the ping
                             synchronized (clientList) {
-                                clientList.get(interpret.getSenderUUID()).addRequest(interpret.build("SERVER", DRequestType.PING_ANSWER, ""));
+
+                                // Getting the client handler
+                                DClientHandler client = clientList.get(interpreter.getSenderUUID());
+                                
+
+                                // If the client exist
+                                if (client != null) {
+
+                                    // Answer the client ping
+                                    client.addRequest(interpreter.build("SERVER", DRequestType.PING_ANSWER, ""));
+
+                                }
+                                
                             }
                             break;
 
@@ -121,7 +187,19 @@ public class DServerListener implements Runnable{
 
                             // Client answer : taking it into account
                             synchronized (clientList) {
-                                clientList.get(interpret.getSenderUUID()).pingReceived();
+
+                                // Getting the client handler
+                                DClientHandler client = clientList.get(interpreter.getSenderUUID());
+                                
+
+                                // If the client exist
+                                if (client != null) {
+
+                                    // The client is still there
+                                    client.pingReceived();
+
+                                }
+                                
                             }
                             break;
 
@@ -131,7 +209,19 @@ public class DServerListener implements Runnable{
 
                             // Client answer : taking it into account
                             synchronized (clientList) {
-                                clientList.get(interpret.getSenderUUID()).shutDown();
+
+                                // Getting the client handler
+                                DClientHandler client = clientList.get(interpreter.getSenderUUID());
+                                
+
+                                // If the client exist
+                                if (client != null) {
+
+                                    // Shutting down client handler
+                                    client.shutDown();
+
+                                }
+                                
                             }
                             break;
 
@@ -142,20 +232,43 @@ public class DServerListener implements Runnable{
                             // Answering the client
                             synchronized (clientList) {
 
-                                // Verifying the UUID sent
-                                if (interpret.getContent().equals(server.getUUID())) {
+                                // Getting the client handler
+                                DClientHandler client = clientList.get(interpreter.getSenderUUID());
+                                
 
-                                    // Ownership granted
-                                    clientList.get(interpret.getSenderUUID()).addRequest(interpret.build("SERVER", DRequestType.OWNERSHIP_GRANTED, ""));
+                                // If the client exist
+                                if (client != null) {
 
-                                    
-                                } else {
+                                    // Verifying the UUID sent
+                                    if (interpreter.getContent().equals(server.getUUID())) {
 
-                                    // Ownership refused
-                                    clientList.get(interpret.getSenderUUID()).addRequest(interpret.build("SERVER", DRequestType.OWNERSHIP_REFUSED, ""));
+                                        // Ownership granted
+                                        client.addRequest(interpreter.build("SERVER", DRequestType.OWNERSHIP_GRANTED, ""));
+                                        client.setOwnership(true);
+                                        server.setOwner(client);
+
+                                        
+                                    } else {
+
+                                        // Ownership refused
+                                        client.addRequest(interpreter.build("SERVER", DRequestType.OWNERSHIP_REFUSED, ""));
+
+                                    }
 
                                 }
 
+                            }
+                            break;
+
+                        
+                        // Client ask to launch the game
+                        case DRequestType.GAME_LAUNCH_ASK:
+
+                            // Verifying if there are enough player
+                            synchronized (clientList) {
+                                if (clientList.size() > 1) {
+                                    server.newOnlineGame();
+                                }
                             }
                             break;
                     
@@ -167,6 +280,35 @@ public class DServerListener implements Runnable{
 
                 }
 
+            }
+
+
+
+            // THREAD LIMITER
+            // ====================================================================================
+            
+            // Calculate how long the operations took
+            long elapsedTime = System.currentTimeMillis() - startTime;
+
+
+            // Calculate the remaining time to sleep
+            long sleepTime = 100 - elapsedTime;
+
+
+            // If there is still time left in the 100ms window, sleep
+            if (sleepTime > 0) {
+                try {
+
+                    // Pause
+                    Thread.sleep(sleepTime);
+
+
+                } catch (InterruptedException e) {
+
+                    // Handle the exception
+                    e.printStackTrace();
+
+                }
             }
                       
         }

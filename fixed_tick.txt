@@ -1,0 +1,45 @@
+public class TimedLoopExample {
+
+    public static void main(String[] args) {
+
+        // Target loop time in milliseconds
+        final int TARGET_TIME_MS = 100;
+
+        // Infinite loop example
+        while (true) {
+
+            // Get the start time of the loop iteration
+            long startTime = System.currentTimeMillis();
+
+            // Perform your loop operations here
+            // ...
+            doSomeWork();  // Example of workload
+
+            // Calculate how long the operations took
+            long elapsedTime = System.currentTimeMillis() - startTime;
+
+            // Calculate the remaining time to sleep
+            long sleepTime = TARGET_TIME_MS - elapsedTime;
+
+            // If there is still time left in the 100ms window, sleep
+            if (sleepTime > 0) {
+                try {
+                    Thread.sleep(sleepTime);
+                } catch (InterruptedException e) {
+                    // Handle the exception
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    // Example method representing work done in the loop
+    private static void doSomeWork() {
+        // Simulate some work
+        try {
+            Thread.sleep(30); // Simulate that the work takes 30ms
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}

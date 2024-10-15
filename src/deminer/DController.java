@@ -3,10 +3,13 @@ package deminer;
 
 // Import
 import java.awt.event.ActionEvent;
+import java.util.Map;
 import java.util.Random;
 import javax.swing.Timer;
 import ddialog.EndGame;
 import dgui.DGUI;
+import donline.DClient;
+import donline.dserver.DServer;
 
 
 /**
@@ -40,6 +43,12 @@ public class DController {
     private int     winScore    = 0;
     private int     timeSpent   = 0;
     private int     timeLimit   = 0;
+    
+
+    /**
+     * Multiplayer attributes
+     */
+    private         DClient         client;
 
 
 
@@ -58,13 +67,24 @@ public class DController {
 
 
     /**
+     * =====================================================================================================================
+     * 
+     * Solo Mod
+     * 
+     * =====================================================================================================================
+     */
+
+
+
+
+    /**
      * Init method
      */
     public void init() {
         
         // Creating a new classic (random difficulty) game
         Random  random  = new Random();
-        int     nb      = random.nextInt(2);
+        int     nb      = random.nextInt(3);
         switch (nb) {
             case 0 -> gameLevel = DLevel.EASY;
             case 1 -> gameLevel = DLevel.MEDIUM;
@@ -398,6 +418,242 @@ public class DController {
 
         }
 
+    }
+
+
+
+    /**
+     * =====================================================================================================================
+     * 
+     * Online Mode
+     * 
+     * =====================================================================================================================
+     */
+
+    
+
+    
+    /**
+     * Server creation
+     * 
+     * @param pseudo pseudo of the first client
+     */
+    public void newServer(String pseudo) {
+
+        // Starting point
+        System.out.println("SERVER : Starting point");
+
+
+        // Starting server
+        DServer server = new DServer(DUUID.generate());
+
+
+        // Checking if the server is online
+        if (server.isOnline()) {
+
+            // Creation succeed
+            System.out.println("SERVER : Online, UUID = " + server.getUUID());
+
+
+            // Client creation
+            client = new DClient(this, pseudo);
+            if (client.connect("localhost", 10000)) {
+
+                // Waiting for the client to be registered (5sec max)
+                int loopCounter = 0;
+                while (!client.isRegistered() && loopCounter < 50) {
+
+                    // Loop limiter
+                    try {
+
+                        // 100ms wait
+                        Thread.sleep(100);
+
+                    } catch (InterruptedException e) {
+
+                        // Handle the exception
+                        System.out.println(e);
+
+                    }
+
+
+                    // Increase loop counter
+                    loopCounter ++;
+
+                }
+
+
+                // Verifying client registration
+                if (loopCounter <= 50 && client.isRegistered()) {
+
+                    // Asking server ownership to control game settings
+                    client.askOwnership(server.getUUID());
+
+
+                    // Waiting for the client to be the server owner (5sec max)
+                    loopCounter = 0;
+                    while (!client.isServerOwner() && loopCounter < 50) {
+
+                        // Loop limiter
+                        try {
+
+                            // 100ms wait
+                            Thread.sleep(100);
+
+                        } catch (InterruptedException e) {
+
+                            // Handle the exception
+                            System.out.println(e);
+
+                        }
+
+
+                        // Increase loop counter
+                        loopCounter ++;
+
+                    }
+
+
+                    // Verifying server ownership
+                    if (loopCounter <= 50 && client.isServerOwner()){
+
+                        // Asking the gui to display the nextstep
+                        gui.gameCreated(true, "");
+
+
+                    } else {
+
+                        // Shutting down the server
+                        server.stop();
+                        gui.gameCreated(false, "Unable to take control of the server...");
+
+                    }
+
+
+                } else {
+
+                    // Shutting down the server
+                    server.stop();
+                    gui.gameCreated(false, "Unable to connect to the server...");
+
+                }
+
+
+            } else {
+
+                // Shutting down the server
+                server.stop();
+                gui.gameCreated(false, "Unable to connect to the server...");
+
+            }
+
+
+        } else {
+
+            // Creation failed
+            System.out.println("SERVER : Disconnected");
+
+
+            // Asking the gui to inform and come back
+            gui.gameCreated(false, "Unable to create server...");
+
+        }
+
+    }
+
+
+
+
+    /**
+     * Join a server on its IP
+     * 
+     * @param serverIP
+     */
+    public void joinGame(String serverIP, String pseudo) {
+
+        // Client creation
+        client = new DClient(this, pseudo);
+        if (client.connect(serverIP, 10000)) {
+
+            // Waiting for the client to be registered (5sec max)
+            int loopCounter = 0;
+            while (!client.isRegistered() && loopCounter < 50) {
+
+                // Loop limiter
+                try {
+
+                    // 100ms wait
+                    Thread.sleep(100);
+
+                } catch (InterruptedException e) {
+
+                    // Handle the exception
+                    System.out.println(e);
+
+                }
+
+
+                // Increase loop counter
+                loopCounter ++;
+
+            }
+
+
+            // Verifying client registration
+            if (loopCounter <= 50 && client.isRegistered()) {
+
+                // Game joinned
+                gui.gameJoinned(true, "");
+
+
+            } else {
+
+                // Diconnect client
+                // TODO client disconnection phase
+                gui.gameJoinned(false, "Unable to connect to the server...");
+
+            }
+
+
+        } else {
+
+            // Shutting down the server
+            gui.gameJoinned(false, "Unable to connect to the server...");
+
+        }
+
+
+    }
+
+
+
+
+    /**
+     * Creating the client mine field
+     * 
+     * @param fieldLenght
+     * @param fieldWidth
+     */
+    public void initOnlineGame(int fieldLenght, int fieldWidth, int nbMines) {
+
+        // Creating the new field
+        this.field.newCustomEmptyField(DLevel.CUSTOM, fieldLenght, fieldWidth, nbMines);
+        this.gui.switchIngameUI();
+
+    }
+
+
+
+
+    public void updatePlayerList(Map<String, String> playerList, String ownerUUID) {
+        gui.updatePlayerList(playerList, ownerUUID);
+    }
+
+
+
+
+    public void launchGame() {
+        client.launchGame();
     }
 
 }
