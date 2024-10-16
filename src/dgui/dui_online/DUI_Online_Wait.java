@@ -2,24 +2,25 @@
 package dgui.dui_online;
 
 // Import
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.GridLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Map;
-import javax.swing.border.EmptyBorder;
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
 import deminer.DController;
 import dgraphics.DButton;
 import dgraphics.DFont;
 import dgraphics.DLabel;
 import dgraphics.dtheme.DTheme;
 import dgui.DGUI;
+import donline.DPlayer;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Map;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
 
 /**
@@ -62,7 +63,7 @@ public class DUI_Online_Wait extends JPanel implements ActionListener {
      * Player list
      */
     private         String      ownerUUI;
-    private         Map<String, String> playerList;
+    private         Map<String, DPlayer> playerList;
 
 
     /**
@@ -199,7 +200,7 @@ public class DUI_Online_Wait extends JPanel implements ActionListener {
      * @param playerList
      * @param ownerUUID
      */
-    public void updatePlayerList(Map<String, String> playerList, String ownerUUID) {
+    public void updatePlayerList(Map<String, DPlayer> playerList, String ownerUUID) {
 
         // Getting player list and owner
         this.playerList = playerList;
@@ -220,14 +221,14 @@ public class DUI_Online_Wait extends JPanel implements ActionListener {
     public void displayPlayerList() {
 
         // If the player list is not null
-        if (playerList != null) {
+        if (playerList != null && !playerList.isEmpty()) {
 
 
             // Clearing the center panel
             centerPanel.removeAll();
 
 
-            // Creating the title label
+            // Creating the title pabel
             JPanel titlePanel   = new JPanel    (new GridLayout(1, 2));
             titlePanel          .setBorder      (new EmptyBorder(0, 0, 10, 0));
             titlePanel          .setBackground  (DTheme.GUI_NTL.BCK_N);
@@ -254,14 +255,14 @@ public class DUI_Online_Wait extends JPanel implements ActionListener {
                 if (key.equals(ownerUUI)) {
 
                     // Plotting the player name
-                    playerPanel.add(new DLabel(playerList.get(key), DFont.JOST_SEMIBOLD,   18, DTheme.LAB_NTL));
+                    playerPanel.add(new DLabel(playerList.get(key).getPlayerName(), DFont.JOST_SEMIBOLD,   18, DTheme.LAB_NTL));
                     playerPanel.add(new DLabel("Game owner",   DFont.JOST_LIGHT,      18, DTheme.LAB_TRS));
 
 
                 } else {
 
                     // Plotting the player name
-                    playerPanel.add(new DLabel(playerList.get(key), DFont.JOST_SEMIBOLD,   18, DTheme.LAB_NTL));
+                    playerPanel.add(new DLabel(playerList.get(key).getPlayerName(), DFont.JOST_SEMIBOLD,   18, DTheme.LAB_NTL));
                     playerPanel.add(new JLabel(""));
 
                 }

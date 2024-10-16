@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -60,7 +62,7 @@ public class DClient implements DConnexionHandler {
     /**
      * Players
      */
-    private final   Map<String, String> playerList = new HashMap<>();
+    private final   Map<String, DPlayer> playerList = new HashMap<>();
     private         String          ownerUUID;
 
 
@@ -69,7 +71,6 @@ public class DClient implements DConnexionHandler {
      */
     int fieldLenght;
     int fieldWidth;
-    int nbMines;
 
 
     
@@ -270,7 +271,7 @@ public class DClient implements DConnexionHandler {
      * TODO : delete this (makes the controller with interpreter)
      */
     public void clickEvent(int posX, int posY) {
-        this.addRequest(interpreter.build(this.uuid, DRequestType.SPRITE_CLICKED, posX + ":" + posY));
+        this.addRequest(interpreter.build(this.uuid, DRequestType.SPRITE_CLICKED, this.uuid + ":" + posX + "," + posY));
     }
 
 
@@ -292,331 +293,6 @@ public class DClient implements DConnexionHandler {
 
 
     /**
-     * Extract the player list from the request
-     * 
-     * @param content
-     */
-    private void extractPlayerList(String content) {
-
-        // Emptying the player list
-        playerList.clear();
-        int contentLenght = content.length();
-
-
-        // If the content is not empty
-        if (contentLenght > 8) {
-
-            // Traverse the content
-            boolean isUUID      = true;
-            int     i           = 0;
-            String  keyBuffer   = "";
-            String  valBuffer   = "";
-            while (i < contentLenght) {
-
-                // End of UUID
-                if (i < contentLenght && content.charAt(i) == ':') {
-
-                    // Switching state
-                    isUUID = false;
-
-
-                    // Jumping the ':'
-                    i++;
-
-                }
-
-
-                // End of player name
-                if (i < contentLenght && content.charAt(i) == ';') {
-
-                    // Update list
-                    playerList.put(keyBuffer, valBuffer);
-                    keyBuffer = "";
-                    valBuffer = "";
-
-                    // Switching state
-                    isUUID = true;
-
-
-                    // Jumping the ';'
-                    i++;
-
-                }
-
-
-                // Completing the key
-                if (i < contentLenght && isUUID) {
-
-                    // If the buffer is empty
-                    if (keyBuffer.isEmpty()) {
-                        keyBuffer = String.valueOf(content.charAt(i));
-                    } else {
-                        keyBuffer += content.charAt(i);
-                    }
-                    
-                }
-
-
-                // Completing the value
-                if (i < contentLenght && !isUUID) {
-
-                    // If the buffer is empty
-                    if (valBuffer.isEmpty()) {
-                        valBuffer = String.valueOf(content.charAt(i));
-                    } else {
-                        valBuffer += content.charAt(i);
-                    }
-                    
-                }
-
-
-                // Incrementing
-                i++;
-                
-            }
-
-        }
-
-    }
-
-
-
-
-    /**
-     * Extract field size
-     * 
-     * @param content
-     */
-    private void extractFieldSize(String content) {
-
-        // Getting all chars from the request content
-        int     i                   = 0;
-        String  fieldLengthString   = "";
-        String  fieldWidthString    = "";
-        boolean isLenght            = true;
-        while (i < content.length()) {
-
-            // If the length is fully captured
-            if (i < content.length() && content.charAt(i) == ':') {
-                i ++;
-                isLenght = false;
-            }
-
-            
-            // Getting the lenght
-            if (i < content.length() && isLenght) {
-
-
-                // In case of empty string buffer
-                if (fieldLengthString.isEmpty()) {
-                    fieldLengthString =     String.valueOf(content.charAt(i));
-                } else {
-                    fieldLengthString +=    String.valueOf(content.charAt(i));
-                }
-
-            }
-
-
-            // Getting the width
-            if (i < content.length() && !isLenght) {
-
-
-                // In case of empty string buffer
-                if (fieldWidthString.isEmpty()) {
-                    fieldWidthString =     String.valueOf(content.charAt(i));
-                } else {
-                    fieldWidthString +=    String.valueOf(content.charAt(i));
-                }
-
-            }
-
-
-            // Incrementing i
-            i ++;
-
-        }
-
-
-        // Updating the field length and width
-        this.fieldLenght    = Integer.parseInt(fieldLengthString);
-        this.fieldWidth     = Integer.parseInt(fieldWidthString);
-
-    }
-
-
-
-
-    /**
-     * Extract mine positions
-     * 
-     * @param content
-     */
-    private void extractMinePosition(String content) {
-
-        // Buffer variable
-        String  posX_   = "";
-        String  posY_   = "";
-        int     i       = 0;
-        boolean isPosX  = true;
-
-
-        // Getting all mines
-        while (i < content.length()) {
-
-            // Switching data type
-            if (i < content.length() && content.charAt(i) == ':') {
-
-                // Switching to posX data
-                isPosX = false;
-                i++;
-
-
-            } else if (i < content.length() && content.charAt(i) == ';') {
-
-                // Switching to posY data
-                isPosX = true;
-                i++;
-
-
-                // Saving data
-                controller.fillField(Integer.parseInt(posX_), Integer.parseInt(posY_));
-                posX_ = "";
-                posY_ = "";
-
-            }
-
-
-            // Saving posX
-            if (i < content.length() && isPosX) {
-
-                // In case of empty buffer
-                if (posX_.isEmpty()) {
-                    posX_ = String.valueOf(content.charAt(i));
-                } else {
-                    posX_ += String.valueOf(content.charAt(i));
-                }
-
-            }
-
-
-            // Saving posX
-            if (i < content.length() && !isPosX) {
-
-                // In case of empty buffer
-                if (posY_.isEmpty()) {
-                    posY_ = String.valueOf(content.charAt(i));
-                } else {
-                    posY_ += String.valueOf(content.charAt(i));
-                }
-
-            }
-
-
-            // Incrementing
-            i++;
-
-        }
-
-    }
-
-
-
-
-    /**
-     * Extract the sprite position and the sprite values
-     * 
-     * @param content
-     */
-    private void extractSpritePosition(String content) {
-
-        // Variable buffer
-        int     i               = 0;
-        String  posX_           = "";
-        String  posY_           = "";
-        String  spriteValue_    = "";
-
-
-        // Data localisation variables
-        boolean isPosX          = true;
-        boolean isCoordinate    = true;
-
-
-        // Getting the sprite position
-        while (i < content.length()) {
-
-            // Switching data type
-            if (i < content.length() && content.charAt(i) == ':') {
-
-                // Switching to posY
-                isPosX = false;
-                i++;
-
-
-            } else if (i < content.length() && content.charAt(i) == '=') {
-
-                // Switching to spriteValue
-                isCoordinate = false;
-                i++;
-
-            }
-
-
-            // Getting posX
-            if (i < content.length() && isCoordinate && isPosX) {
-
-                // In case of empty buffer
-                if (posX_.isEmpty()) {
-                    posX_ = String.valueOf(content.charAt(i));
-                } else {
-                    posX_ += String.valueOf(content.charAt(i));
-                }
-
-
-            }
-            
-            
-            // Getting posY
-            if (i < content.length() && isCoordinate && !isPosX) {
-
-                // In case of empty buffer
-                if (posY_.isEmpty()) {
-                    posY_ = String.valueOf(content.charAt(i));
-                } else {
-                    posY_ += String.valueOf(content.charAt(i));
-                }
-
-
-            }
-            
-            
-            // Getting spriteValue
-            if (i < content.length() && !isCoordinate) {
-
-                // In case of empty buffer
-                if (spriteValue_.isEmpty()) {
-                    spriteValue_ = String.valueOf(content.charAt(i));
-                } else {
-                    spriteValue_ += String.valueOf(content.charAt(i));
-                }
-
-            }
-
-
-            // Incrementing
-            i ++;
-
-        }
-
-
-        // Display the sprite position and spriteValue
-        this.controller.spriteReveal(Integer.parseInt(posX_), Integer.parseInt(posY_), Integer.parseInt(spriteValue_));
-
-    }
-
-
-
-
-    /**
      * Method wich answer a request
      * 
      * @param request
@@ -629,7 +305,7 @@ public class DClient implements DConnexionHandler {
 
         // Action according to the request type
         switch (interpreter.getRequestType()) {
-            case DRequestType.HELLO_SRV -> {
+            case DRequestType.HELLO_SRV         -> {
 
                 // Getting the given ID
                 this.uuid       = interpreter.getContent();
@@ -646,21 +322,21 @@ public class DClient implements DConnexionHandler {
 
 
             }
-            case DRequestType.PING -> {
+            case DRequestType.PING              -> {
 
                 // Ansewering the ping
                 this.addRequest(interpreter.build(this.uuid, DRequestType.PING_ANSWER, ""));
 
 
             }
-            case DRequestType.PING_ANSWER -> {
+            case DRequestType.PING_ANSWER       -> {
 
                 // Server answer : taking it into account
                 this.pingService.answerPing();
 
 
             }
-            case DRequestType.DISCONNECT -> {
+            case DRequestType.DISCONNECT        -> {
 
                 // Server answer : taking it into account
                 this.shutDown();
@@ -672,7 +348,16 @@ public class DClient implements DConnexionHandler {
 
                 // Ownership granted
                 this.serverOwner    = true;
-                this.playerList.put (this.uuid, this.name);
+
+
+                // Updating the player list with the client itslef
+                DPlayer player      = new DPlayer();
+                player.setUUID      (this.uuid);
+                player.setPlayerName(this.name);
+                this.playerList.put (this.uuid, player);
+
+
+                // Saving the owner UUID
                 this.ownerUUID      = this.uuid;
 
 
@@ -684,15 +369,52 @@ public class DClient implements DConnexionHandler {
 
 
             }
-            case DRequestType.PLAYER_LIST -> {
+            case DRequestType.PLAYER_LIST       -> {
 
-                // Extract player list
-                this.extractPlayerList(interpreter.getContent());
+                /**
+                 * Data shape :
+                 * 
+                 * CONTENT = 'UUID1:playerName_1;UUID2:playerName_2;...UUIDn:playerName_n;'
+                 */
+
+
+                // Clearing the list
+                this.playerList.clear();
+
+
+                // Separate pairs (UUID, playerName)
+                String[] pairs_ = interpreter.getContent().split(";");
+
+
+                // Ruuning trough pairs
+                for (String pair_ : pairs_) {
+
+                    // Ignore empty pairs
+                    if (!pair_.isEmpty()) {
+
+                        // Separate UUID and playerName
+                        String[] pair = pair_.split(":");
+                        if (pair.length == 2) {
+
+                            // Adding data to the player list
+                            DPlayer player      = new DPlayer();
+                            player.setUUID      (pair[0]);
+                            player.setPlayerName(pair[1]);
+                            this.playerList.put (pair[0], player);
+
+                        }
+                        
+                    }
+
+                }
+
+
+                // Updating the player list
                 controller.updatePlayerList(playerList, ownerUUID);
 
 
             }
-            case DRequestType.SERVER_OWNER -> {
+            case DRequestType.SERVER_OWNER      -> {
 
                 // Saving the server owner
                 ownerUUID = interpreter.getContent();
@@ -700,50 +422,149 @@ public class DClient implements DConnexionHandler {
 
 
             }
-            case DRequestType.FIELD_SIZE -> {
+            case DRequestType.FIELD_SIZE        -> {
 
-                // Saving the field size
-                this.extractFieldSize(interpreter.getContent());
+                /**
+                 * Data shape :
+                 * 
+                 * CONTENT = 'fieldLenght,fieldWidth'
+                 */
+
+
+                // Length and width separation
+                String[] parts = interpreter.getContent().split(",");
+                if (parts.length != 2) {
+
+                    // TODO : handle this
+                    
+                } else {
+
+                    // Trying to convert length and width
+                    try {
+
+                        // Saving the field length and width
+                        this.fieldLenght    = Integer.parseInt(parts[0]);
+                        this.fieldWidth     = Integer.parseInt(parts[1]);
+
+
+                    } catch (NumberFormatException e) {
+
+                        // TODO : handle this
+
+                    }
+
+                }
 
 
             }
-            case DRequestType.MINE_NUMBER -> {
+            case DRequestType.FIELD_READY       -> {
 
                 // Saving the mine number
-                this.nbMines = Integer.parseInt(interpreter.getContent());
+                this.controller.initOnlineField(fieldLenght, fieldWidth);
 
 
             }
-            case DRequestType.MINE_POSITION -> {
-
-                // Saving the mine number
-                this.extractMinePosition(interpreter.getContent());
-
-
-            }
-            case DRequestType.FIELD_READY -> {
-
-                // Saving the mine number
-                this.controller.initOnlineField(fieldLenght, fieldWidth, nbMines);
-
-
-            }
-            case DRequestType.GAME_READY -> {
+            case DRequestType.GAME_READY        -> {
 
                 // Saving the mine number
                 this.controller.gameStart();
 
 
             }
-            case DRequestType.SPRITE_REVEAL -> {
+            case DRequestType.SPRITE_REVEAL     -> {
 
-                // Revealing the sprite
-                this.extractSpritePosition(interpreter.getContent());
+                // Pattern definition
+                Pattern pattern = Pattern.compile("^([^:]+):([\\d.]+),([\\d.]+)=([^=]+)$");
+                Matcher matcher = pattern.matcher(interpreter.getContent());
+
+
+                // If the data match the pattern
+                if (matcher.matches()) {
+
+                    // Trying to convert the posX and posY
+                    int posX;
+                    int posY;
+                    int spriteValue;
+                    try {
+
+                        // Saving the field length and width
+                        posX        = Integer.parseInt(matcher.group(2));
+                        posY        = Integer.parseInt(matcher.group(3));
+                        spriteValue = Integer.parseInt(matcher.group(4));
+
+
+                        // Display the sprite position and spriteValue
+                        this.controller.spriteReveal(posX, posY, spriteValue);
+
+
+                    } catch (NumberFormatException e) {
+
+                        // TODO : handle this
+
+                    }
+
+
+                } else {
+
+                    // TODO : Handle this shit
+
+                }
 
 
             }
-        
-                
+            case DRequestType.SCORE             -> {
+
+                /**
+                 * Data shape :
+                 * 
+                 * CONTENT = 'UUID1:score_1;UUID2:score_2;...UUIDn:score_n;'
+                 */
+
+
+                // Separate pairs (UUID, playerName)
+                String[] pairs_ = interpreter.getContent().split(";");
+
+
+                // Ruuning trough pairs
+                for (String pair_ : pairs_) {
+
+                    // Ignore empty pairs
+                    if (!pair_.isEmpty()) {
+
+                        // Separate UUID and playerName
+                        String[] pair = pair_.split(":");
+                        if (pair.length == 2) {
+
+                            // Modifying player score
+                            DPlayer player = playerList.get(pair[0]);
+                            if (player != null) {
+
+                                // Trying to convert top int
+                                try {
+
+                                    // Applying player score
+                                    player.setScore(Integer.parseInt(pair[1]));
+
+                                    
+                                } catch (NumberFormatException e) {
+
+                                    // TODO : Handle this
+
+                                }
+
+                            }
+
+                        }
+                        
+                    }
+
+                }
+
+                // Update score
+                this.controller.updateScore();
+
+
+            }
             default -> {
             }
         }

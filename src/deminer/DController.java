@@ -5,6 +5,7 @@ package deminer;
 import ddialog.EndGame;
 import dgui.DGUI;
 import donline.DClient;
+import donline.DPlayer;
 import donline.dserver.DServer;
 import java.awt.event.ActionEvent;
 import java.util.Map;
@@ -666,7 +667,7 @@ public class DController {
      * @param playerList
      * @param ownerUUID
      */
-    public void updatePlayerList(Map<String, String> playerList, String ownerUUID) {
+    public void updatePlayerList(Map<String, DPlayer> playerList, String ownerUUID) {
         gui.updatePlayerList(playerList, ownerUUID);
     }
 
@@ -689,31 +690,15 @@ public class DController {
      * @param fieldLenght
      * @param fieldWidth
      */
-    public void initOnlineField(int fieldLenght, int fieldWidth, int nbMines) {
+    public void initOnlineField(int fieldLenght, int fieldWidth) {
 
         // Creating the new field
-        this.field.newCustomEmptyField(DLevel.CUSTOM, fieldLenght, fieldWidth, nbMines);
+        this.field.newCustomEmptyField(DLevel.CUSTOM, fieldLenght, fieldWidth, 0);
 
     }
 
 
     
-
-    /**
-     * Filling the field mines
-     * 
-     * @param posX
-     * @param posY
-     */
-    public void fillField(int posX, int posY) {
-
-        // Filling the mine at posX : posY
-        field.setMine(posX, posY);
-
-    }
-
-
-
 
     /**
      * Start the new game
@@ -723,6 +708,7 @@ public class DController {
         // Init the mesh
         this.meshInit();
         this.gui.switchIngameUI();
+        this.gui.updateScore();
 
     }
 
@@ -738,6 +724,16 @@ public class DController {
     public void spriteReveal(int posX, int posY, int spriteValue) {
         spriteMesh[posX][posY].setCoefficient(spriteValue);
         spriteMesh[posX][posY].reveal();
+    }
+
+
+
+
+    /**
+     * Update the score display
+     */
+    public void updateScore () {
+        this.gui.updateScore();
     }
 
 }

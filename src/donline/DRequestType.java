@@ -20,7 +20,8 @@ public enum DRequestType {
      * 
      * 
      * 
-     * Empty content = "0"
+     * Empty UUID                   -> Bad request
+     * Request type = UNRECOGNIZED  -> Bad request
      */
 
     /**
@@ -34,8 +35,8 @@ public enum DRequestType {
 
     /**
      * Ping requests
-     * - Ping request   : {<@__ID__@><$PING$><#0#>}
-     * - Ping answer    : {<@__ID__@><$PINGANSWER$><#0#>}
+     * - Ping request   : {<@__ID__@><$PING$><##>}
+     * - Ping answer    : {<@__ID__@><$PINGANSWER$><##>}
      */
     PING                ("PING"),
     PING_ANSWER         ("PING_ANSWER"),
@@ -45,7 +46,8 @@ public enum DRequestType {
      * Disconnect request
      * - Server request : {<@SERVER@><$DISCONNECT$><#__reason__#>}
      *      -> force disconnect a client for a reason
-     * - Client request : {<@__ID__@><$DISCONNECT$><#0#>}
+     * 
+     * - Client request : {<@__ID__@><$DISCONNECT$><##>}
      *      -> Inform the server that the client is disconnecting
      */
     DISCONNECT          ("DISCONNECT"),
@@ -54,8 +56,8 @@ public enum DRequestType {
     /**
      * Server ownership
      * - ASKOWNERSHIP       : {<@__ID__@><$CLT_HELLO$><#__SERVER_ID_#>}
-     * - OWNERSHIPREFUSED   : {<@SERVER@><$OWNERSHIPREFUSED$><#0#>}
-     * - OWNERSHIPGRANTED   : {<@SERVER@><$OWNERSHIPGRANTED$><#0#>}
+     * - OWNERSHIPREFUSED   : {<@SERVER@><$OWNERSHIPREFUSED$><##>}
+     * - OWNERSHIPGRANTED   : {<@SERVER@><$OWNERSHIPGRANTED$><##>}
      * 
      * Explanation :
      *      The server is owned by an application. But by default, no one is connected,
@@ -78,20 +80,19 @@ public enum DRequestType {
 
 
     /**
-     * Game launch
+     * Game infos
      */
     GAME_LAUNCH_ASK     ("GAME_LAUNCH_ASK"),
     GAME_LAUNCH         ("GAME_LAUNCH"),
     GAME_READY          ("GAME_READY"),
+    GAME_ENDED          ("GAME_ENDED"),
 
 
     /**
      * Field info
      */
     FIELD_SIZE          ("FIELD_SIZE"),
-    MINE_NUMBER         ("MINE_NUMBER"),
     FIELD_READY         ("FIELD_READY"),
-    MINE_POSITION       ("MINE_POSITION"),
 
 
     /**
@@ -99,6 +100,8 @@ public enum DRequestType {
      */
     SPRITE_REVEAL       ("SPRITE_REVEAL"),
     SPRITE_CLICKED      ("SPRITE_CLICKED"),
+    SCORE               ("SCORE"),
+    PLAYER_HAS_LOST     ("PLAYER_HAS_LOST"),
 
 
     /**

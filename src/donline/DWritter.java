@@ -42,7 +42,7 @@ public class DWritter {
             this.ready = true;
 
             
-        } catch (Exception e) {
+        } catch (IOException e) {
 
             // Printing exception
             System.out.println(e);
@@ -108,7 +108,7 @@ public class DWritter {
             stream.writeUTF(data);
             return true;
             
-        } catch (Exception e) {
+        } catch (IOException e) {
             
             // Printing exception
             System.err.println(e);

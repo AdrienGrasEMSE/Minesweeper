@@ -6,6 +6,8 @@ import donline.DInterpreter;
 import donline.DRequestType;
 import java.util.Map;
 import java.util.Queue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -59,100 +61,6 @@ public class DServerListener implements Runnable{
      */
     public void stop() {
         serverOnline = false;
-    }
-
-
-
-
-    /**
-     * Extract the sprite position and the sprite values
-     * 
-     * @param content
-     */
-    private void extractSpritePosition(String content) {
-
-        // Variable buffer
-        int     i               = 0;
-        String  posX_           = "";
-        String  posY_           = "";
-        String  spriteValue_    = "";
-
-
-        // Data localisation variables
-        boolean isPosX          = true;
-        boolean isCoordinate    = true;
-
-
-        // Getting the sprite position
-        while (i < content.length()) {
-
-            // Switching data type
-            if (i < content.length() && content.charAt(i) == ':') {
-
-                // Switching to posY
-                isPosX = false;
-                i++;
-
-
-            } else if (i < content.length() && content.charAt(i) == '=') {
-
-                // Switching to spriteValue
-                isCoordinate = false;
-                i++;
-
-            }
-
-
-            // Getting posX
-            if (i < content.length() && isCoordinate && isPosX) {
-
-                // In case of empty buffer
-                if (posX_.isEmpty()) {
-                    posX_ = String.valueOf(content.charAt(i));
-                } else {
-                    posX_ += String.valueOf(content.charAt(i));
-                }
-
-
-            }
-            
-            
-            // Getting posY
-            if (i < content.length() && isCoordinate && !isPosX) {
-
-                // In case of empty buffer
-                if (posY_.isEmpty()) {
-                    posY_ = String.valueOf(content.charAt(i));
-                } else {
-                    posY_ += String.valueOf(content.charAt(i));
-                }
-
-
-            }
-            
-            
-            // Getting spriteValue
-            if (i < content.length() && !isCoordinate) {
-
-                // In case of empty buffer
-                if (spriteValue_.isEmpty()) {
-                    spriteValue_ = String.valueOf(content.charAt(i));
-                } else {
-                    spriteValue_ += String.valueOf(content.charAt(i));
-                }
-
-            }
-
-
-            // Incrementing
-            i ++;
-
-        }
-
-
-        // Display the sprite position and spriteValue
-        this.server.spriteReveal(Integer.parseInt(posX_), Integer.parseInt(posY_));
-
     }
 
 
@@ -359,13 +267,54 @@ public class DServerListener implements Runnable{
                         }
                         case DRequestType.SPRITE_CLICKED -> {
 
-                            // Ask the server to reveal the sprite
-                            this.extractSpritePosition(interpreter.getContent());
+                            /**
+                             * Data shape :
+                             * 
+                             * CONTENT = 'playerUUID:posX,posY'
+                             */
+
+
+                            // Pattern definition
+                            Pattern pattern = Pattern.compile("^([^:]+):([\\d.]+),([\\d.]+)$");
+                            Matcher matcher = pattern.matcher(interpreter.getContent());
+
+
+                            // If the request match the pattern
+                            if (matcher.matches()) {
+
+                                // Trying to convert the posX and posY
+                                int posX = 0;
+                                int posY = 0;
+                                try {
+
+                                    // Saving the field length and width
+                                    posX = Integer.parseInt(matcher.group(2));
+                                    posY = Integer.parseInt(matcher.group(3));
+
+
+                                } catch (NumberFormatException e) {
+
+                                    // TODO : handle this
+
+                                }
+
+                                // Ask the server to reveal the sprite
+                                this.server.spriteReveal(matcher.group(1), posX, posY);
+
+                               
+                            } else {
+
+                                // TODO : Handel this
+
+                            }
 
 
                         }
                         default -> {
+
+
                         }
+                        
                     }
                     
                 }

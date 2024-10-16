@@ -9,15 +9,22 @@ import dgraphics.DFont;
 import dgraphics.DLabel;
 import dgraphics.dtheme.DTheme;
 import dgui.DGUI;
+import donline.DPlayer;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
 
 /**
@@ -47,12 +54,19 @@ public class DUI_Online_Ingame extends JPanel implements ActionListener {
     private final   JPanel      northPanel          = new JPanel();
     private final   JPanel      southPanel          = new JPanel();
     private final   JPanel      centerPanel         = new JPanel();
+    private final   JPanel      eastPanel           = new JPanel();
 
 
     /**
      * South panels elements
      */
     private final   DButton     leaveButton         = new DButton("Leave game",     DFont.JOST_SEMIBOLD, 24, DTheme.BTN_RED);
+
+
+    /**
+     * Player list
+     */
+    private         Map<String, DPlayer> playerList = new HashMap<>();
 
     
     /**
@@ -83,6 +97,7 @@ public class DUI_Online_Ingame extends JPanel implements ActionListener {
         this.northPanelSetup    ();
         this.southPanelSetup    ();
         this.centerPanelSetup   ();
+        this.eastPanelSetup     ();
 
 
         // Listener init
@@ -177,6 +192,21 @@ public class DUI_Online_Ingame extends JPanel implements ActionListener {
         // Adding the listener to check size changement
         centerPanel .addComponentListener   (centerPanelSizeCheck);
 
+    }
+
+
+
+
+    /**
+     * Setting up east panel
+     */
+    private void eastPanelSetup() {
+
+        // Plotting panel and set VFX
+        this                .add            (eastPanel, BorderLayout.EAST);
+        eastPanel           .setLayout      (new BoxLayout(eastPanel, BoxLayout.Y_AXIS));
+        eastPanel           .setBorder      (new EmptyBorder(30, 30, 30, 30));
+        eastPanel           .setBackground  (DTheme.GUI_NTL.BCK_D);
     }
 
 
@@ -294,6 +324,78 @@ public class DUI_Online_Ingame extends JPanel implements ActionListener {
         centerPanel.revalidate();
         centerPanel.repaint();
         
+    }
+
+
+
+
+    /**
+     * Update the player list
+     * 
+     * @param playerList
+     */
+    public void updatePlayerList(Map<String, DPlayer> playerList) {
+        this.playerList = playerList;
+    }
+
+
+
+
+    /**
+     * 
+     */
+    public void updateScore() {
+
+        // Usually, the list is not empty BUT
+        if (playerList != null && !playerList.isEmpty()) {
+
+            // Clearing the side panel
+            this.eastPanel.removeAll();
+
+
+            // Creating the title pabel
+            JPanel titlePanel   = new JPanel    (new GridLayout(1, 2));
+            titlePanel          .setBorder      (new EmptyBorder(0, 0, 10, 0));
+            titlePanel          .setBackground  (DTheme.GUI_NTL.BCK_N);
+            titlePanel          .setMaximumSize (new Dimension(Integer.MAX_VALUE, 50));
+
+
+            // Creating the title label
+            DLabel titleLabel   = new DLabel    ("Player list", DFont.JOST_SEMIBOLD, 24, DTheme.LAB_TRS);
+            titlePanel          .add            (titleLabel);
+            titlePanel          .add            (new JLabel(""));
+            eastPanel           .add            (titlePanel);
+
+
+            // Running through the player list
+            for (DPlayer player : playerList.values()) {
+
+                // Creating the player panel
+                JPanel playerPanel  = new JPanel    (new GridLayout(1, 2));
+                playerPanel         .setBorder      (new EmptyBorder(10, 10, 10, 10));
+                playerPanel         .setBackground  (DTheme.GUI_NTL.BCK_D);
+
+
+                // Plotting the player name
+                playerPanel.add(new DLabel(player.getPlayerName(),              DFont.JOST_SEMIBOLD,   18, DTheme.LAB_NTL));
+                playerPanel.add(new DLabel(String.valueOf(player.getScore()),   DFont.JOST_LIGHT,      18, DTheme.LAB_TRS));
+
+
+                // Calculing the size of the panem
+                playerPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+
+
+                // Plotting the player panel
+                eastPanel.add(playerPanel);
+
+            }
+
+
+            // Updating the center panel
+            eastPanel.revalidate();
+
+        }
+
     }
 
 

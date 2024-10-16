@@ -51,6 +51,9 @@ public class DServer implements Runnable{
      * Game attributes
      */
     private final   DMinefield          field                   = new DMinefield();
+    private         boolean[][]         spriteMeshValidator;
+    private         int                 nbSpriteToReveal;
+    private         int                 nbSpriteRevealed;
 
 
     
@@ -233,21 +236,87 @@ public class DServer implements Runnable{
 
 
     /**
+     * Send the score list to all player
+     */
+    public void scoreUpdate() {
+
+        // Content
+        String content = "";
+
+
+        // Iteration over the client list
+        synchronized (clientList) {
+            for (DClientHandler client : clientList.values()) {
+
+                // In case of empty content
+                if (content.isEmpty()) {
+                    content = client.getUUID() + ":" + client.getScore() + ";";
+                } else {
+                    content += client.getUUID() + ":" + client.getScore() + ";";
+                }
+                
+            }
+
+        }
+
+
+        // Sending to all the score list
+        this.sendToAll(interpreter.build("SERVER", DRequestType.SCORE, content));
+
+    }
+
+
+
+
+    /**
      * Ask all client to reveal a sprite
      * 
+     * @param uuid  player's uuid who clicked on the sprite
      * @param posX
      * @param posY
-     * 
-     * 
-     * TODO : include sprite revealer
      */
-    public void spriteReveal(int posX, int posY) {
+    public synchronized void spriteReveal(String uuid, int posX, int posY) {
 
-        // Revealing the sprite
-        if (!field.isMine(posX, posY)) {
-            this.sendToAll(interpreter.build("SERVER", DRequestType.SPRITE_REVEAL, posX + ":" + posY + "=" + field.mineDetection(posX, posY)));
-        } else {
-            this.sendToAll(interpreter.build("SERVER", DRequestType.SPRITE_REVEAL, posX + ":" + posY + "=" + -1));
+        // Checking if the sprite is already clicked
+        if (!this.spriteMeshValidator[posX][posY]) {
+
+            // Revealing the sprite
+            if (!field.isMine(posX, posY)) {
+
+                // Sprite reveal
+                this.sendToAll(interpreter.build("SERVER", DRequestType.SPRITE_REVEAL, uuid + ":" + posX + "," + posY + "=" + field.mineDetection(posX, posY)));
+
+                // Score update
+                DClientHandler client = clientList.get(uuid);
+                if (client != null) {
+                    client.setScore(clientList.get(uuid).getScore() + 1);
+                    this.scoreUpdate();
+                }
+
+
+                // End of game condition
+                this.nbSpriteRevealed ++;
+                if (nbSpriteRevealed == nbSpriteToReveal) {
+                    this.sendToAll(interpreter.build("SERVER", DRequestType.GAME_ENDED, ""));
+                }
+
+
+            } else {
+
+                // Sprite reveal
+                this.sendToAll(interpreter.build("SERVER", DRequestType.SPRITE_REVEAL, uuid + ":" + posX + "," + posY + "=" + -1));
+
+
+                // Lost request
+                this.sendToAll(interpreter.build("SERVER", DRequestType.PLAYER_HAS_LOST, uuid));
+
+
+            }
+
+
+            // Sprite validation
+            this.spriteMeshValidator[posX][posY] = true;
+
         }
 
     }
@@ -260,50 +329,38 @@ public class DServer implements Runnable{
      */
     public void newOnlineGame() {
 
+        // Reseting all score
+        synchronized (clientList) {
+            for (DClientHandler client : clientList.values()) {
+                client.setScore(0);
+                
+            }
+
+        }
+
+
         // Creating the empty field
-        field.newCustomEmptyField(DLevel.CUSTOM, 20, 20, 50);
+        this.field.newCustomEmptyField(DLevel.CUSTOM, 5, 5, 3);
+
+
+        // Create mesh validator
+        this.spriteMeshValidator = new boolean[this.field.getLenght()][this.field.getWidth()];
+
+
+        // Getting the max number of sprite to reveal
+        this.nbSpriteToReveal = this.field.getLenght() * this.field.getWidth() - this.field.getNumberOfMine();
 
 
         // Reveal a random sprite
         Random  random  = new Random    ();
         int     startX  = random.nextInt(field.getLenght());
         int     startY  = random.nextInt(field.getWidth());
-        field           .fillField      (startX, startY);
+        this    .field  .fillField      (startX, startY);
 
 
         // Sending the field size
-        this.sendToAll(interpreter.build("SERVER", DRequestType.FIELD_SIZE,     field.getLenght() + ":" + field.getWidth()));
-        this.sendToAll(interpreter.build("SERVER", DRequestType.MINE_NUMBER,    String.valueOf(field.getNumberOfMine())));
+        this.sendToAll(interpreter.build("SERVER", DRequestType.FIELD_SIZE,     field.getLenght() + "," + field.getWidth()));
         this.sendToAll(interpreter.build("SERVER", DRequestType.FIELD_READY,    ""));
-
-
-        // Generating the content for the mines position
-        String content = "";
-
-
-        // Getting all the mine position
-        for (int posX = 0; posX < field.getLenght(); posX++) {
-            for (int posY = 0; posY < field.getWidth(); posY++) {
-
-                // If it's a mine
-                if (field.isMine(posX, posY)) {
-                    
-                    // In case of empty content
-                    if (content.isEmpty()) {
-                        content = posX + ":" + posY + ";";
-                    } else {
-                        content += posX + ":" + posY + ";";
-                    }
-
-                }
-
-            }
-
-        }
-
-
-        // Sending mine positions
-        this.sendToAll(interpreter.build("SERVER", DRequestType.MINE_POSITION, content));
 
 
         // Sending the gamle ready tag
@@ -311,7 +368,7 @@ public class DServer implements Runnable{
 
 
         // Revealing the start sprite
-        this.spriteReveal(startX, startY);
+        this.spriteReveal("SERVER", startX, startY);
 
     }
 

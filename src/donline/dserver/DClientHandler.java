@@ -31,10 +31,16 @@ public class DClientHandler implements DConnexionHandler{
     private final   String          uuid;
     private final   DServer         server;
     private final   DPing           pingService;
+
+
+    /**
+     * Client handler informations
+     */
     private         boolean         connected   = true;
     private         boolean         serverOwner = false;
     private         boolean         ready       = false;
     private         String          playerName  = "";
+    private         int             playerScore = 0;
 
 
     /**
@@ -49,6 +55,17 @@ public class DClientHandler implements DConnexionHandler{
      */
     private final   DReader         reader;
     private final   Queue<String>   readQueue   = new LinkedList<>();
+
+
+
+
+    /**
+     * =====================================================================================================================
+     * 
+     * Methods
+     * 
+     * =====================================================================================================================
+     */
 
 
 
@@ -93,24 +110,35 @@ public class DClientHandler implements DConnexionHandler{
 
 
     /**
-     * Getter : to check client ownership
+     * =====================================================================================================================
      * 
-     * @return
+     * Getter
+     * 
+     * =====================================================================================================================
      */
-    public boolean isServerOwner() {
-        return serverOwner;
+
+
+
+
+    /**
+     * Getter : to get the player pseudo
+     * 
+     * @return playerName
+     */
+    public String getPlayerName() {
+        return playerName;
     }
 
 
 
 
     /**
-     * To change client ownership
+     * Getter : to check client ownership
      * 
-     * @param serverOwner
+     * @return
      */
-    public void setOwnership(boolean serverOwner) {
-        this.serverOwner = serverOwner;
+    public boolean isServerOwner() {
+        return serverOwner;
     }
 
 
@@ -129,22 +157,39 @@ public class DClientHandler implements DConnexionHandler{
 
 
     /**
-     * Method that add a server request that will be sent to the client
+     * Getter : to check if the client is ready or not
      * 
-     * @param request
+     * @return ready
      */
-    @Override
-    public void addRequest(String request) {
-
-        // Adding the request to the queue
-        synchronized (writeQueue) {
-            writeQueue.add(request);
-        }
-
+    public boolean getReady() {
+        return this.ready;
     }
 
 
 
+
+    /**
+     * Getter : to get the player score
+     * 
+     * @return
+     */
+    public int getScore() {
+        return this.playerScore;
+    }
+
+
+
+
+    /**
+     * =====================================================================================================================
+     * 
+     * Setter
+     * 
+     * =====================================================================================================================
+     */
+
+
+    
 
     /**
      * Setter : to set the player name after the client hello
@@ -159,12 +204,65 @@ public class DClientHandler implements DConnexionHandler{
 
 
     /**
-     * Getter : to get the player pseudo
+     * Setter : to change the client state
      * 
-     * @return playerName
+     * @param ready
      */
-    public String getPlayerName() {
-        return playerName;
+    public void setReady(boolean ready) {
+        this.ready = ready;
+    }
+
+
+
+
+    /**
+     * Setter : To change client ownership
+     * 
+     * @param serverOwner
+     */
+    public void setOwnership(boolean serverOwner) {
+        this.serverOwner = serverOwner;
+    }
+
+
+
+
+    /**
+     * Setter : to change the player score
+     * 
+     * @return
+     */
+    public void setScore(int playerScore) {
+        this.playerScore = playerScore;
+    }
+
+
+
+
+    /**
+     * =====================================================================================================================
+     * 
+     * Method
+     * 
+     * =====================================================================================================================
+     */
+
+
+
+
+    /**
+     * Method that add a server request that will be sent to the client
+     * 
+     * @param request
+     */
+    @Override
+    public void addRequest(String request) {
+
+        // Adding the request to the queue
+        synchronized (writeQueue) {
+            writeQueue.add(request);
+        }
+
     }
 
 
@@ -251,32 +349,17 @@ public class DClientHandler implements DConnexionHandler{
 
 
     /**
-     * Setter : to change the client state
+     * =====================================================================================================================
      * 
-     * @param ready
-     */
-    public void setReady(boolean ready) {
-        this.ready = ready;
-    }
-
-
-
-
-    /**
-     * Getter : to check if the client is ready or not
-     * 
-     * @return ready
-     */
-    public boolean getReady() {
-        return this.ready;
-    }
-
-
-
-
-    /**
      * Thread method
      * 
+     * =====================================================================================================================
+     */
+
+
+
+
+    /**
      * Critical thread : 10ms
      */
     @Override

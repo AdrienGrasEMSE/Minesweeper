@@ -1,6 +1,10 @@
 // Package declaration
 package donline;
 
+// Import
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 /**
  * Class interpreter
@@ -21,11 +25,13 @@ public class DInterpreter {
     private String          content;
 
 
-
     /**
-     * Constructor
+     * Data pattern :
+     * 
+     * {<@___ID___@><$___REQUEST_TYPE___$><#___CONTENT___#>}
      */
-    public DInterpreter() {}
+    private static  final   Pattern DATA_PATTERN = Pattern.compile("\\{<@(.*?)@><\\$(.*?)\\$><#(.*?)#>\\}");
+
 
 
 
@@ -36,33 +42,6 @@ public class DInterpreter {
      */
     public String getSenderUUID() {
         return senderUUID;
-    }
-
-
-
-    
-    /**
-     * In case of bad request
-     */
-    private void badRequest(boolean idUsable) {
-
-        // If the id is recognized
-        if (!idUsable) {
-            this.senderUUID     = "";
-        }
-        this.requestType    = DRequestType.UNRECOGNIZED;
-        this.content        = "";
-
-    }
-
-
-
-
-    /**
-     * Reset its field
-     */
-    public void clear() {
-        this.badRequest(false);
     }
 
 
@@ -91,171 +70,14 @@ public class DInterpreter {
 
 
 
-
+ 
     /**
-     * Method that exctract a senderUUI from a request
-     * 
-     * @param request
-     * @param rOpening  request opening
-     * @param rEnding   request ending
+     * Reset its field
      */
-    private void getSenderUUID(String request, int rOpening, int rEnding) {
-
-        // Seraching for '<@' to get the sender id
-        int i = rOpening;
-        while (i < rEnding && (request.charAt(i) != '<' || request.charAt(i + 1) != '@')) {
-            i++;
-        }
-
-
-        // If we get it
-        if (request.charAt(i) == '<' && request.charAt(i + 1) == '@') {
-
-            // Jumping the <@ and getting the first character of the id
-            senderUUID  =   String.valueOf(request.charAt(i + 2));
-            i           +=  3;
-
-
-            // Seraching for '@>' to get the end of the sender id
-            while (i < rEnding && (request.charAt(i) != '@' || request.charAt(i + 1) != '>')) {
-                senderUUID += request.charAt(i);
-                i++;
-            }
-
-
-            // If we can't get it
-            if (request.charAt(i) != '@' || request.charAt(i + 1) != '>') {
-
-                // Bad request
-                badRequest(false);
-
-            }
-
-
-        } else {
-            
-            // Bad request
-            badRequest(false);
-
-        }
-
-    }
-
-
-
-
-    /**
-     * Method that exctract a request type from a request
-     * 
-     * @param request
-     * @param rOpening  request opening
-     * @param rEnding   request ending
-     */
-    private void getRequestType(String request, int rOpening, int rEnding) {
-
-        // Seraching for '<$' to get the request type
-        int     i               = rOpening;
-        String  requestType_    = "";
-        while (i < rEnding && (request.charAt(i) != '<' || request.charAt(i + 1) != '$')) {
-            i++;
-        }
-
-
-        // If we get it
-        if (request.charAt(i) == '<' && request.charAt(i + 1) == '$') {
-
-            // Jumping the <$ and getting the first character of the request type
-            requestType_    =   String.valueOf(request.charAt(i + 2));
-            i               +=  3;
-
-
-            // Seraching for '$>' to get the end of the request type
-            while (i < rEnding && (request.charAt(i) != '$' || request.charAt(i + 1) != '>')) {
-                requestType_ += request.charAt(i);
-                i++;
-            }
-
-
-            // If we can't get it
-            if (request.charAt(i) != '$' || request.charAt(i + 1) != '>') {
-
-                // Bad request
-                badRequest(true);
-
-            } else {
-
-                // Getting the request type
-                for (DRequestType type : DRequestType.values()) {
-                    
-                    // Request type matching
-                    if (requestType_.equals(type.getString())) {
-                        requestType = type;
-                    }
-
-                }
-
-            }
-
-
-        } else {
-            
-            // Bad request
-            badRequest(true);
-
-        }
-
-    }
-
-
-
-    
-    /**
-     * Method that exctract a content from a request
-     * 
-     * @param request
-     * @param rOpening  request opening
-     * @param rEnding   request ending
-     */
-    private void getContent(String request, int rOpening, int rEnding) {
-
-        // Seraching for '<#' to get the content
-        int i = rOpening;
-        while (i < rEnding && (request.charAt(i) != '<' || request.charAt(i + 1) != '#')) {
-            i++;
-        }
-
-
-        // If we get it
-        if (request.charAt(i) == '<' && request.charAt(i + 1) == '#') {
-
-            // Jumping the <# and getting the first character of the content
-            content =   String.valueOf(request.charAt(i + 2));
-            i       +=  3;
-
-
-            // Seraching for '#>' to get the end of the content
-            while (i < rEnding && (request.charAt(i) != '#' || request.charAt(i + 1) != '>')) {
-                content += request.charAt(i);
-                i++;
-            }
-
-
-            // If we can't get it
-            if (request.charAt(i) != '#' || request.charAt(i + 1) != '>') {
-
-                // Bad request
-                badRequest(true);
-
-            }
-
-
-        } else {
-            
-            // Bad request
-            badRequest(true);
-
-        }
-
+    public void clear() {
+        this.senderUUID     = "";
+        this.requestType    = DRequestType.UNRECOGNIZED;
+        this.content        = "";
     }
 
 
@@ -268,63 +90,34 @@ public class DInterpreter {
      */
     public void interpret(String request) {
 
-        // Cleaning
-        this.clear();
+        // Data decompiler
+        Matcher matcher = DATA_PATTERN.matcher(request);
 
 
-        // Declaration
-        int rOpening    = -1;
-        int rEnding     = -1;
+        // If the data matches the pattern
+        if (matcher.matches()) {
+
+            // UUID and content extractions
+            this.senderUUID = matcher.group(1);
+            this.content    = matcher.group(3);
 
 
-        // Seraching for '{' to get the request openning
-        int i           = 0;
-        while (i < request.length() - 1 && request.charAt(i) != '{') {
-            i++;
-        }
+            // Request type interpretation
+            String requestType_ = matcher.group(2);
+            for (DRequestType type : DRequestType.values()) {
+                    
+                // Request type matching
+                if (requestType_.equals(type.getString())) {
+                    requestType = type;
+                }
 
-
-        // If we get it
-        if (request.charAt(i) == '{') {
-            rOpening = i;
-        }
-
-        
-        // Seraching for '{' to get the request ending
-        i               = request.length() - 1;
-        while (i > 0 && request.charAt(i) != '}') {
-            i--;
-        }
-
-
-        // If we get it
-        if (request.charAt(i) == '}') {
-            rEnding = i;
-        }
-
-
-        // Validation
-        if (rOpening    <   rEnding &&
-            rOpening    !=  -1      &&
-            rEnding     !=  -1) {
+            }
 
             
-            // Getting senderUUI
-            this.getSenderUUID(request, rOpening, rEnding);
-
-
-            // Getting request type
-            this.getRequestType(request, rOpening, rEnding);
-
-
-            // Getting senderUUI
-            this.getContent(request, rOpening, rEnding);
-
-
         } else {
 
-            // Bad request
-            badRequest(false);
+            // If not, clear the interpreter
+            this.clear();
 
         }
 
@@ -339,16 +132,40 @@ public class DInterpreter {
      * @param senderUUID
      * @param requestType
      * @param content
-     * @return
+     * 
+     * @return request
      */
     public String build(String senderUUID, DRequestType requestType, String content) {
 
-        // Avoiding empty content
-        if (content.equals("")) {
-            content = "0";
+        // Avoiding empty senderUUID
+        if (senderUUID.isEmpty()) {
+            senderUUID = "";
+            requestType = DRequestType.UNRECOGNIZED;
         }
 
         return "{<@" + senderUUID + "@><$" + requestType.getString() + "$><#" + content + "#>}";
+    }
+
+
+
+
+    /**
+     * Build a request without a content
+     * 
+     * @param senderUUID
+     * @param requestType
+     * 
+     * @return request
+     */
+    public String build(String senderUUID, DRequestType requestType) {
+
+        // Avoiding empty senderUUID
+        if (senderUUID.isEmpty()) {
+            senderUUID = "";
+            requestType = DRequestType.UNRECOGNIZED;
+        }
+
+        return "{<@" + senderUUID + "@><$" + requestType.getString() + "$><##>}";
     }
 
 }

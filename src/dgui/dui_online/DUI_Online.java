@@ -5,6 +5,7 @@ package dgui.dui_online;
 import deminer.DController;
 import deminer.DSprite;
 import dgui.DGUI;
+import donline.DPlayer;
 import java.awt.CardLayout;
 import java.util.Map;
 import javax.swing.JPanel;
@@ -114,10 +115,8 @@ public class DUI_Online extends JPanel {
      */
     public void gameCreated     (boolean succeed, String failInfo)                  {uiDefault.gameCreated(succeed, failInfo);}
     public void gameJoinned     (boolean succeed, String failInfo)                  {uiDefault.gameJoinned(succeed, failInfo);}
-    public void updatePlayerList(Map<String, String> playerList, String ownerUUID)  {uiWait.updatePlayerList(playerList, ownerUUID);}
 
-
-
+    
 
 
     /**
@@ -127,6 +126,22 @@ public class DUI_Online extends JPanel {
      * 
      * =====================================================================================================================
      */
-    public void setSpriteMesh(DSprite[][] spriteMesh) {uiIngame.setSpriteMesh(spriteMesh);}
+    public void setSpriteMesh   (DSprite[][] spriteMesh)                            {uiIngame.setSpriteMesh(spriteMesh);}
+    public void updateScore     ()                                                  {uiIngame.updateScore();}
+
+
+
+
+    /**
+     * =====================================================================================================================
+     * 
+     * Multi-wiring
+     * 
+     * =====================================================================================================================
+     */
+    public void updatePlayerList(Map<String, DPlayer> playerList, String ownerUUID)  {
+        uiWait.updatePlayerList(playerList, ownerUUID);
+        uiIngame.updatePlayerList(playerList);
+    }
 
 }

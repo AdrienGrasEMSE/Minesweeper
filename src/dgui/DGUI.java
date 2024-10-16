@@ -7,6 +7,7 @@ import deminer.DController;
 import deminer.DLevel;
 import deminer.DSprite;
 import dgui.dui_online.DUI_Online;
+import donline.DPlayer;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -449,10 +450,12 @@ public class DGUI extends JFrame {
     public void gameCreated         (boolean succeed, String failInfo)                  {uiOnline.gameCreated(succeed, failInfo);}
     public void gameJoinned         (boolean succeed, String failInfo)                  {uiOnline.gameJoinned(succeed, failInfo);}
 
-    public void updatePlayerList    (Map<String, String> playerList, String ownerUUID)  {uiOnline.updatePlayerList(playerList, ownerUUID);}
+    public void updatePlayerList    (Map<String, DPlayer> playerList, String ownerUUID)  {uiOnline.updatePlayerList(playerList, ownerUUID);}
 
     public void switchIngameUI      ()                                                  {uiOnline.switchSubUIIngame();}
 
     public void setSpriteMeshOnline (DSprite[][] spriteMesh)                            {uiOnline.setSpriteMesh(spriteMesh);}
+
+    public void updateScore         ()                                                  {uiOnline.updateScore();}
 
 }
