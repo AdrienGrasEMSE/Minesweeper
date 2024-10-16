@@ -2,15 +2,14 @@
 package donline.dserver;
 
 // Import
-import java.util.LinkedList;
-import java.util.Queue;
-
 import donline.DConnexionHandler;
 import donline.DPing;
 import donline.DReader;
 import donline.DWritter;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.LinkedList;
+import java.util.Queue;
 
 
 /**
@@ -31,7 +30,7 @@ public class DClientHandler implements DConnexionHandler{
     private final   Socket          socket;
     private final   String          uuid;
     private final   DServer         server;
-    private         DPing           pingService;
+    private final   DPing           pingService;
     private         boolean         connected   = true;
     private         boolean         serverOwner = false;
     private         boolean         ready       = false;
@@ -134,6 +133,7 @@ public class DClientHandler implements DConnexionHandler{
      * 
      * @param request
      */
+    @Override
     public void addRequest(String request) {
 
         // Adding the request to the queue
@@ -193,6 +193,7 @@ public class DClientHandler implements DConnexionHandler{
     /**
      * Stop the client handler
      */
+    @Override
     public void shutDown() {
 
         // Sending all data before closing all
@@ -275,6 +276,8 @@ public class DClientHandler implements DConnexionHandler{
 
     /**
      * Thread method
+     * 
+     * Critical thread : 10ms
      */
     @Override
     public void run () {
@@ -331,10 +334,10 @@ public class DClientHandler implements DConnexionHandler{
 
 
             // Calculate the remaining time to sleep
-            long sleepTime = 100 - elapsedTime;
+            long sleepTime = 10 - elapsedTime;
 
 
-            // If there is still time left in the 100ms window, sleep
+            // If there is still time left in the 10ms window, sleep
             if (sleepTime > 0) {
                 try {
 

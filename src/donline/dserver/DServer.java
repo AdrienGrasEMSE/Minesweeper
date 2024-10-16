@@ -233,6 +233,29 @@ public class DServer implements Runnable{
 
 
     /**
+     * Ask all client to reveal a sprite
+     * 
+     * @param posX
+     * @param posY
+     * 
+     * 
+     * TODO : include sprite revealer
+     */
+    public void spriteReveal(int posX, int posY) {
+
+        // Revealing the sprite
+        if (!field.isMine(posX, posY)) {
+            this.sendToAll(interpreter.build("SERVER", DRequestType.SPRITE_REVEAL, posX + ":" + posY + "=" + field.mineDetection(posX, posY)));
+        } else {
+            this.sendToAll(interpreter.build("SERVER", DRequestType.SPRITE_REVEAL, posX + ":" + posY + "=" + -1));
+        }
+
+    }
+
+
+
+
+    /**
      * Online game creation
      */
     public void newOnlineGame() {
@@ -288,9 +311,7 @@ public class DServer implements Runnable{
 
 
         // Revealing the start sprite
-        if (!field.isMine(startX, startY)) {
-            this.sendToAll(interpreter.build("SERVER", DRequestType.SPRITE_REVEAL, startX + ":" + startY + "=" + field.mineDetection(startX, startY)));
-        }
+        this.spriteReveal(startX, startY);
 
     }
 
@@ -299,6 +320,8 @@ public class DServer implements Runnable{
 
     /**
      * Thread method
+     * 
+     * Non critical thread : 500ms loop
      */
     @Override
     public void run () {
@@ -355,10 +378,10 @@ public class DServer implements Runnable{
 
 
             // Calculate the remaining time to sleep
-            long sleepTime = 50 - elapsedTime;
+            long sleepTime = 500 - elapsedTime;
 
 
-            // If there is still time left in the 50s window, sleep
+            // If there is still time left in the 500ms window, sleep
             if (sleepTime > 0) {
                 try {
 

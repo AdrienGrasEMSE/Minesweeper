@@ -2,10 +2,10 @@
 package donline.dserver;
 
 // Import
-import java.util.Map;
-import java.util.Queue;
 import donline.DInterpreter;
 import donline.DRequestType;
+import java.util.Map;
+import java.util.Queue;
 
 
 /**
@@ -65,7 +65,103 @@ public class DServerListener implements Runnable{
 
 
     /**
+     * Extract the sprite position and the sprite values
+     * 
+     * @param content
+     */
+    private void extractSpritePosition(String content) {
+
+        // Variable buffer
+        int     i               = 0;
+        String  posX_           = "";
+        String  posY_           = "";
+        String  spriteValue_    = "";
+
+
+        // Data localisation variables
+        boolean isPosX          = true;
+        boolean isCoordinate    = true;
+
+
+        // Getting the sprite position
+        while (i < content.length()) {
+
+            // Switching data type
+            if (i < content.length() && content.charAt(i) == ':') {
+
+                // Switching to posY
+                isPosX = false;
+                i++;
+
+
+            } else if (i < content.length() && content.charAt(i) == '=') {
+
+                // Switching to spriteValue
+                isCoordinate = false;
+                i++;
+
+            }
+
+
+            // Getting posX
+            if (i < content.length() && isCoordinate && isPosX) {
+
+                // In case of empty buffer
+                if (posX_.isEmpty()) {
+                    posX_ = String.valueOf(content.charAt(i));
+                } else {
+                    posX_ += String.valueOf(content.charAt(i));
+                }
+
+
+            }
+            
+            
+            // Getting posY
+            if (i < content.length() && isCoordinate && !isPosX) {
+
+                // In case of empty buffer
+                if (posY_.isEmpty()) {
+                    posY_ = String.valueOf(content.charAt(i));
+                } else {
+                    posY_ += String.valueOf(content.charAt(i));
+                }
+
+
+            }
+            
+            
+            // Getting spriteValue
+            if (i < content.length() && !isCoordinate) {
+
+                // In case of empty buffer
+                if (spriteValue_.isEmpty()) {
+                    spriteValue_ = String.valueOf(content.charAt(i));
+                } else {
+                    spriteValue_ += String.valueOf(content.charAt(i));
+                }
+
+            }
+
+
+            // Incrementing
+            i ++;
+
+        }
+
+
+        // Display the sprite position and spriteValue
+        this.server.spriteReveal(Integer.parseInt(posX_), Integer.parseInt(posY_));
+
+    }
+
+
+
+
+    /**
      * Thread method
+     * 
+     * Critical thread : 10ms loop
      */
     @Override
     public void run () {
@@ -83,12 +179,7 @@ public class DServerListener implements Runnable{
                 if (!requestQueue.isEmpty()) {
 
                     // TODO : clear this shit
-                    String str = requestQueue.peek();
-                    System.out.println(str);
-                    // interpret.interpret(str);
-                    // System.err.println(interpret.getSenderUUID());
-                    // System.err.println(interpret.getRequestType().getString());
-                    // System.err.println(interpret.getContent());
+                    System.out.println(requestQueue.peek());
 
 
 
@@ -98,9 +189,7 @@ public class DServerListener implements Runnable{
 
                     // Request answer
                     switch (interpreter.getRequestType()) {
-
-                        // Client hello
-                        case DRequestType.HELLO_CLT:
+                        case DRequestType.HELLO_CLT -> {
 
                             // Get the client handler and apply it the name
                             synchronized (clientList) {
@@ -115,8 +204,8 @@ public class DServerListener implements Runnable{
                                     // Set player pseudo and start pinging
                                     client.setPlayerName(interpreter.getContent());
                                     client.startPinging();
-
-
+                                    
+                                    
                                     // Creating the new player list
                                     boolean first       = true;
                                     String  playerList  = "";
@@ -142,12 +231,12 @@ public class DServerListener implements Runnable{
                                         }
 
                                     }
-
-
+                                    
+                                    
                                     // Sending the player list to everyone
                                     server.sendToAll(interpreter.build("SERVER", DRequestType.PLAYER_LIST,  playerList));
-
-
+                                    
+                                    
                                     // If there is a server owner
                                     DClientHandler owner = server.getOwner();
                                     if (owner != null) {
@@ -157,11 +246,10 @@ public class DServerListener implements Runnable{
                                 }
 
                             }
-                            break;
 
 
-                        // Client ping
-                        case DRequestType.PING:
+                        }
+                        case DRequestType.PING -> {
 
                             // Answering the ping
                             synchronized (clientList) {
@@ -179,11 +267,10 @@ public class DServerListener implements Runnable{
                                 }
                                 
                             }
-                            break;
 
-                        
-                        // Client ping received
-                        case DRequestType.PING_ANSWER:
+
+                        }
+                        case DRequestType.PING_ANSWER -> {
 
                             // Client answer : taking it into account
                             synchronized (clientList) {
@@ -201,11 +288,10 @@ public class DServerListener implements Runnable{
                                 }
                                 
                             }
-                            break;
 
-                        
-                        // Client disconnect request received
-                        case DRequestType.DISCONNECT:
+
+                        }
+                        case DRequestType.DISCONNECT -> {
 
                             // Client answer : taking it into account
                             synchronized (clientList) {
@@ -223,11 +309,10 @@ public class DServerListener implements Runnable{
                                 }
                                 
                             }
-                            break;
 
 
-                        // Client ask owner ship
-                        case DRequestType.OWNERSHIP_ASK:
+                        }
+                        case DRequestType.OWNERSHIP_ASK -> {
 
                             // Answering the client
                             synchronized (clientList) {
@@ -246,7 +331,7 @@ public class DServerListener implements Runnable{
                                         client.addRequest(interpreter.build("SERVER", DRequestType.OWNERSHIP_GRANTED, ""));
                                         client.setOwnership(true);
                                         server.setOwner(client);
-
+                                        
                                         
                                     } else {
 
@@ -258,11 +343,10 @@ public class DServerListener implements Runnable{
                                 }
 
                             }
-                            break;
 
-                        
-                        // Client ask to launch the game
-                        case DRequestType.GAME_LAUNCH_ASK:
+
+                        }
+                        case DRequestType.GAME_LAUNCH_ASK -> {
 
                             // Verifying if there are enough player
                             synchronized (clientList) {
@@ -270,14 +354,20 @@ public class DServerListener implements Runnable{
                                     server.newOnlineGame();
                                 }
                             }
-                            break;
-                    
 
-                        // Default
-                        default:
-                            break;
+
+                        }
+                        case DRequestType.SPRITE_CLICKED -> {
+
+                            // Ask the server to reveal the sprite
+                            this.extractSpritePosition(interpreter.getContent());
+
+
+                        }
+                        default -> {
+                        }
                     }
-
+                    
                 }
 
             }
@@ -292,10 +382,10 @@ public class DServerListener implements Runnable{
 
 
             // Calculate the remaining time to sleep
-            long sleepTime = 100 - elapsedTime;
+            long sleepTime = 10 - elapsedTime;
 
 
-            // If there is still time left in the 100ms window, sleep
+            // If there is still time left in the 10ms window, sleep
             if (sleepTime > 0) {
                 try {
 

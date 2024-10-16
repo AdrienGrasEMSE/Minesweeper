@@ -124,8 +124,9 @@ public class DController {
         // Action according to the game type
         if (onlineGame) {
 
+            // Sending the event to the server
+            this.client.clickEvent(posX, posY);
             
-
 
         } else {
 
@@ -735,9 +736,7 @@ public class DController {
      * @param posY
      */
     public void spriteReveal(int posX, int posY, int spriteValue) {
-
-        System.out.println(posX + " : " + posY + " : " + spriteValue);
-
+        spriteMesh[posX][posY].setCoefficient(spriteValue);
         spriteMesh[posX][posY].reveal();
     }
 

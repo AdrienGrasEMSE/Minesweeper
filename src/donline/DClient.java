@@ -237,6 +237,8 @@ public class DClient implements DConnexionHandler {
 
     /**
      * Ask server to launch the game
+     * 
+     * TODO : delete this (makes the controller with interpreter)
      */
     public void launchGame() {
         this.addRequest(interpreter.build(uuid, DRequestType.GAME_LAUNCH_ASK, ""));
@@ -249,9 +251,26 @@ public class DClient implements DConnexionHandler {
      * Asking the ownership of the server
      * 
      * @param serverUUID needed to validate server ownership
+     * 
+     * TODO : delete this (makes the controller with interpreter)
      */
     public void askOwnership(String serverUUID) {
         this.addRequest(interpreter.build(uuid, DRequestType.OWNERSHIP_ASK, serverUUID));
+    }
+
+
+
+
+    /**
+     * Sending the click event to the server
+     * 
+     * @param posX
+     * @param posY
+     * 
+     * TODO : delete this (makes the controller with interpreter)
+     */
+    public void clickEvent(int posX, int posY) {
+        this.addRequest(interpreter.build(this.uuid, DRequestType.SPRITE_CLICKED, posX + ":" + posY));
     }
 
 
@@ -736,6 +755,8 @@ public class DClient implements DConnexionHandler {
     
     /**
      * Thread method
+     * 
+     * Critical thread : 10ms loop
      */
     @Override
     public void run () {
@@ -768,9 +789,7 @@ public class DClient implements DConnexionHandler {
 
                         // Sending data
                         synchronized (writter) {
-                            synchronized (writeQueue) {
-                                writter.write(writeQueue.poll());
-                            }
+                            writter.write(writeQueue.poll());
                             
                         }
                         
@@ -797,10 +816,10 @@ public class DClient implements DConnexionHandler {
 
 
             // Calculate the remaining time to sleep
-            long sleepTime = 100 - elapsedTime;
+            long sleepTime = 10 - elapsedTime;
 
 
-            // If there is still time left in the 100ms window, sleep
+            // If there is still time left in the 10ms window, sleep
             if (sleepTime > 0) {
                 try {
 

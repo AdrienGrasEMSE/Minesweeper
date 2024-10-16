@@ -49,7 +49,7 @@ public class DReader implements Runnable{
             this.ready      = true;
 
             
-        } catch (Exception e) {
+        } catch (IOException e) {
 
             // Printing exception
             System.out.println(e);
@@ -103,6 +103,8 @@ public class DReader implements Runnable{
     
     /**
      * Thread method
+     * 
+     * Critical thread : 10ms loop
      */
     @Override
     public void run () {
@@ -143,10 +145,10 @@ public class DReader implements Runnable{
 
 
             // Calculate the remaining time to sleep
-            long sleepTime = 100 - elapsedTime;
+            long sleepTime = 10 - elapsedTime;
 
 
-            // If there is still time left in the 100ms window, sleep
+            // If there is still time left in the 10ms window, sleep
             if (sleepTime > 0) {
                 try {
 
