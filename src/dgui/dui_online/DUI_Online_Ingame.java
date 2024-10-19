@@ -16,13 +16,11 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.BoxLayout;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -36,7 +34,7 @@ import javax.swing.border.EmptyBorder;
  * 
  * This class represent the default screen when the user play in multiplayer mode.
  */
-public class DUI_Online_Ingame extends JPanel implements ActionListener {
+public class DUI_Online_Ingame extends JPanel implements DUI_Updatable {
 
     /**
      * UI main objects
@@ -75,7 +73,14 @@ public class DUI_Online_Ingame extends JPanel implements ActionListener {
     private         ComponentAdapter    centerPanelSizeCheck;
 
 
+    /**
+     * UI Updater
+     */
+    private final   DUI_Online_Updater  updater;
 
+
+
+    
     /**
      * Constructor
      * 
@@ -92,6 +97,9 @@ public class DUI_Online_Ingame extends JPanel implements ActionListener {
         // Setting up layout and VFX
         this.setLayout(new BorderLayout());
 
+        // Setting up updater
+        updater         = new DUI_Online_Updater(this);
+
 
         // Pannel setup
         this.northPanelSetup    ();
@@ -106,6 +114,7 @@ public class DUI_Online_Ingame extends JPanel implements ActionListener {
     }
 
 
+
     
     /**
      * Listener initialisation
@@ -118,6 +127,8 @@ public class DUI_Online_Ingame extends JPanel implements ActionListener {
             // On size change
             @Override
             public void componentResized(ComponentEvent e) {
+
+                System.out.println("dejifiu");
 
                 // If size adaptation enable
                 if (sizeAdaptation) {
@@ -213,6 +224,18 @@ public class DUI_Online_Ingame extends JPanel implements ActionListener {
 
 
     /**
+     * Setter : Enable or disable size adaptation
+     * 
+     * @param enable
+     */
+    public void setSizeAdaptation(boolean enable) {
+        this.sizeAdaptation = enable;
+    }
+
+
+
+
+    /**
      * Setter : to set the new sprite mesh
      * 
      * @param spriteMesh
@@ -284,45 +307,50 @@ public class DUI_Online_Ingame extends JPanel implements ActionListener {
     /**
      * Displaying the mine field using the sprite class
      */
-    private void displayMesh() {
+    public void displayMesh() {
+
+        // In cas of a null mesh
+        if (spriteMesh != null) {
        
-        // Removing everything from the center panel and reset the score
-        centerPanel.removeAll();
+            // Removing everything from the center panel and reset the score
+            centerPanel.removeAll();
 
 
-        // Creating the grid to display mines and coefficient
-        JPanel minesPanel   = new JPanel    ();
-        minesPanel          .setLayout      (new GridLayout(spriteMesh.length, spriteMesh[0].length));
-        minesPanel          .setBackground  (DTheme.GUI_NTL.BCK_N);
+            // Creating the grid to display mines and coefficient
+            JPanel minesPanel   = new JPanel    ();
+            minesPanel          .setLayout      (new GridLayout(spriteMesh.length, spriteMesh[0].length));
+            minesPanel          .setBackground  (DTheme.GUI_NTL.BCK_N);
 
 
-        // Getting the size of the new sprite
-        int sqSize = this.spriteSizeCalcul();
+            // Getting the size of the new sprite
+            int sqSize = this.spriteSizeCalcul();
 
 
-        // Filling up the grid
-        for (DSprite[] spriteMeshLine : spriteMesh) {
-            for (DSprite sprite : spriteMeshLine) {
+            // Filling up the grid
+            for (DSprite[] spriteMeshLine : spriteMesh) {
+                for (DSprite sprite : spriteMeshLine) {
 
-                // Setting up sprite size
-                sprite.setSpriteSize(sqSize);
+                    // Setting up sprite size
+                    sprite.setSpriteSize(sqSize);
 
 
-                // Plotting the sprite in a JPanel to get border
-                JPanel spriteHolder = new JPanel();
-                spriteHolder        .setBackground(DTheme.GUI_NTL.BCK_N);
-                spriteHolder        .add(sprite);
-                minesPanel          .add(spriteHolder);
+                    // Plotting the sprite in a JPanel to get border
+                    JPanel spriteHolder = new JPanel();
+                    spriteHolder        .setBackground(DTheme.GUI_NTL.BCK_N);
+                    spriteHolder        .add(sprite);
+                    minesPanel          .add(spriteHolder);
+
+                }
 
             }
 
+
+            // Rafraîchir l'affichage
+            centerPanel.add(minesPanel);
+            centerPanel.revalidate();
+            centerPanel.repaint();
+
         }
-
-
-        // Rafraîchir l'affichage
-        centerPanel.add(minesPanel);
-        centerPanel.revalidate();
-        centerPanel.repaint();
         
     }
 
@@ -342,9 +370,10 @@ public class DUI_Online_Ingame extends JPanel implements ActionListener {
 
 
     /**
-     * 
+     * Display the current
      */
-    public void updateScore() {
+    @Override
+    public void updatableAction() {
 
         // Usually, the list is not empty BUT
         if (playerList != null && !playerList.isEmpty()) {
@@ -353,21 +382,36 @@ public class DUI_Online_Ingame extends JPanel implements ActionListener {
             this.eastPanel.removeAll();
 
 
-            // Creating the title pabel
-            JPanel titlePanel   = new JPanel    (new GridLayout(1, 2));
-            titlePanel          .setBorder      (new EmptyBorder(0, 0, 10, 0));
-            titlePanel          .setBackground  (DTheme.GUI_NTL.BCK_N);
-            titlePanel          .setMaximumSize (new Dimension(Integer.MAX_VALUE, 50));
+            // Creating the player alive title panel
+            JPanel playerAliveTitlePanel    = new JPanel    (new GridLayout(1, 1));
+            playerAliveTitlePanel           .setBorder      (new EmptyBorder(0, 0, 0, 0));
+            playerAliveTitlePanel           .setBackground  (DTheme.GUI_NTL.BCK_D);
+            playerAliveTitlePanel           .setMaximumSize (new Dimension(Integer.MAX_VALUE, 50));
 
 
-            // Creating the title label
-            DLabel titleLabel   = new DLabel    ("Player list", DFont.JOST_SEMIBOLD, 24, DTheme.LAB_TRS);
-            titlePanel          .add            (titleLabel);
-            titlePanel          .add            (new JLabel(""));
-            eastPanel           .add            (titlePanel);
+            // Creating the player alive title
+            DLabel playerAliveTitle         = new DLabel    ("Player alive", DFont.JOST_SEMIBOLD, 24, DTheme.LAB_TRS);
+            playerAliveTitlePanel           .add            (playerAliveTitle);
+            eastPanel                       .add            (playerAliveTitlePanel);
+
+
+            // Creating the player alive list panel
+            JPanel playerAliveListPanel     = new JPanel    ();
+            playerAliveListPanel            .setLayout      (new BoxLayout(playerAliveListPanel, BoxLayout.Y_AXIS));
+            playerAliveListPanel            .setBorder      (new EmptyBorder(10, 0, 10, 0));
+            playerAliveListPanel            .setBackground  (DTheme.GUI_NTL.BCK_D);
+            eastPanel                       .add            (playerAliveListPanel);
+
+
+            // Creating the looser list panel
+            JPanel looserListPanel          = new JPanel    ();
+            looserListPanel                 .setLayout      (new BoxLayout(looserListPanel, BoxLayout.Y_AXIS));
+            looserListPanel                 .setBorder      (new EmptyBorder(10, 0, 10, 0));
+            looserListPanel                 .setBackground  (DTheme.GUI_NTL.BCK_D);
 
 
             // Running through the player list
+            int nbLooser = 0;
             for (DPlayer player : playerList.values()) {
 
                 // Creating the player panel
@@ -385,8 +429,45 @@ public class DUI_Online_Ingame extends JPanel implements ActionListener {
                 playerPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
 
 
-                // Plotting the player panel
-                eastPanel.add(playerPanel);
+                // Plotting the player panel according to the player state (ingame or looser)
+                if (player.isAlive()) {
+
+                    // Plotting panel
+                    playerAliveListPanel.add(playerPanel);
+
+
+                } else {
+
+                    // Plotting title only if not already plotted
+                    if (nbLooser == 0) {
+
+                        // Creating the player exploded panel
+                        JPanel lostPanel    = new JPanel    (new GridLayout(1, 1));
+                        lostPanel           .setBorder      (new EmptyBorder(15, 0, 10, 0));
+                        lostPanel           .setBackground  (DTheme.GUI_NTL.BCK_D);
+                        lostPanel           .setMaximumSize (new Dimension(Integer.MAX_VALUE, 50));
+
+
+                        // Creating the player exploded label
+                        DLabel lostLabel    = new DLabel    ("Player exploded", DFont.JOST_SEMIBOLD, 24, DTheme.LAB_TRS);
+                        lostPanel           .add            (lostLabel);
+                        eastPanel           .add            (lostPanel);
+
+
+                        // Plotting the looser panel
+                        eastPanel           .add            (looserListPanel);
+
+                    }
+
+
+                    // Plotting panel
+                    looserListPanel.add(playerPanel);
+
+
+                    // Incrementing
+                    nbLooser ++;
+
+                }
 
             }
 

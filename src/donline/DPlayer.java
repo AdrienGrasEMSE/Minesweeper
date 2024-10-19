@@ -19,6 +19,7 @@ public class DPlayer {
     private String  uuid;
     private String  playerName;
     private int     score;
+    private boolean alive;
 
 
 
@@ -41,6 +42,7 @@ public class DPlayer {
         this.uuid       = "";
         this.playerName = "";
         this.score      = 0;
+        this.alive      = true;
     }
 
 
@@ -94,6 +96,17 @@ public class DPlayer {
 
 
     /**
+     * Getter : to check if the player is alive
+     * 
+     * @return alive
+     */
+    public boolean isAlive() {
+        return this.alive;
+    }
+
+
+
+    /**
      * =====================================================================================================================
      * 
      * Method : Setter
@@ -137,4 +150,16 @@ public class DPlayer {
         this.score = score;
     }
 
+
+
+
+    /**
+     * Setter : to change the player state
+     * 
+     * @param alive
+     */
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
+    
 }

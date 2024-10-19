@@ -428,14 +428,14 @@ public class DGUI extends JFrame {
      * 
      * =====================================================================================================================
      */
-    public void updateScore         (int score)                 {uiLocal.updateScore        (score);};
-    public void updateLevel         (boolean newGameTrigger)    {uiLocal.updateLevel        (newGameTrigger);};
-    public void updateTime          (int timeSpent)             {uiLocal.updateTime         (timeSpent);};
-    public void updateTimeLimit     (int timeLimit)             {uiLocal.updateTimeLimit    (timeLimit);};
-    public void setSizeAdaptation   (boolean enable)            {uiLocal.setSizeAdaptation  (enable);};
-    public void setSpriteMeshLocal  (DSprite[][] spriteMesh)    {uiLocal.setSpriteMesh      (spriteMesh);};
-    public void displayMesh         ()                          {uiLocal.displayMesh        ();};
-    public void endGamePhase        (EndGame endGameType)       {uiLocal.endGamePhase       (endGameType);};
+    public void updateScore             (int score)                 {uiLocal.updateScore        (score);};
+    public void updateLevel             (boolean newGameTrigger)    {uiLocal.updateLevel        (newGameTrigger);};
+    public void updateTime              (int timeSpent)             {uiLocal.updateTime         (timeSpent);};
+    public void updateTimeLimit         (int timeLimit)             {uiLocal.updateTimeLimit    (timeLimit);};
+    public void setSizeAdaptationLocal  (boolean enable)            {uiLocal.setSizeAdaptation  (enable);};
+    public void setSpriteMeshLocal      (DSprite[][] spriteMesh)    {uiLocal.setSpriteMesh      (spriteMesh);};
+    public void displayMesh             ()                          {uiLocal.displayMesh        ();};
+    public void endGamePhase            (EndGame endGameType)       {uiLocal.endGamePhase       (endGameType);};
 
 
 
@@ -447,15 +447,14 @@ public class DGUI extends JFrame {
      * 
      * =====================================================================================================================
      */
-    public void gameCreated         (boolean succeed, String failInfo)                  {uiOnline.gameCreated(succeed, failInfo);}
-    public void gameJoinned         (boolean succeed, String failInfo)                  {uiOnline.gameJoinned(succeed, failInfo);}
+    public void gameCreated             (boolean succeed, String failInfo)                  {uiOnline.gameCreated(succeed, failInfo);}
+    public void gameJoinned             (boolean succeed, String failInfo)                  {uiOnline.gameJoinned(succeed, failInfo);}
 
-    public void updatePlayerList    (Map<String, DPlayer> playerList, String ownerUUID)  {uiOnline.updatePlayerList(playerList, ownerUUID);}
+    public void updatePlayerList        (Map<String, DPlayer> playerList, String ownerUUID) {uiOnline.updatePlayerList(playerList, ownerUUID);}
 
-    public void switchIngameUI      ()                                                  {uiOnline.switchSubUIIngame();}
+    public void switchIngameUI          ()                                                  {uiOnline.switchSubUIIngame();}
 
-    public void setSpriteMeshOnline (DSprite[][] spriteMesh)                            {uiOnline.setSpriteMesh(spriteMesh);}
-
-    public void updateScore         ()                                                  {uiOnline.updateScore();}
+    public void setSpriteMeshOnline     (DSprite[][] spriteMesh)                            {uiOnline.setSpriteMesh(spriteMesh);}
+    public void setSizeAdaptationOnline (boolean enable)                                    {uiOnline.setSizeAdaptation(enable);};
 
 }

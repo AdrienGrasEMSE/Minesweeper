@@ -20,7 +20,7 @@ public class DUI_Online_Updater implements Runnable {
      * Counter attribute
      */
     private         Thread          counter;
-    private final   DUI_Online_Wait ui;
+    private final   DUI_Updatable   ui;
 
 
 
@@ -30,7 +30,7 @@ public class DUI_Online_Updater implements Runnable {
      * 
      * @param ui
      */
-    public DUI_Online_Updater(DUI_Online_Wait ui) {
+    public DUI_Online_Updater(DUI_Updatable ui) {
 
         // New thread
         counter = new Thread(this);
@@ -80,9 +80,9 @@ public class DUI_Online_Updater implements Runnable {
             // Counting every second
             try {
 
-                // 1 sec pause
+                // 0.5 sec pause
                 sleep(500);
-                ui.displayPlayerList();
+                ui.updatableAction();
 
 
             } catch(InterruptedException e) {

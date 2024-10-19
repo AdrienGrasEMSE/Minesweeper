@@ -5,7 +5,9 @@ package deminer;
 import ddialog.EndGame;
 import dgui.DGUI;
 import donline.DClient;
+import donline.DInterpreter;
 import donline.DPlayer;
+import donline.DRequestType;
 import donline.dserver.DServer;
 import java.awt.event.ActionEvent;
 import java.util.Map;
@@ -56,6 +58,7 @@ public class DController {
      * Multiplayer attributes
      */
     private         DClient     client;
+    private final   DInterpreter interpreter = new DInterpreter();
 
 
 
@@ -126,7 +129,7 @@ public class DController {
         if (onlineGame) {
 
             // Sending the event to the server
-            this.client.clickEvent(posX, posY);
+            this.client.addRequest(interpreter.build(client.getUUID(), DRequestType.SPRITE_CLICKED, client.getUUID() + ":" + posX + "," + posY));
             
 
         } else {
@@ -224,7 +227,7 @@ public class DController {
         // Update displayed level and start a new classic game
         gui.updateLevel(false);
         newClassicGame();
-        gui.setSizeAdaptation(true);
+        gui.setSizeAdaptationLocal(true);
 
     }
 
@@ -519,7 +522,7 @@ public class DController {
                 if (loopCounter <= 50 && client.isRegistered()) {
 
                     // Asking server ownership to control game settings
-                    client.askOwnership(server.getUUID());
+                    client.addRequest(interpreter.build(client.getUUID(), DRequestType.OWNERSHIP_ASK, server.getUUID()));
 
 
                     // Waiting for the client to be the server owner (5sec max)
@@ -678,7 +681,7 @@ public class DController {
      * Get the client to ask to launch the game
      */
     public void launchGame() {
-        client.launchGame();
+        this.client.addRequest(interpreter.build(client.getUUID(), DRequestType.GAME_LAUNCH_ASK));
     }
 
 
@@ -691,10 +694,7 @@ public class DController {
      * @param fieldWidth
      */
     public void initOnlineField(int fieldLenght, int fieldWidth) {
-
-        // Creating the new field
         this.field.newCustomEmptyField(DLevel.CUSTOM, fieldLenght, fieldWidth, 0);
-
     }
 
 
@@ -707,8 +707,8 @@ public class DController {
 
         // Init the mesh
         this.meshInit();
+        this.gui.setSizeAdaptationOnline(true);
         this.gui.switchIngameUI();
-        this.gui.updateScore();
 
     }
 
@@ -724,16 +724,6 @@ public class DController {
     public void spriteReveal(int posX, int posY, int spriteValue) {
         spriteMesh[posX][posY].setCoefficient(spriteValue);
         spriteMesh[posX][posY].reveal();
-    }
-
-
-
-
-    /**
-     * Update the score display
-     */
-    public void updateScore () {
-        this.gui.updateScore();
     }
 
 }

@@ -15,7 +15,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Map;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -32,7 +31,7 @@ import javax.swing.border.EmptyBorder;
  * 
  * This class represent the default screen when the user play in multiplayer mode.
  */
-public class DUI_Online_Wait extends JPanel implements ActionListener {
+public class DUI_Online_Wait extends JPanel implements DUI_Updatable {
 
     /**
      * UI main objects
@@ -208,7 +207,7 @@ public class DUI_Online_Wait extends JPanel implements ActionListener {
 
 
         // Display the new list
-        this.displayPlayerList();
+        this.updatableAction();
 
     }
 
@@ -218,7 +217,8 @@ public class DUI_Online_Wait extends JPanel implements ActionListener {
     /**
      * To display player list, and the server owner
      */
-    public void displayPlayerList() {
+    @Override
+    public void updatableAction() {
 
         // If the player list is not null
         if (playerList != null && !playerList.isEmpty()) {

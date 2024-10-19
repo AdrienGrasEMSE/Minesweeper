@@ -237,47 +237,6 @@ public class DClient implements DConnexionHandler {
 
 
     /**
-     * Ask server to launch the game
-     * 
-     * TODO : delete this (makes the controller with interpreter)
-     */
-    public void launchGame() {
-        this.addRequest(interpreter.build(uuid, DRequestType.GAME_LAUNCH_ASK, ""));
-    }
-
-
-
-
-    /**
-     * Asking the ownership of the server
-     * 
-     * @param serverUUID needed to validate server ownership
-     * 
-     * TODO : delete this (makes the controller with interpreter)
-     */
-    public void askOwnership(String serverUUID) {
-        this.addRequest(interpreter.build(uuid, DRequestType.OWNERSHIP_ASK, serverUUID));
-    }
-
-
-
-
-    /**
-     * Sending the click event to the server
-     * 
-     * @param posX
-     * @param posY
-     * 
-     * TODO : delete this (makes the controller with interpreter)
-     */
-    public void clickEvent(int posX, int posY) {
-        this.addRequest(interpreter.build(this.uuid, DRequestType.SPRITE_CLICKED, this.uuid + ":" + posX + "," + posY));
-    }
-
-
-
-
-    /**
      * Method to send a request to the server
      * 
      * @param request
@@ -560,8 +519,15 @@ public class DClient implements DConnexionHandler {
 
                 }
 
-                // Update score
-                this.controller.updateScore();
+            
+            }
+            case DRequestType.PLAYER_HAS_LOST   -> {
+
+                // Getting the player UUID
+                DPlayer player = playerList.get(interpreter.getContent());
+                if (player != null) {
+                    player.setAlive(false);
+                }
 
 
             }
