@@ -90,10 +90,6 @@ public class DClient implements DConnexionHandler {
         this.controller = controller;
         this.name       = name;
 
-
-        // Creating thread
-        this.service = new Thread(this);
-
     }
 
 
@@ -143,8 +139,12 @@ public class DClient implements DConnexionHandler {
     public boolean autoConnect() {
 
         // Testing on the local device
-        if (!this.tryConnection("127.0.0.1", 10000)) {
+        if (this.tryConnection("127.0.0.1", 10000)) {
+
+            // Connexion established
             return true;
+
+
         } else {
 
             // Trying to listen in broadcast
@@ -164,12 +164,18 @@ public class DClient implements DConnexionHandler {
                     // Essayer de recevoir un paquet
                     socket_.receive(packet);
 
-                    // Si un paquet est reçu, le traiter ici
-                    System.out.println("Message reçu : " + new String(packet.getData(), 0, packet.getLength()));
 
                     // Closing socket
                     socket_.close();
-                    return false;
+
+
+                    // Getting the server IP
+                    interpreter.interpret(new String(packet.getData(), 0, packet.getLength()));
+
+
+                    // Trying to connect to the server
+                    // return this.tryConnection(interpreter.getContent(), 10000);
+                    return this.tryConnection("192.168.61.237", 10000);
 
 
                 } catch (SocketTimeoutException e) {
@@ -202,6 +208,10 @@ public class DClient implements DConnexionHandler {
      * @param port
      */
     public boolean tryConnection(String host, int port) {
+
+        // Creating thread
+        this.service = new Thread(this);
+        
 
         // Trying to open a socket
         try {
