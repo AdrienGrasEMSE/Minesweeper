@@ -100,8 +100,8 @@ public class DUI_Online extends JPanel {
      * Switch to the ingame UI
      */
     public void switchSubUIIngame() {
-        mainLayout.show(this, "INGAME");
         this.uiIngame.gameStartCount();
+        mainLayout.show(this, "INGAME");
     }
 
 
@@ -116,6 +116,7 @@ public class DUI_Online extends JPanel {
      */
     public void gameCreated     (boolean succeed, String failInfo)                  {uiDefault.gameCreated(succeed, failInfo);}
     public void gameJoinned     (boolean succeed, String failInfo)                  {uiDefault.gameJoinned(succeed, failInfo);}
+    public void gameDisconnexion(String reason)                                     {uiDefault.gameDisconnexion(reason);}
 
 
 

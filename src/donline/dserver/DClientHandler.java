@@ -255,7 +255,7 @@ public class DClientHandler implements DConnexionHandler{
      * @param request
      */
     @Override
-    public void addRequest(String request) {
+    public synchronized void addRequest(String request) {
 
         // Adding the request to the queue
         synchronized (writeQueue) {
@@ -293,14 +293,9 @@ public class DClientHandler implements DConnexionHandler{
     @Override
     public void shutDown() {
 
-        // Sending all data before closing all
-        synchronized (writeQueue) {
-            while (!writeQueue.isEmpty()) {}
-        }
-
-
         // Disconnecting
         connected = false;
+        
     }
 
 
@@ -341,6 +336,10 @@ public class DClientHandler implements DConnexionHandler{
 
         // Removing the handler from the server
         server.removeHandler(uuid);
+
+
+        // Sending the new playerlist for evryone
+        server.updatePlayerList();
 
     }
 
@@ -400,9 +399,22 @@ public class DClientHandler implements DConnexionHandler{
 
 
             } else {
+                synchronized (writeQueue) {
 
-                // Disconnect
-                this.disconnect();
+                    // Sending all request before disconnexion
+                    if (!writeQueue.isEmpty()) {
+
+                        // Sending data
+                        writter.write(writeQueue.poll());
+                        
+                    } else {
+
+                        // Disconnect
+                        this.disconnect();
+
+                    }
+
+                }
 
             }
 

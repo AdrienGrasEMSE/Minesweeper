@@ -312,7 +312,7 @@ public class DClient implements DConnexionHandler {
 
                 // Server answer : taking it into account
                 this.shutDown();
-                System.out.println(interpreter.getContent());
+                this.controller.backDefaultOnlineUi(interpreter.getContent());
 
 
             }

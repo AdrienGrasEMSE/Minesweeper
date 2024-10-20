@@ -12,6 +12,7 @@ import donline.dserver.DServer;
 import java.awt.event.ActionEvent;
 import java.util.Map;
 import java.util.Random;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 
@@ -733,11 +734,45 @@ public class DController {
 
 
     /**
-     * 
+     * Client disconnexion
      */
-    public void playerLost()    {this.gui.playerLost();}
-    public void gameLost()      {this.gui.gameLost();}
-    public void gameWin()       {this.gui.gameWin();}
+    public void disconnect() {
+        this.client.shutDown();
+        this.gui.switchUIOnline();
+    }
+
+
+
+
+    /**
+     * Getting back to the default screen
+     * 
+     * @param reason
+     */
+    public void backDefaultOnlineUi(String reason) {
+
+        // Switching back to the default online screen
+        SwingUtilities.invokeLater(() -> {
+            this.gui.switchUIOnline();
+        });
+
+
+        // In case of bad reason (any type of kick)
+        if (!reason.isEmpty()) {
+            this.gui.gameDisconnexion(reason);
+        }
+
+    }
+
+
+
+
+    /**
+     * Wiring
+     */
+    public void playerLost()        {this.gui.playerLost();}
+    public void gameLost()          {this.gui.gameLost();}
+    public void gameWin()           {this.gui.gameWin();}
 
 }
  

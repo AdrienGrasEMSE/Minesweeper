@@ -2,6 +2,7 @@
 package dgui.dui_online;
 
 // Import
+import ddialog.DDialogBinary;
 import deminer.DController;
 import dgraphics.DButton;
 import dgraphics.DFont;
@@ -72,6 +73,14 @@ public class DUI_Online_Wait extends JPanel implements DUI_Updatable {
 
 
     /**
+     * All dialog
+     */
+    
+    private         DDialogBinary       leaveDialog;
+
+
+
+    /**
      * Constructor
      * 
      * @param gui in order to transmit data or action performed
@@ -97,6 +106,10 @@ public class DUI_Online_Wait extends JPanel implements DUI_Updatable {
         this.southPanelSetup    ();
         this.centerPanelSetup   ();
         this.eastPanelSetup     ();
+
+
+        // Setting up the leavDialog
+        leaveDialog = new DDialogBinary(gui, "Confirm ?", DTheme.DLG_DRK);
 
     }
 
@@ -235,10 +248,6 @@ public class DUI_Online_Wait extends JPanel implements DUI_Updatable {
         this.playerList = playerList;
         this.ownerUUI   = ownerUUID;
 
-
-        // Display the new list
-        this.updatableAction();
-
     }
 
 
@@ -248,7 +257,20 @@ public class DUI_Online_Wait extends JPanel implements DUI_Updatable {
      * To display player list, and the server owner
      */
     @Override
-    public void updatableAction() {
+    public synchronized void updatableAction() {
+
+        // Checking if the user want to leave
+        if (leaveDialog.getUserChoice()) {
+
+            // Disconnexion
+            this.controller.disconnect();
+
+            
+            // Reset the dialog
+            leaveDialog = new DDialogBinary(gui, "Confirm ?", DTheme.DLG_DRK);
+
+        }
+
 
         // If the player list is not null
         if (playerList != null && !playerList.isEmpty()) {
@@ -309,6 +331,7 @@ public class DUI_Online_Wait extends JPanel implements DUI_Updatable {
 
             // Updating the center panel
             centerPanel.revalidate();
+            centerPanel.repaint();
 
         }
 
@@ -326,15 +349,16 @@ public class DUI_Online_Wait extends JPanel implements DUI_Updatable {
         // Actions according to the source
         if (e.getSource() == backButton) {
 
-            // Getting back to the previous screen
-            System.out.println("Game disconnection");
+            // Confirm dialog
+            leaveDialog.setModal(false);
+            leaveDialog.setVisible(true);
             return;
 
 
         } else if (e.getSource() == launchGameButton) {
 
             // Lauching a new game
-            controller.launchGame();
+            this.controller.launchGame();
             return;
 
         }

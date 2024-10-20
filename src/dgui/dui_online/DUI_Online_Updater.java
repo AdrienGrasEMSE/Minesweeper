@@ -2,7 +2,6 @@
 package dgui.dui_online;
 
 // Import
-import static java.lang.Thread.sleep;
 
 
 /**
@@ -81,7 +80,7 @@ public class DUI_Online_Updater implements Runnable {
             try {
 
                 // 0.5 sec pause
-                sleep(500);
+                Thread.sleep(500);
                 ui.updatableAction();
 
 

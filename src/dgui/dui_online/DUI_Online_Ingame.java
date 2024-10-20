@@ -2,6 +2,7 @@
 package dgui.dui_online;
 
 // Import
+import ddialog.DDialogBinary;
 import ddialog.DDialogInfo;
 import deminer.DController;
 import deminer.DSprite;
@@ -88,6 +89,7 @@ public class DUI_Online_Ingame extends JPanel implements DUI_Updatable {
     private         DDialogInfo         playerLost;
     private         DDialogInfo         gameLost;
     private         DDialogInfo         gameResult;
+    private         DDialogBinary       leaveDialog;
 
 
     /**
@@ -127,6 +129,10 @@ public class DUI_Online_Ingame extends JPanel implements DUI_Updatable {
 
         // Listener init
         this.listenerInit       ();
+
+
+        // Setting up the leavDialog
+        leaveDialog = new DDialogBinary(gui, "Confirm ?", DTheme.DLG_DRK);
 
     }
 
@@ -443,7 +449,20 @@ public class DUI_Online_Ingame extends JPanel implements DUI_Updatable {
      * Display the current
      */
     @Override
-    public void updatableAction() {
+    public synchronized void updatableAction() {
+
+        // Checking if the user want to leave
+        if (leaveDialog.getUserChoice()) {
+
+            // Disconnexion
+            this.controller.disconnect();
+
+            
+            // Reset the dialog
+            leaveDialog = new DDialogBinary(gui, "Confirm ?", DTheme.DLG_DRK);
+
+        }
+
 
         // Usually, the list is not empty BUT
         if (playerList != null && !playerList.isEmpty()) {
@@ -544,6 +563,7 @@ public class DUI_Online_Ingame extends JPanel implements DUI_Updatable {
 
             // Updating the center panel
             eastPanel.revalidate();
+            eastPanel.repaint();
 
         }
 
@@ -700,8 +720,9 @@ public class DUI_Online_Ingame extends JPanel implements DUI_Updatable {
         // Actions according to the source
         if (e.getSource() == leaveButton) {
 
-            // Getting back to the previous screen
-            gui.switchUIPrevious();
+            // Confirm dialog
+            leaveDialog.setModal(false);
+            leaveDialog.setVisible(true);
             return;
 
 

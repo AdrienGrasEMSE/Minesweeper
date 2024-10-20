@@ -51,6 +51,7 @@ public class DServer implements Runnable{
      * Game attributes
      */
     private final   DMinefield                  field                   = new DMinefield();
+    private         boolean                     inGame                  = false;
     private         int                         fieldLenght             = 20;
     private         int                         fieldHeight             = 20;
     private         int                         nbMine                  = 75;
@@ -124,7 +125,7 @@ public class DServer implements Runnable{
      * 
      * @return serverOnline : flag that show if the server online or not
      */
-    public boolean isOnline() {
+    public synchronized boolean isOnline() {
         return serverOnline;
     }
 
@@ -134,9 +135,9 @@ public class DServer implements Runnable{
     /**
      * Getter : to check the server UUID
      * 
-     * @return
+     * @return uuid
      */
-    public String getUUID() {
+    public synchronized String getUUID() {
         return this.uuid;
     }
 
@@ -146,10 +147,22 @@ public class DServer implements Runnable{
     /**
      * Getter : to check the maximum number of player
      * 
-     * @return
+     * @return nbMaxPlayer
      */
-    public int getNbMaxPlayer() {
+    public synchronized int getNbMaxPlayer() {
         return this.nbMaxPlayer;
+    }
+
+
+
+
+    /**
+     * Getter : to check if the server is currently in game
+     * 
+     * @return inGame
+     */
+    public synchronized boolean isInGame() {
+        return this.inGame;
     }
 
 
@@ -160,7 +173,7 @@ public class DServer implements Runnable{
      * 
      * @param uuid
      */
-    public void removeHandler(String uuid) {
+    public synchronized void removeHandler(String uuid) {
         synchronized (clientList) {
             clientList.remove(uuid);
         }
@@ -174,10 +187,8 @@ public class DServer implements Runnable{
      * 
      * @param request
      */
-    public void addRequest(String request) {
-        synchronized (requestQueue) {
-            requestQueue.add(request);
-        }
+    public synchronized void addRequest(String request) {
+        requestQueue.add(request);
     }
 
 
@@ -222,7 +233,7 @@ public class DServer implements Runnable{
      * 
      * @param request
      */
-    public void sendToAll(String request) {
+    private void sendToAll(String request) {
 
         // Iteration over the client list
         synchronized (clientList) {
@@ -240,7 +251,7 @@ public class DServer implements Runnable{
     /**
      * Send the score list to all player
      */
-    public void scoreUpdate() {
+    private void scoreUpdate() {
 
         // Content
         String content = "";
@@ -277,7 +288,7 @@ public class DServer implements Runnable{
      * @param posX
      * @param posY
      */
-    public synchronized void spriteReveal(String uuid, int posX, int posY) {
+    private synchronized void spriteReveal(String uuid, int posX, int posY) {
 
         // Checking if the sprite is already clicked
         if (!this.spriteMeshValidator[posX][posY]) {
@@ -301,6 +312,7 @@ public class DServer implements Runnable{
                 if (nbSpriteRevealed == nbSpriteToReveal) {
                     this.revealAllSprite();
                     this.sendToAll(interpreter.build("SERVER", DRequestType.GAME_WIN, ""));
+                    this.inGame = false;
                 }
 
 
@@ -338,6 +350,7 @@ public class DServer implements Runnable{
                     // Game lost request
                     this.revealAllSprite();
                     this.sendToAll(interpreter.build("SERVER", DRequestType.GAME_LOST));
+                    this.inGame = false;
 
                 }
 
@@ -382,7 +395,11 @@ public class DServer implements Runnable{
     /**
      * Online game creation
      */
-    public void newOnlineGame() {
+    private void newOnlineGame() {
+
+        // Changeing state
+        this.inGame = true;
+
 
         // Reseting all score
         synchronized (clientList) {
@@ -425,6 +442,52 @@ public class DServer implements Runnable{
 
         // Revealing the start sprite
         this.spriteReveal("SERVER", startX, startY);
+
+    }
+
+
+
+
+    /**
+     * Update the player list for everyone
+     */
+    public void updatePlayerList() {
+
+        // Creating the new player list
+        boolean first       = true;
+        String  playerList  = "";
+        for (DClientHandler client_ : clientList.values()) {
+
+            // To prevet for getting and null string
+            if (first) {
+
+                // Adding the client uuid and player name
+                playerList += client_.getUUID();
+                playerList += ":";
+                playerList += client_.getPlayerName();
+                playerList += ";";
+
+            } else {
+
+                // Adding the client uuid and player name
+                playerList += client_.getUUID();
+                playerList += ":";
+                playerList += client_.getPlayerName();
+                playerList += ";";
+
+            }
+
+        }
+        
+        
+        // Sending the player list to everyone
+        this.sendToAll(interpreter.build("SERVER", DRequestType.PLAYER_LIST,  playerList));
+        
+        
+        // If there is a server owner
+        if (this.owner != null) {
+            this.sendToAll(interpreter.build("SERVER", DRequestType.SERVER_OWNER, owner.getUUID()));
+        }
 
     }
 
@@ -478,42 +541,8 @@ public class DServer implements Runnable{
                                     client.startPinging();
                                     
                                     
-                                    // Creating the new player list
-                                    boolean first       = true;
-                                    String  playerList  = "";
-                                    for (DClientHandler client_ : clientList.values()) {
-
-                                        // To prevet for getting and null string
-                                        if (first) {
-
-                                            // Adding the client uuid and player name
-                                            playerList += client_.getUUID();
-                                            playerList += ":";
-                                            playerList += client_.getPlayerName();
-                                            playerList += ";";
-
-                                        } else {
-
-                                            // Adding the client uuid and player name
-                                            playerList += client_.getUUID();
-                                            playerList += ":";
-                                            playerList += client_.getPlayerName();
-                                            playerList += ";";
-
-                                        }
-
-                                    }
-                                    
-                                    
-                                    // Sending the player list to everyone
-                                    this.sendToAll(interpreter.build("SERVER", DRequestType.PLAYER_LIST,  playerList));
-                                    
-                                    
-                                    // If there is a server owner
-                                    DClientHandler owner = this.owner;
-                                    if (owner != null) {
-                                        this.sendToAll(interpreter.build("SERVER", DRequestType.SERVER_OWNER, owner.getUUID()));
-                                    }
+                                    // Sending the new playerlist for evryone
+                                    this.updatePlayerList();
 
                                 }
 

@@ -368,7 +368,7 @@ public class DGUI extends JFrame {
     /**
      * Switch to the online UI
      */
-    private void switchUIOnline() {
+    public void switchUIOnline() {
 
         // Saving previous UI
         previousUI  = currentUI;
@@ -380,6 +380,10 @@ public class DGUI extends JFrame {
         mSolo       .setEnabled(true);
         mOption     .setEnabled(true);
         mMultiPlayer.setEnabled(false);
+
+
+        // Default screen
+        this.uiOnline.switchSubUIDefault();
 
     }
 
@@ -449,6 +453,7 @@ public class DGUI extends JFrame {
      */
     public void gameCreated             (boolean succeed, String failInfo)                  {uiOnline.gameCreated(succeed, failInfo);}
     public void gameJoinned             (boolean succeed, String failInfo)                  {uiOnline.gameJoinned(succeed, failInfo);}
+    public void gameDisconnexion        (String reason)                                     {uiOnline.gameDisconnexion(reason);}
 
     public void updatePlayerList        (Map<String, DPlayer> playerList, String ownerUUID) {uiOnline.updatePlayerList(playerList, ownerUUID);}
 

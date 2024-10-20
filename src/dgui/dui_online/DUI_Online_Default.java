@@ -2,6 +2,15 @@
 package dgui.dui_online;
 
 // Import
+import ddialog.DDialogInfo;
+import ddialog.DDialogLoad;
+import ddialog.DDialogStringInput;
+import deminer.DController;
+import dgraphics.DButton;
+import dgraphics.DFont;
+import dgraphics.DLabel;
+import dgraphics.dtheme.DTheme;
+import dgui.DGUI;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -15,15 +24,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
-import ddialog.DDialogInfo;
-import ddialog.DDialogLoad;
-import ddialog.DDialogStringInput;
-import deminer.DController;
-import dgraphics.DButton;
-import dgraphics.DFont;
-import dgraphics.DLabel;
-import dgraphics.dtheme.DTheme;
-import dgui.DGUI;
 
 
 /**
@@ -256,12 +256,6 @@ public class DUI_Online_Default extends JPanel implements ActionListener {
      */
     public void gameCreated(boolean succeed, String failInfo) {
 
-        // Close the dialog and connexion
-        SwingUtilities.invokeLater(() -> {
-            serverCreation.dispose();
-        });
-
-
         // Accoding to the sucess status
         if (succeed) {
 
@@ -279,6 +273,24 @@ public class DUI_Online_Default extends JPanel implements ActionListener {
             info.setVisible(true);
 
         }
+
+
+        /**
+         * In today's episod of wtf is going on there :
+         * 
+         * I think that the serverJoin dialog is displayed after
+         * the fail or succes to connect.
+         * 
+         * WHY IS THAT ? I DON'T FUCKING KNOW
+         * 
+         * 
+         * That's why the dialog close is at the end of this...
+         */
+        
+        // Close the dialog and connexion
+        SwingUtilities.invokeLater(() -> {
+            serverCreation.dispose();
+        });
 
     }
 
@@ -388,7 +400,7 @@ public class DUI_Online_Default extends JPanel implements ActionListener {
 
 
         /**
-         * In today episod of wtf is going in there :
+         * In today's episod of wtf is going on there :
          * 
          * I think that the serverJoin dialog is displayed after
          * the fail or succes to connect.
@@ -404,6 +416,22 @@ public class DUI_Online_Default extends JPanel implements ActionListener {
             serverJoin.dispose();
         });
 
+    }
+
+
+
+
+    /**
+     * Game disconnexion info (when there is a reason)
+     * 
+     * @param reason
+     */
+    public void gameDisconnexion(String reason) {
+
+        // Infos
+        DDialogInfo info = new DDialogInfo( gui, "Disconnected from the server", new String[]{reason}, DTheme.DLG_DRK);
+        info.setVisible(true);
+        
     }
 
 

@@ -115,14 +115,23 @@ public class DServerClientReception implements Runnable{
 
                 // If there place left
                 synchronized (clientList) {
-                    if (clientList.size() <= this.server.getNbMaxPlayer()) {
-                        clientList.put(newId, clientHandler);
-                    } else {
+
+                    // Adding the client to the list
+                    clientList.put(newId, clientHandler);
+
+
+                    // Checking if there are enough place
+                    if (clientList.size() > this.server.getNbMaxPlayer()) {
                         this.server.disconnectClient(newId, "Server full");
                     }
                     
+                    
+                    // Checking if a game has alrady started
+                    if (this.server.isInGame()) {
+                        this.server.disconnectClient(newId, "A game has already started");
+                    }
+                    
                 }
-                
                 
                 
             } catch (IOException e) {
