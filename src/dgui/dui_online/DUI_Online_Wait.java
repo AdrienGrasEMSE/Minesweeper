@@ -194,6 +194,18 @@ public class DUI_Online_Wait extends JPanel implements DUI_Updatable {
 
 
     /**
+     * Setter : to change the client state (server owner or not)
+     * 
+     * @param serverOwner
+     */
+    public void setServerOwner(boolean serverOwner) {
+        this.serverOwner = serverOwner;
+    }
+
+
+
+
+    /**
      * To update the player list and the server owner
      * 
      * @param playerList

@@ -85,7 +85,8 @@ public enum DRequestType {
     GAME_LAUNCH_ASK     ("GAME_LAUNCH_ASK"),
     GAME_LAUNCH         ("GAME_LAUNCH"),
     GAME_READY          ("GAME_READY"),
-    GAME_ENDED          ("GAME_ENDED"),
+    GAME_WIN            ("GAME_WIN"),
+    GAME_LOST           ("GAME_LOST"),
 
 
     /**

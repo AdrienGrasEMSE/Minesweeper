@@ -128,9 +128,11 @@ public class DController {
         // Action according to the game type
         if (onlineGame) {
 
-            // Sending the event to the server
-            this.client.addRequest(interpreter.build(client.getUUID(), DRequestType.SPRITE_CLICKED, client.getUUID() + ":" + posX + "," + posY));
-            
+            // Sending the event to the server only if the player can play = if it's alive
+            if (client.isAlive()) {
+                this.client.addRequest(interpreter.build(client.getUUID(), DRequestType.SPRITE_CLICKED, client.getUUID() + ":" + posX + "," + posY));
+            }
+
 
         } else {
 
@@ -725,6 +727,16 @@ public class DController {
         spriteMesh[posX][posY].setCoefficient(spriteValue);
         spriteMesh[posX][posY].reveal();
     }
+
+
+
+
+    /**
+     * 
+     */
+    public void playerLost()    {this.gui.playerLost();}
+    public void gameLost()      {this.gui.gameLost();}
+    public void gameWin()       {this.gui.gameWin();}
 
 }
  

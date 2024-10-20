@@ -456,5 +456,8 @@ public class DGUI extends JFrame {
 
     public void setSpriteMeshOnline     (DSprite[][] spriteMesh)                            {uiOnline.setSpriteMesh(spriteMesh);}
     public void setSizeAdaptationOnline (boolean enable)                                    {uiOnline.setSizeAdaptation(enable);};
+    public void playerLost              ()                                                  {uiOnline.playerLost();}
+    public void gameLost                ()                                                  {uiOnline.gameLost();}
+    public void gameWin                 ()                                                  {uiOnline.gameWin();}
 
 }

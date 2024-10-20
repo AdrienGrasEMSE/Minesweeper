@@ -128,6 +128,9 @@ public class DUI_Online extends JPanel {
      */
     public void setSpriteMesh       (DSprite[][] spriteMesh)    {uiIngame.setSpriteMesh(spriteMesh);}
     public void setSizeAdaptation   (boolean enable)            {uiIngame.setSizeAdaptation(enable);}
+    public void playerLost          ()                          {uiIngame.playerLost();}
+    public void gameLost            ()                          {uiIngame.gameLost();}
+    public void gameWin             ()                          {uiIngame.gameEnd();}
 
 
 

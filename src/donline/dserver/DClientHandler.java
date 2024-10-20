@@ -38,7 +38,7 @@ public class DClientHandler implements DConnexionHandler{
      */
     private         boolean         connected   = true;
     private         boolean         serverOwner = false;
-    private         boolean         ready       = false;
+    private         boolean         alive;
     private         String          playerName  = "";
     private         int             playerScore = 0;
 
@@ -135,7 +135,7 @@ public class DClientHandler implements DConnexionHandler{
     /**
      * Getter : to check client ownership
      * 
-     * @return
+     * @return serverOwner
      */
     public boolean isServerOwner() {
         return serverOwner;
@@ -157,26 +157,25 @@ public class DClientHandler implements DConnexionHandler{
 
 
     /**
-     * Getter : to check if the client is ready or not
+     * Getter : to get the player score
      * 
-     * @return ready
+     * @return score
      */
-    public boolean getReady() {
-        return this.ready;
+    public int getScore() {
+        return this.playerScore;
     }
 
 
 
 
     /**
-     * Getter : to get the player score
+     * Getter : to check if the player is still alive
      * 
-     * @return
+     * @return alive
      */
-    public int getScore() {
-        return this.playerScore;
+    public boolean isAlive() {
+        return this.alive;
     }
-
 
 
 
@@ -204,18 +203,6 @@ public class DClientHandler implements DConnexionHandler{
 
 
     /**
-     * Setter : to change the client state
-     * 
-     * @param ready
-     */
-    public void setReady(boolean ready) {
-        this.ready = ready;
-    }
-
-
-
-
-    /**
      * Setter : To change client ownership
      * 
      * @param serverOwner
@@ -230,10 +217,22 @@ public class DClientHandler implements DConnexionHandler{
     /**
      * Setter : to change the player score
      * 
-     * @return
+     * @param playerScore
      */
     public void setScore(int playerScore) {
         this.playerScore = playerScore;
+    }
+
+
+
+
+    /**
+     * Setter : to change the player state
+     * 
+     * @param alive
+     */
+    public void setAlive(boolean alive) {
+        this.alive = alive;
     }
 
 

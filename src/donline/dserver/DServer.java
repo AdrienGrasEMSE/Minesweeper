@@ -297,11 +297,18 @@ public class DServer implements Runnable{
                 // End of game condition
                 this.nbSpriteRevealed ++;
                 if (nbSpriteRevealed == nbSpriteToReveal) {
-                    this.sendToAll(interpreter.build("SERVER", DRequestType.GAME_ENDED, ""));
+                    this.sendToAll(interpreter.build("SERVER", DRequestType.GAME_WIN, ""));
                 }
 
 
             } else {
+
+                // Unaliving the client
+                DClientHandler client = clientList.get(uuid);
+                if (client != null) {
+                    client.setAlive(false);
+                }
+
 
                 // Sprite reveal
                 this.sendToAll(interpreter.build("SERVER", DRequestType.SPRITE_REVEAL, uuid + ":" + posX + "," + posY + "=" + -1));
@@ -309,6 +316,26 @@ public class DServer implements Runnable{
 
                 // Lost request
                 this.sendToAll(interpreter.build("SERVER", DRequestType.PLAYER_HAS_LOST, uuid));
+
+
+                // Checking if all player has lost
+                boolean allPlayerHasLost = true;
+                for (DClientHandler client_ : clientList.values()) {
+
+                    // Checking
+                    if (client_ != null && client_.isAlive()) {
+                        allPlayerHasLost = false;
+                    }
+                }
+
+
+                // If all player has lost
+                if (allPlayerHasLost) {
+
+                    // Game lost request
+                    this.sendToAll(interpreter.build("SERVER", DRequestType.GAME_LOST));
+
+                }
 
 
             }
@@ -333,6 +360,7 @@ public class DServer implements Runnable{
         synchronized (clientList) {
             for (DClientHandler client : clientList.values()) {
                 client.setScore(0);
+                client.setAlive(true);
                 
             }
 

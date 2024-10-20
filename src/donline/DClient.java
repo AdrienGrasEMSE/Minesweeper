@@ -30,6 +30,7 @@ public class DClient implements DConnexionHandler {
      */
     private final   String          name;
     private final   DController     controller;
+    private         boolean         alive;
 
 
     /**
@@ -100,6 +101,18 @@ public class DClient implements DConnexionHandler {
      */
     public boolean isRegistered() {
         return registered;
+    }
+
+
+
+
+    /**
+     * Getter : to see if the client is alive
+     * 
+     * @return registered
+     */
+    public boolean isAlive() {
+        return this.alive;
     }
 
 
@@ -425,7 +438,8 @@ public class DClient implements DConnexionHandler {
             }
             case DRequestType.GAME_READY        -> {
 
-                // Saving the mine number
+                // Displaying the field and making the client alive
+                this.alive = true;
                 this.controller.gameStart();
 
 
@@ -528,6 +542,27 @@ public class DClient implements DConnexionHandler {
                 if (player != null) {
                     player.setAlive(false);
                 }
+
+
+                // If the client has lost
+                if (this.uuid.equals(interpreter.getContent())) {
+                    this.alive = false;
+                    this.controller.playerLost();
+                }
+
+
+            }
+            case DRequestType.GAME_LOST         -> {
+
+                // Displaying the info
+                this.controller.gameLost();
+
+
+            }
+            case DRequestType.GAME_WIN          -> {
+
+                // Displaying the info
+                this.controller.gameWin();
 
 
             }

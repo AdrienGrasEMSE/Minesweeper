@@ -2,6 +2,7 @@
 package dgui.dui_online;
 
 // Import
+import ddialog.DDialogInfo;
 import deminer.DController;
 import deminer.DSprite;
 import dgraphics.DButton;
@@ -22,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
 
@@ -77,6 +79,14 @@ public class DUI_Online_Ingame extends JPanel implements DUI_Updatable {
      * UI Updater
      */
     private final   DUI_Online_Updater  updater;
+
+
+    /**
+     * All dialog
+     */
+    private         DDialogInfo         playerLost;
+    private         DDialogInfo         gameLost;
+    private         DDialogInfo         gameResult;
 
 
 
@@ -476,6 +486,145 @@ public class DUI_Online_Ingame extends JPanel implements DUI_Updatable {
             eastPanel.revalidate();
 
         }
+
+    }
+
+
+
+
+    /**
+     * In case of game lost
+     */
+    public void playerLost() {
+
+        // Displaying the info
+        playerLost = new DDialogInfo(   
+                                        gui,
+                                        "You have exploded...", 
+                                        new String[]{
+                                                        "You cannot play anymore.",
+                                                    },
+                                        DTheme.DLG_DRK
+                                    );
+        playerLost.setModal(false);
+        playerLost.setVisible(true);
+
+
+        // 5sec Timer
+        Timer timer = new Timer(5000, (ActionEvent e) -> {
+
+            // Hidding the popup
+            playerLost.setVisible(false);
+
+        });
+        timer.setRepeats(false);
+        timer.start();
+
+    }
+
+
+
+
+    /**
+     * In case of game lost
+     */
+    public void gameLost() {
+
+        // Displaying the info
+        gameLost = new DDialogInfo  (   
+                                        gui,
+                                        "Everyone have exploded...", 
+                                        new String[]{
+                                                        "The game is lost",
+                                                    },
+                                        DTheme.DLG_DRK
+                                    );
+        gameLost.setModal(false);
+        gameLost.setVisible(true);
+
+
+        // 5sec Timer
+        Timer timer = new Timer(5000, (ActionEvent e) -> {
+
+            // Hidding the popup
+            gameLost.setVisible(false);
+
+
+            // Game end phase
+            this.gameEnd();
+
+        });
+        timer.setRepeats(false);
+        timer.start();
+
+    }
+
+
+
+
+    /**
+     * End of a game phase
+     */
+    public void gameEnd() {
+
+        // Building the results
+        String[]    result  = new String[playerList.size() + 2];
+        int         i       = 0;
+        DPlayer     winner  = null;
+        for (DPlayer player : playerList.values()) {
+            if (player != null) {
+
+                // Adding the player and its score the the result
+                result[i] = player.getPlayerName() + " : " + player.getScore();
+
+
+                // Getting the higher score
+                if (winner == null || player.getScore() > winner.getScore()) {
+                    winner = player;
+                }
+
+
+                // Incrementing
+                i++;
+
+            }
+
+        }
+        
+
+        // Adding the winner
+        result[i] = " ";
+        if (winner != null) {
+            result[i + 1] = "Winner : " + winner.getPlayerName();
+        } else {
+            result[i + 1] = "There are no winner";
+        }
+        
+
+        // Displaying the less worst player
+        gameResult = new DDialogInfo   (   
+                                            gui,
+                                            "Game results", 
+                                            result,
+                                            DTheme.DLG_DRK
+                                        );
+        gameResult.setModal(false);
+        gameResult.setVisible(true);
+
+
+        // 5sec Timer
+        Timer timer = new Timer(5000, (ActionEvent e) -> {
+
+            // Hidding the popup
+            gameResult.setVisible(false);
+
+
+            // Getting back to the wait screen
+            this.uiOnline.switchSubUIWait();
+
+        });
+        timer.setRepeats(false);
+        timer.start();
 
     }
 
