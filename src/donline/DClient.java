@@ -4,8 +4,12 @@ package donline;
 // Import
 import deminer.DController;
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -139,13 +143,53 @@ public class DClient implements DConnexionHandler {
     public boolean autoConnect() {
 
         // Testing on the local device
-        if (this.tryConnection("127.0.0.1", 10000)) {
+        if (!this.tryConnection("127.0.0.1", 10000)) {
             return true;
+        } else {
+
+            // Trying to listen in broadcast
+            try {
+
+                // Socket creation
+                DatagramSocket socket_  = new DatagramSocket(8888, InetAddress.getByName("0.0.0.0"));
+                socket_                 .setBroadcast(true);
+                socket_                 .setSoTimeout(5000);
+
+
+                // Waiting for message (5sec max)
+                byte[] buffer = new byte[1024];
+                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+                try {
+
+                    // Essayer de recevoir un paquet
+                    socket_.receive(packet);
+
+                    // Si un paquet est reçu, le traiter ici
+                    System.out.println("Message reçu : " + new String(packet.getData(), 0, packet.getLength()));
+
+                    // Closing socket
+                    socket_.close();
+                    return false;
+
+
+                } catch (SocketTimeoutException e) {
+
+                    // Closing socket
+                    socket_.close();
+                    return false;
+
+                }
+                
+
+            } catch (Exception e) {
+
+                // Printing exception
+                System.out.println(e);
+                return false;
+
+            }
+
         }
-
-
-        // Unable to reach a server
-        return false;
 
     }
 

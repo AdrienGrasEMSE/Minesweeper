@@ -24,6 +24,13 @@ public enum DRequestType {
      * Request type = UNRECOGNIZED  -> Bad request
      */
 
+
+    /**
+     * Server IP broadcasted
+     */
+    SRV_IP_BROADCAST    ("SRV_IP_BROADCAST"),
+
+
     /**
      * Hello phase
      * - Server hello   : {<@SERVER@><$SRV_HELLO$><#__client_id__#>}

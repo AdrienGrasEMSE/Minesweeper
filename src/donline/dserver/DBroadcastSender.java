@@ -11,6 +11,7 @@ import java.net.UnknownHostException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import donline.DInterpreter;
 import donline.DRequestType;
 
 
@@ -61,8 +62,9 @@ public class DBroadcastSender implements Runnable {
             socket                  .setBroadcast(true);
 
 
-            // Casting the server IP into bytes
-            this.buffer             = this.serverIP.getBytes();
+            // Creating the request then casting it into bytes
+            DInterpreter interpreter = new DInterpreter();
+            this.buffer             = interpreter.build("SERVER", DRequestType.SRV_IP_BROADCAST, this.serverIP).getBytes();
 
 
             // Setting up the broadcast adress
