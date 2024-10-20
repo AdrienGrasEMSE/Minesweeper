@@ -3,17 +3,17 @@ package donline.dserver;
 
 import deminer.DLevel;
 import deminer.DMinefield;
-import deminer.DUUID;
 import donline.DInterpreter;
 import donline.DRequestType;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -33,30 +33,31 @@ public class DServer implements Runnable{
      */
     private final   Thread                      service;
     private final   String                      uuid;
-    private final   Map<String, DClientHandler> clientList      = new HashMap<>();
+    private final   Map<String, DClientHandler> clientList              = new HashMap<>();
     private         DClientHandler              owner;
-    private         ServerSocket                gestSock        = null;
+    private         ServerSocket                gestSock                = null;
     private         boolean                     serverOnline;
 
 
     /**
      * Requests
      */
-    private final   DInterpreter        interpreter             = new DInterpreter();
-    private final   Queue<String>       requestQueue            = new LinkedList<>();
-    private         DServerListener     srvListener             = null;
+    private final   DInterpreter                interpreter             = new DInterpreter();
+    private final   Queue<String>               requestQueue            = new LinkedList<>();
+    private         DServerClientReception      srvListener             = null;
 
 
     /**
      * Game attributes
      */
-    private final   DMinefield          field                   = new DMinefield();
-    private         int                 fieldLenght             = 20;
-    private         int                 fieldHeight             = 20;
-    private         int                 nbMaxPlayer             = 5;
-    private         boolean[][]         spriteMeshValidator;
-    private         int                 nbSpriteToReveal;
-    private         int                 nbSpriteRevealed;
+    private final   DMinefield                  field                   = new DMinefield();
+    private         int                         fieldLenght             = 20;
+    private         int                         fieldHeight             = 20;
+    private         int                         nbMine                  = 75;
+    private         int                         nbMaxPlayer             = 5;
+    private         boolean[][]                 spriteMeshValidator;
+    private         int                         nbSpriteToReveal;
+    private         int                         nbSpriteRevealed;
 
 
     
@@ -81,7 +82,7 @@ public class DServer implements Runnable{
 
 
             // Thread initialization
-            service.start();
+            srvListener = new DServerClientReception(this, this.gestSock, clientList);
 
 
             // Server online
@@ -89,13 +90,13 @@ public class DServer implements Runnable{
 
 
             // Activating listening service
-            srvListener = new DServerListener(this, requestQueue, clientList);
+            this.init();
 
             
         } catch (IOException e) {
             
             // Printing exception
-            System.err.println(e);
+            System.out.println(e);
 
 
             // Server not online
@@ -109,36 +110,10 @@ public class DServer implements Runnable{
 
 
     /**
-     * Getter : to get the server UUID
-     * 
-     * @return
+     * Starting service
      */
-    public String getUUID() {
-        return uuid;
-    }
-
-
-
-
-    /**
-     * Getter : to check who is the server owner
-     * 
-     * @return
-     */
-    public DClientHandler getOwner() {
-        return owner;
-    }
-
-
-
-
-    /**
-     * Setter : to change server owner
-     * 
-     * @param owner
-     */
-    public void setOwner(DClientHandler owner) {
-        this.owner = owner;
+    private void init() {
+        service.start();
     }
 
 
@@ -151,6 +126,30 @@ public class DServer implements Runnable{
      */
     public boolean isOnline() {
         return serverOnline;
+    }
+
+
+
+
+    /**
+     * Getter : to check the server UUID
+     * 
+     * @return
+     */
+    public String getUUID() {
+        return this.uuid;
+    }
+
+
+
+
+    /**
+     * Getter : to check the maximum number of player
+     * 
+     * @return
+     */
+    public int getNbMaxPlayer() {
+        return this.nbMaxPlayer;
     }
 
 
@@ -300,6 +299,7 @@ public class DServer implements Runnable{
                 // End of game condition
                 this.nbSpriteRevealed ++;
                 if (nbSpriteRevealed == nbSpriteToReveal) {
+                    this.revealAllSprite();
                     this.sendToAll(interpreter.build("SERVER", DRequestType.GAME_WIN, ""));
                 }
 
@@ -336,6 +336,7 @@ public class DServer implements Runnable{
                 if (allPlayerHasLost) {
 
                     // Game lost request
+                    this.revealAllSprite();
                     this.sendToAll(interpreter.build("SERVER", DRequestType.GAME_LOST));
 
                 }
@@ -347,6 +348,30 @@ public class DServer implements Runnable{
             // Sprite validation
             this.spriteMeshValidator[posX][posY] = true;
 
+        }
+
+    }
+
+
+
+
+    /**
+     * Asking evry client to reval all sprites
+     */
+    private void revealAllSprite() {
+
+        // Running trough the whole field
+        for (int posX = 0; posX < field.getLenght(); posX++) {
+            for (int posY = 0; posY < field.getWidth(); posY++) {
+
+                // Revealing the sprite
+                if (field.isMine(posX, posY)) {
+                    this.sendToAll(interpreter.build("SERVER", DRequestType.SPRITE_REVEAL, uuid + ":" + posX + "," + posY + "=" + -1));
+                } else {
+                    this.sendToAll(interpreter.build("SERVER", DRequestType.SPRITE_REVEAL, uuid + ":" + posX + "," + posY + "=" + field.mineDetection(posX, posY)));
+                }
+            
+            }
         }
 
     }
@@ -371,7 +396,7 @@ public class DServer implements Runnable{
 
 
         // Creating the empty field
-        this.field.newCustomEmptyField(DLevel.CUSTOM, 5, 5, 3);
+        this.field.newCustomEmptyField(DLevel.CUSTOM, this.fieldLenght, this.fieldHeight, this.nbMine);
 
 
         // Create mesh validator
@@ -409,7 +434,7 @@ public class DServer implements Runnable{
     /**
      * Thread method
      * 
-     * Non critical thread : 500ms loop
+     * Critical thread : 10ms loop
      */
     @Override
     public void run () {
@@ -419,40 +444,244 @@ public class DServer implements Runnable{
 
             // Get the start time of the loop iteration
             long startTime = System.currentTimeMillis();
+            
+
+            synchronized (requestQueue) {
+
+                // Reading request
+                if (!requestQueue.isEmpty()) {
+
+                    // TODO : clear this shit
+                    System.out.println(requestQueue.peek());
 
 
-            // Waiting connection
-            try {
-
-                // New socket
-                Socket socket = gestSock.accept();
+                    // Request interpretation
+                    interpreter.interpret(requestQueue.poll());
 
 
-                // New thread
-                Thread newThread = new Thread(this);
-                newThread.start();
+                    // Request answer
+                    switch (interpreter.getRequestType()) {
+                        case DRequestType.HELLO_CLT -> {
+
+                            // Get the client handler and apply it the name
+                            synchronized (clientList) {
+
+                                // Getting the client handler
+                                DClientHandler client = clientList.get(interpreter.getSenderUUID());
+                                
+
+                                // If the client exist
+                                if (client != null) {
+
+                                    // Set player pseudo and start pinging
+                                    client.setPlayerName(interpreter.getContent());
+                                    client.startPinging();
+                                    
+                                    
+                                    // Creating the new player list
+                                    boolean first       = true;
+                                    String  playerList  = "";
+                                    for (DClientHandler client_ : clientList.values()) {
+
+                                        // To prevet for getting and null string
+                                        if (first) {
+
+                                            // Adding the client uuid and player name
+                                            playerList += client_.getUUID();
+                                            playerList += ":";
+                                            playerList += client_.getPlayerName();
+                                            playerList += ";";
+
+                                        } else {
+
+                                            // Adding the client uuid and player name
+                                            playerList += client_.getUUID();
+                                            playerList += ":";
+                                            playerList += client_.getPlayerName();
+                                            playerList += ";";
+
+                                        }
+
+                                    }
+                                    
+                                    
+                                    // Sending the player list to everyone
+                                    this.sendToAll(interpreter.build("SERVER", DRequestType.PLAYER_LIST,  playerList));
+                                    
+                                    
+                                    // If there is a server owner
+                                    DClientHandler owner = this.owner;
+                                    if (owner != null) {
+                                        this.sendToAll(interpreter.build("SERVER", DRequestType.SERVER_OWNER, owner.getUUID()));
+                                    }
+
+                                }
+
+                            }
 
 
-                // Client holder creation
-                String newId = DUUID.generate();
-                DClientHandler clientHandler = new DClientHandler(newId, socket, this);
-                synchronized (clientList) {
-                    clientList.put(newId, clientHandler);
+                        }
+                        case DRequestType.PING -> {
+
+                            // Answering the ping
+                            synchronized (clientList) {
+
+                                // Getting the client handler
+                                DClientHandler client = clientList.get(interpreter.getSenderUUID());
+                                
+
+                                // If the client exist
+                                if (client != null) {
+
+                                    // Answer the client ping
+                                    client.addRequest(interpreter.build("SERVER", DRequestType.PING_ANSWER, ""));
+
+                                }
+                                
+                            }
+
+
+                        }
+                        case DRequestType.PING_ANSWER -> {
+
+                            // Client answer : taking it into account
+                            synchronized (clientList) {
+
+                                // Getting the client handler
+                                DClientHandler client = clientList.get(interpreter.getSenderUUID());
+                                
+
+                                // If the client exist
+                                if (client != null) {
+
+                                    // The client is still there
+                                    client.pingReceived();
+
+                                }
+                                
+                            }
+
+
+                        }
+                        case DRequestType.DISCONNECT -> {
+
+                            // Client answer : taking it into account
+                            synchronized (clientList) {
+
+                                // Getting the client handler
+                                DClientHandler client = clientList.get(interpreter.getSenderUUID());
+                                
+
+                                // If the client exist
+                                if (client != null) {
+
+                                    // Shutting down client handler
+                                    client.shutDown();
+
+                                }
+                                
+                            }
+
+
+                        }
+                        case DRequestType.OWNERSHIP_ASK -> {
+
+                            // Answering the client
+                            synchronized (clientList) {
+
+                                // Getting the client handler
+                                DClientHandler client = clientList.get(interpreter.getSenderUUID());
+                                
+
+                                // If the client exist
+                                if (client != null) {
+
+                                    // Verifying the UUID sent
+                                    if (interpreter.getContent().equals(this.uuid)) {
+
+                                        // Ownership granted
+                                        client.addRequest(interpreter.build("SERVER", DRequestType.OWNERSHIP_GRANTED, ""));
+                                        client.setOwnership(true);
+                                        this.owner = client;
+                                        
+                                        
+                                    } else {
+
+                                        // Ownership refused
+                                        client.addRequest(interpreter.build("SERVER", DRequestType.OWNERSHIP_REFUSED, ""));
+
+                                    }
+
+                                }
+
+                            }
+
+
+                        }
+                        case DRequestType.GAME_LAUNCH_ASK -> {
+
+                            // Verifying if there are enough player and if the one who asked is the server owner
+                            synchronized (clientList) {
+                                if (clientList.size() > 1 && this.owner.getUUID().equals(interpreter.getSenderUUID())) {
+                                    this.newOnlineGame();
+                                }
+                            }
+
+
+                        }
+                        case DRequestType.SPRITE_CLICKED -> {
+
+                            /**
+                             * Data shape :
+                             * 
+                             * CONTENT = 'playerUUID:posX,posY'
+                             */
+
+
+                            // Pattern definition
+                            Pattern pattern = Pattern.compile("^([^:]+):([\\d.]+),([\\d.]+)$");
+                            Matcher matcher = pattern.matcher(interpreter.getContent());
+
+
+                            // If the request match the pattern
+                            if (matcher.matches()) {
+
+                                // Trying to convert the posX and posY
+                                int posX = 0;
+                                int posY = 0;
+                                try {
+
+                                    // Saving the field length and width
+                                    posX = Integer.parseInt(matcher.group(2));
+                                    posY = Integer.parseInt(matcher.group(3));
+
+
+                                } catch (NumberFormatException e) {
+
+                                    // TODO : handle this
+
+                                }
+
+                                // Ask the server to reveal the sprite
+                                this.spriteReveal(matcher.group(1), posX, posY);
+
+                               
+                            } else {
+
+                                // TODO : Handel this
+
+                            }
+
+
+                        }
+                        default -> {
+
+
+                        }
+                        
+                    }
+                    
                 }
-
-
-                // Init dialog
-                clientHandler.addRequest(interpreter.build("SERVER", DRequestType.HELLO_SRV, clientHandler.getUUID()));
-
-
-                // this.disconnectClient(newId, "Server full");
-                
-                
-                
-            } catch (IOException e) {
-
-                // Printing exception
-                System.out.println(e);
 
             }
 
@@ -466,10 +695,10 @@ public class DServer implements Runnable{
 
 
             // Calculate the remaining time to sleep
-            long sleepTime = 500 - elapsedTime;
+            long sleepTime = 10 - elapsedTime;
 
 
-            // If there is still time left in the 500ms window, sleep
+            // If there is still time left in the 10ms window, sleep
             if (sleepTime > 0) {
                 try {
 
@@ -480,9 +709,10 @@ public class DServer implements Runnable{
                 } catch (InterruptedException e) {
 
                     // Handle the exception
-                    e.printStackTrace();
+                    System.out.println(e);
 
                 }
+
             }
                       
         }

@@ -101,6 +101,7 @@ public class DUI_Online extends JPanel {
      */
     public void switchSubUIIngame() {
         mainLayout.show(this, "INGAME");
+        this.uiIngame.gameStartCount();
     }
 
 

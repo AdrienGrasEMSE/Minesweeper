@@ -19,6 +19,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.BoxLayout;
@@ -87,6 +88,12 @@ public class DUI_Online_Ingame extends JPanel implements DUI_Updatable {
     private         DDialogInfo         playerLost;
     private         DDialogInfo         gameLost;
     private         DDialogInfo         gameResult;
+
+
+    /**
+     * Index for the start counter
+     */
+    private         int                 counterIndex;
 
 
 
@@ -258,6 +265,59 @@ public class DUI_Online_Ingame extends JPanel implements DUI_Updatable {
 
         // Displaying the mesh
         this.displayMesh();
+
+    }
+
+
+
+
+    /**
+     * 
+     */
+    public void gameStartCount() {
+
+        // Deactivate player click capcity
+        JPanel glassPane    = new JPanel();
+        glassPane           .setOpaque(false);
+        glassPane           .addMouseListener(new MouseAdapter() {});
+        gui                 .setGlassPane(glassPane);
+        glassPane           .setVisible(true);
+
+
+        // Dialogs
+        DDialogInfo[] coutList = new DDialogInfo[5];
+        coutList[0] = new DDialogInfo(gui, "The game start in 5sec", new String[]{"Are you ready ?"}, DTheme.DLG_DRK, false);
+        coutList[1] = new DDialogInfo(gui, "The game start in 4sec", new String[]{"Tip : Be ready"}, DTheme.DLG_DRK, false);
+        coutList[2] = new DDialogInfo(gui, "The game start in 3sec", new String[]{"Tip : Do not explose yourself"}, DTheme.DLG_DRK, false);
+        coutList[3] = new DDialogInfo(gui, "The game start in 2sec", new String[]{"Tip : Do not read these tip"}, DTheme.DLG_DRK, false);
+        coutList[4] = new DDialogInfo(gui, "The game start in 1sec", new String[]{"Tip : Have a life"}, DTheme.DLG_DRK, false);
+
+
+        // 
+        this.counterIndex = 0;
+        Timer timer = new Timer(1000, (ActionEvent e) -> {
+            
+            // Close the previous dialog
+            if (this.counterIndex > 0) {
+                coutList[this.counterIndex - 1].setVisible(false);
+            }
+
+
+            // Display the current dialog
+            if (this.counterIndex < 5) {
+                coutList[this.counterIndex].setVisible(true);
+                this.counterIndex++;
+            } else {
+                glassPane.setVisible(false);
+                ((Timer) e.getSource()).stop();
+            }
+
+
+        });
+
+
+        // Start timer
+        timer.start();
 
     }
 
@@ -504,9 +564,9 @@ public class DUI_Online_Ingame extends JPanel implements DUI_Updatable {
                                         new String[]{
                                                         "You cannot play anymore.",
                                                     },
-                                        DTheme.DLG_DRK
+                                        DTheme.DLG_DRK,
+                                        false
                                     );
-        playerLost.setModal(false);
         playerLost.setVisible(true);
 
 
@@ -537,9 +597,9 @@ public class DUI_Online_Ingame extends JPanel implements DUI_Updatable {
                                         new String[]{
                                                         "The game is lost",
                                                     },
-                                        DTheme.DLG_DRK
+                                        DTheme.DLG_DRK,
+                                        false
                                     );
-        gameLost.setModal(false);
         gameLost.setVisible(true);
 
 
@@ -606,9 +666,9 @@ public class DUI_Online_Ingame extends JPanel implements DUI_Updatable {
                                             gui,
                                             "Game results", 
                                             result,
-                                            DTheme.DLG_DRK
+                                            DTheme.DLG_DRK,
+                                            false
                                         );
-        gameResult.setModal(false);
         gameResult.setVisible(true);
 
 

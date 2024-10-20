@@ -2,6 +2,11 @@
 package ddialog;
 
 // Import
+import dgraphics.DButton;
+import dgraphics.DFont;
+import dgraphics.DLabel;
+import dgraphics.dtheme.DColors_UI;
+import dgraphics.dtheme.DTheme;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import javax.swing.JDialog;
@@ -9,11 +14,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import dgraphics.DButton;
-import dgraphics.DFont;
-import dgraphics.DLabel;
-import dgraphics.dtheme.DColors_UI;
-import dgraphics.dtheme.DTheme;
 
 
 /**
@@ -77,6 +77,74 @@ public class DDialogInfo extends JDialog {
 
         // Adding the button pane to the dialog
         mainPanel.add(okButton, BorderLayout.SOUTH);
+
+
+        // Adding the whole to the dialog frame
+        this.setContentPane (mainPanel);
+        this.pack           ();
+
+
+        // Displaying the dialog relative to the prarent frame
+        this.setLocationRelativeTo(parent);
+
+    }
+
+
+
+    
+    /**
+     * Constructor
+     * 
+     * @param parent            JFrame that own the dialog
+     * @param message           Dialog message
+     * @param listInfos         list of info that will be displayed on different line
+     */
+    public DDialogInfo(JFrame parent, String title, String[] listInfos,  DColors_UI colorSet, boolean withButton) {
+
+        // Herited constructor
+        super(parent, "", true);
+        this.setUndecorated (true);
+        this.setBackground  (DTheme.TRSPCOL);
+
+
+        // Creating the main JPanel
+        mainPanel.setBorder     (new EmptyBorder(10, 10, 10, 10));
+        mainPanel.setBackground (colorSet.BCK_N);
+        mainPanel.setLayout     (new BorderLayout());
+
+
+        // Creating the label for the title
+        DLabel titleLabel             = new DLabel(title, DFont.JOST_SEMIBOLD, 18, DTheme.LAB_TRS);
+        titleLabel  .setHorizontalAlignment (SwingConstants.CENTER);
+        mainPanel   .add                    (titleLabel, BorderLayout.NORTH);
+
+
+        // Displaying infos
+        this.infoDisplay(listInfos);
+
+       
+        // Creating the button in case of
+        if (withButton) {
+
+            // Creating the ok button
+            DButton okButton  = new DButton("Ok",   DFont.JOST_SEMIBOLD, 18, DTheme.BTN_NTL);
+            
+            
+            // Button action
+            okButton.addActionListener(e -> {
+                this.dispose();
+            });
+
+
+            // Adding the button pane to the dialog
+            mainPanel.add(okButton, BorderLayout.SOUTH);
+
+        } else {
+
+            // Getting this dialog non-modal (to not block threads)
+            this.setModal(false);
+
+        }
 
 
         // Adding the whole to the dialog frame
