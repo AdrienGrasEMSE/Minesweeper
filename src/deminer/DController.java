@@ -737,6 +737,7 @@ public class DController {
      * Client disconnexion
      */
     public void disconnect() {
+        this.client.addRequest(interpreter.build(this.client.getUUID(), DRequestType.DISCONNECT));
         this.client.shutDown();
         this.gui.switchUIOnline();
     }

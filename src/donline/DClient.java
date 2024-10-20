@@ -621,9 +621,26 @@ public class DClient implements DConnexionHandler {
 
 
             } else {
+                synchronized (writeQueue) {
 
-                // Disconnect
-                this.disconnect();
+                    // Disconnect only if the write queue is empty
+                    if (!writeQueue.isEmpty() && registered) {
+
+                        // Sending data
+                        synchronized (writter) {
+                            writter.write(writeQueue.poll());
+                            
+                        }
+                        
+                        
+                    } else {
+
+                        // Disconnect
+                        this.disconnect();
+
+                    }
+
+                }
 
             }
 

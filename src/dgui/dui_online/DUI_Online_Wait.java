@@ -80,6 +80,7 @@ public class DUI_Online_Wait extends JPanel implements DUI_Updatable {
 
 
 
+    
     /**
      * Constructor
      * 

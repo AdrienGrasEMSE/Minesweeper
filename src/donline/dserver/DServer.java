@@ -44,7 +44,7 @@ public class DServer implements Runnable{
      */
     private final   DInterpreter                interpreter             = new DInterpreter();
     private final   Queue<String>               requestQueue            = new LinkedList<>();
-    private         DServerClientReception      srvListener             = null;
+    private         DServerClientReception      clientReceptionner      = null;
 
 
     /**
@@ -83,7 +83,7 @@ public class DServer implements Runnable{
 
 
             // Thread initialization
-            srvListener = new DServerClientReception(this, this.gestSock, clientList);
+            clientReceptionner = new DServerClientReception(this, this.gestSock, clientList);
 
 
             // Server online
@@ -175,8 +175,55 @@ public class DServer implements Runnable{
      */
     public synchronized void removeHandler(String uuid) {
         synchronized (clientList) {
+
+            // Removing the client
             clientList.remove(uuid);
+
+
+            // Game stop condition
+            if (inGame && clientList.size() == 1 && !uuid.equals(this.owner.getUUID())) {
+
+                // Game lost request
+                this.revealAllSprite();
+                this.sendToAll(interpreter.build("SERVER", DRequestType.GAME_LOST));
+                this.inGame = false;
+
+
+            } else if (uuid.equals(this.owner.getUUID())) {
+
+                System.out.println("BFUIEBIUBZI");
+
+                // Disconnecting all client
+                for (DClientHandler client : clientList.values()) {
+                    this.disconnectClient(client.getUUID(), "Game owner has disconnected");
+                }
+
+
+                // Little pause to let client handler to send disconnection requests
+                try {
+
+                    // 100 ms pause
+                    Thread.sleep(100);
+
+
+                } catch (InterruptedException ex) {
+
+                    // Printing exception
+                    System.out.println(ex);
+
+                }
+                this.stop();
+
+            }
+
+
+            // Server stop condition
+            if (clientList.isEmpty()) {
+                this.stop();
+            }
+
         }
+
     }
 
 
@@ -200,8 +247,23 @@ public class DServer implements Runnable{
     public void stop() {
 
         // Closing all
-        srvListener.stop();
+        clientReceptionner.stop();
         serverOnline = false;
+
+
+        // Closing the socket
+        try {
+
+            gestSock.close();
+
+        } catch (IOException ex) {
+
+            // TODO : Handle this
+
+        }
+
+
+        System.out.println("SERVER : ENDING POINT");
 
     }
 
@@ -524,7 +586,7 @@ public class DServer implements Runnable{
 
                     // Request answer
                     switch (interpreter.getRequestType()) {
-                        case DRequestType.HELLO_CLT -> {
+                        case DRequestType.HELLO_CLT ->          {
 
                             // Get the client handler and apply it the name
                             synchronized (clientList) {
@@ -550,7 +612,7 @@ public class DServer implements Runnable{
 
 
                         }
-                        case DRequestType.PING -> {
+                        case DRequestType.PING ->               {
 
                             // Answering the ping
                             synchronized (clientList) {
@@ -571,7 +633,7 @@ public class DServer implements Runnable{
 
 
                         }
-                        case DRequestType.PING_ANSWER -> {
+                        case DRequestType.PING_ANSWER ->        {
 
                             // Client answer : taking it into account
                             synchronized (clientList) {
@@ -592,7 +654,7 @@ public class DServer implements Runnable{
 
 
                         }
-                        case DRequestType.DISCONNECT -> {
+                        case DRequestType.DISCONNECT ->         {
 
                             // Client answer : taking it into account
                             synchronized (clientList) {
@@ -613,7 +675,7 @@ public class DServer implements Runnable{
 
 
                         }
-                        case DRequestType.OWNERSHIP_ASK -> {
+                        case DRequestType.OWNERSHIP_ASK ->      {
 
                             // Answering the client
                             synchronized (clientList) {
@@ -647,7 +709,7 @@ public class DServer implements Runnable{
 
 
                         }
-                        case DRequestType.GAME_LAUNCH_ASK -> {
+                        case DRequestType.GAME_LAUNCH_ASK ->    {
 
                             // Verifying if there are enough player and if the one who asked is the server owner
                             synchronized (clientList) {
@@ -658,7 +720,7 @@ public class DServer implements Runnable{
 
 
                         }
-                        case DRequestType.SPRITE_CLICKED -> {
+                        case DRequestType.SPRITE_CLICKED ->     {
 
                             /**
                              * Data shape :
