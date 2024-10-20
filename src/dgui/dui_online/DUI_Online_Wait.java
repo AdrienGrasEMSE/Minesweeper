@@ -174,19 +174,24 @@ public class DUI_Online_Wait extends JPanel implements DUI_Updatable {
      */
     private void eastPanelSetup() {
 
-        // Plotting panel and set VFX
-        this                .add            (eastPanel, BorderLayout.EAST);
-        eastPanel           .setLayout      (new BoxLayout(eastPanel, BoxLayout.Y_AXIS));
-        eastPanel           .setBorder      (new EmptyBorder(30, 30, 30, 30));
-        eastPanel           .setBackground  (DTheme.GUI_NTL.BCK_D);
+        // Only if the client is the server owner
+        if (this.serverOwner) {
+
+            // Plotting panel and set VFX
+            this                .add            (eastPanel, BorderLayout.EAST);
+            eastPanel           .setLayout      (new BoxLayout(eastPanel, BoxLayout.Y_AXIS));
+            eastPanel           .setBorder      (new EmptyBorder(30, 30, 30, 30));
+            eastPanel           .setBackground  (DTheme.GUI_NTL.BCK_D);
 
 
-        // Plotting the launch game button
-        eastPanel           .add            (launchGameButton);
+            // Plotting the launch game button
+            eastPanel           .add            (launchGameButton);
 
 
-        // Adding the listener
-        launchGameButton    .addActionListener(this);
+            // Adding the listener
+            launchGameButton    .addActionListener(this);
+
+        }
 
     }
 
@@ -199,7 +204,20 @@ public class DUI_Online_Wait extends JPanel implements DUI_Updatable {
      * @param serverOwner
      */
     public void setServerOwner(boolean serverOwner) {
+
+        // Change the client state
         this.serverOwner = serverOwner;
+
+
+        // Refresh the esat panel display
+        if (this.isAncestorOf(eastPanel)) {
+            this.remove(eastPanel);
+        }
+
+
+        // East panel setup
+        this.eastPanelSetup();
+
     }
 
 

@@ -452,6 +452,8 @@ public class DGUI extends JFrame {
 
     public void updatePlayerList        (Map<String, DPlayer> playerList, String ownerUUID) {uiOnline.updatePlayerList(playerList, ownerUUID);}
 
+    public void setServerOwner          (boolean serverOwner)                               {uiOnline.setServerOwner(serverOwner);}
+
     public void switchIngameUI          ()                                                  {uiOnline.switchSubUIIngame();}
 
     public void setSpriteMeshOnline     (DSprite[][] spriteMesh)                            {uiOnline.setSpriteMesh(spriteMesh);}

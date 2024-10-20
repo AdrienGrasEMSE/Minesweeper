@@ -556,6 +556,7 @@ public class DController {
 
                         // Asking the gui to display the nextstep
                         gui.gameCreated(true, "");
+                        gui.setServerOwner(true);
                         onlineGame = true;
 
 

@@ -116,6 +116,18 @@ public class DUI_Online extends JPanel {
     public void gameCreated     (boolean succeed, String failInfo)                  {uiDefault.gameCreated(succeed, failInfo);}
     public void gameJoinned     (boolean succeed, String failInfo)                  {uiDefault.gameJoinned(succeed, failInfo);}
 
+
+
+
+    /**
+     * =====================================================================================================================
+     * 
+     * Wiring with the wait UI
+     * 
+     * =====================================================================================================================
+     */
+    public void setServerOwner  (boolean serverOwner)                               {uiWait.setServerOwner(serverOwner);}
+
     
 
 

@@ -51,6 +51,9 @@ public class DServer implements Runnable{
      * Game attributes
      */
     private final   DMinefield          field                   = new DMinefield();
+    private         int                 fieldLenght             = 20;
+    private         int                 fieldHeight             = 20;
+    private         int                 nbMaxPlayer             = 5;
     private         boolean[][]         spriteMeshValidator;
     private         int                 nbSpriteToReveal;
     private         int                 nbSpriteRevealed;

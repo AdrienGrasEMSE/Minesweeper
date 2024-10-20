@@ -255,9 +255,9 @@ public class DServerListener implements Runnable{
                         }
                         case DRequestType.GAME_LAUNCH_ASK -> {
 
-                            // Verifying if there are enough player
+                            // Verifying if there are enough player and if the one who asked is the server owner
                             synchronized (clientList) {
-                                if (clientList.size() > 1) {
+                                if (clientList.size() > 1 && server.getOwner().getUUID().equals(interpreter.getSenderUUID())) {
                                     server.newOnlineGame();
                                 }
                             }
