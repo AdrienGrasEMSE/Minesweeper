@@ -278,7 +278,7 @@ public class DUI_Online_Ingame extends JPanel implements DUI_Updatable {
 
 
     /**
-     * 
+     * Game start counter
      */
     public void gameStartCount() {
 
@@ -697,6 +697,43 @@ public class DUI_Online_Ingame extends JPanel implements DUI_Updatable {
 
             // Hidding the popup
             gameResult.setVisible(false);
+
+
+            // Getting back to the wait screen
+            this.uiOnline.switchSubUIWait();
+
+        });
+        timer.setRepeats(false);
+        timer.start();
+
+    }
+
+
+
+
+    /**
+     * In case of game lost
+     */
+    public void gameAborted() {
+
+        // Displaying the info
+        gameLost = new DDialogInfo  (   
+                                        gui,
+                                        "Game aborted", 
+                                        new String[]{
+                                                        "Only one plyer left",
+                                                    },
+                                        DTheme.DLG_DRK,
+                                        false
+                                    );
+        gameLost.setVisible(true);
+
+
+        // 5sec Timer
+        Timer timer = new Timer(5000, (ActionEvent e) -> {
+
+            // Hidding the popup
+            gameLost.setVisible(false);
 
 
             // Getting back to the wait screen

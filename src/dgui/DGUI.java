@@ -466,5 +466,6 @@ public class DGUI extends JFrame {
     public void playerLost              ()                                                  {uiOnline.playerLost();}
     public void gameLost                ()                                                  {uiOnline.gameLost();}
     public void gameWin                 ()                                                  {uiOnline.gameWin();}
+    public void gameAborted             ()                                                  {uiOnline.gameAborted();}
 
 }

@@ -566,6 +566,13 @@ public class DClient implements DConnexionHandler {
 
 
             }
+            case DRequestType.GAME_ABORTED      -> {
+
+                // Displaying the info
+                this.controller.gameAborted();
+
+
+            }
             default -> {
             }
         }
@@ -632,7 +639,7 @@ public class DClient implements DConnexionHandler {
                             
                         }
                         
-                        
+
                     } else {
 
                         // Disconnect

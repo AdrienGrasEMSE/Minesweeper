@@ -145,6 +145,7 @@ public class DUI_Online extends JPanel {
     public void playerLost          ()                          {uiIngame.playerLost();}
     public void gameLost            ()                          {uiIngame.gameLost();}
     public void gameWin             ()                          {uiIngame.gameEnd();}
+    public void gameAborted         ()                          {uiIngame.gameAborted();}
 
 
 

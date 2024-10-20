@@ -644,6 +644,7 @@ public class DController {
 
                 // Game joinned
                 gui.gameJoinned(true, "");
+                gui.setServerOwner(false);
                 onlineGame = true;
 
 
@@ -774,6 +775,7 @@ public class DController {
     public void playerLost()        {this.gui.playerLost();}
     public void gameLost()          {this.gui.gameLost();}
     public void gameWin()           {this.gui.gameWin();}
+    public void gameAborted()       {this.gui.gameAborted();}
 
 }
  

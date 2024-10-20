@@ -87,6 +87,7 @@ public enum DRequestType {
     GAME_READY          ("GAME_READY"),
     GAME_WIN            ("GAME_WIN"),
     GAME_LOST           ("GAME_LOST"),
+    GAME_ABORTED        ("GAME_ABORTED"),
 
 
     /**

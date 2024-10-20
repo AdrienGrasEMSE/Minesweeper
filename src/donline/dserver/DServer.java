@@ -184,14 +184,11 @@ public class DServer implements Runnable{
             if (inGame && clientList.size() == 1 && !uuid.equals(this.owner.getUUID())) {
 
                 // Game lost request
-                this.revealAllSprite();
-                this.sendToAll(interpreter.build("SERVER", DRequestType.GAME_LOST));
+                this.sendToAll(interpreter.build("SERVER", DRequestType.GAME_ABORTED));
                 this.inGame = false;
 
 
             } else if (uuid.equals(this.owner.getUUID())) {
-
-                System.out.println("BFUIEBIUBZI");
 
                 // Disconnecting all client
                 for (DClientHandler client : clientList.values()) {
