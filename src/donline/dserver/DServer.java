@@ -35,6 +35,8 @@ public class DServer implements Runnable{
      */
     private final   Thread                      service;
     private final   String                      uuid;
+    private         DServerClientReception      clientReceptionner      = null;
+    private         DBroadcastSender            broadcastSender         = null;
     private final   Map<String, DClientHandler> clientList              = new HashMap<>();
     private         DClientHandler              owner;
     private         ServerSocket                gestSock                = null;
@@ -46,7 +48,6 @@ public class DServer implements Runnable{
      */
     private final   DInterpreter                interpreter             = new DInterpreter();
     private final   Queue<String>               requestQueue            = new LinkedList<>();
-    private         DServerClientReception      clientReceptionner      = null;
 
 
     /**
@@ -85,7 +86,8 @@ public class DServer implements Runnable{
 
 
             // Thread initialization
-            clientReceptionner = new DServerClientReception(this, this.gestSock, clientList);
+            clientReceptionner  = new DServerClientReception(this, this.gestSock, clientList);
+            broadcastSender     = new DBroadcastSender();
 
 
             // Server online
@@ -94,16 +96,6 @@ public class DServer implements Runnable{
 
             // Activating listening service
             this.init();
-
-            try {
-                // Obtenir l'adresse IP locale de l'appareil
-                InetAddress localHost = InetAddress.getLocalHost();
-                String ipAddress = localHost.getHostAddress();
-    
-                System.out.println("L'adresse IP locale de cet appareil est : " + ipAddress);
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            }
 
             
         } catch (IOException e) {
@@ -256,8 +248,9 @@ public class DServer implements Runnable{
     public void stop() {
 
         // Closing all
-        clientReceptionner.stop();
-        serverOnline = false;
+        this.clientReceptionner .stop();
+        this.broadcastSender    .stop();
+        this.serverOnline       = false;
 
 
         // Closing the socket

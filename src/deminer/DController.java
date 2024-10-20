@@ -500,7 +500,7 @@ public class DController {
 
             // Client creation
             client = new DClient(this, pseudo);
-            if (client.connect("localhost", 10000)) {
+            if (client.tryConnection("localhost", 10000)) {
 
                 // Waiting for the client to be registered (5sec max)
                 int loopCounter = 0;
@@ -618,7 +618,7 @@ public class DController {
 
         // Client creation
         client = new DClient(this, pseudo);
-        if (client.connect(serverIP, 10000)) {
+        if (client.autoConnect()) {
 
             // Waiting for the client to be registered (5sec max)
             int loopCounter = 0;

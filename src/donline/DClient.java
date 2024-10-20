@@ -4,6 +4,7 @@ package donline;
 // Import
 import deminer.DController;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -131,18 +132,39 @@ public class DClient implements DConnexionHandler {
 
 
     /**
+     * Try to reach atomatically the server
+     * 
+     * @return true / false according to the connexion state (established or not)
+     */
+    public boolean autoConnect() {
+
+        // Testing on the local device
+        if (this.tryConnection("127.0.0.1", 10000)) {
+            return true;
+        }
+
+
+        // Unable to reach a server
+        return false;
+
+    }
+
+
+
+    /**
      * Try to connect on a server
      * 
      * @param host
      * @param port
      */
-    public boolean connect(String host, int port) {
+    public boolean tryConnection(String host, int port) {
 
         // Trying to open a socket
         try {
 
             // Getting socket
-            socket = new Socket(host, port);
+            socket = new Socket();
+            socket.connect(new InetSocketAddress(host, port), 2000);
 
 
             // Setting up writter and reader
