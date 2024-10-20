@@ -2,16 +2,23 @@
 package dgui;
 
 // Import
-import java.awt.Component;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JPanel;
 import dgraphics.DButton;
 import dgraphics.DFont;
 import dgraphics.DLabel;
 import dgraphics.dtheme.DTheme;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
 
 /**
@@ -78,6 +85,8 @@ public class DUI_Option extends JPanel implements ActionListener {
     }
 
 
+
+
     /**
      * Setting up north panel
     */
@@ -134,15 +143,60 @@ public class DUI_Option extends JPanel implements ActionListener {
     private void centerPanelSetup() {
 
         // Plotting panel and set VFX
-        this                    .add            (centerPanel,   BorderLayout.CENTER);
-        centerPanel             .setLayout      (new FlowLayout());
-        centerPanel             .setBackground  (DTheme.GUI_NTL.BCK_N);
+        this                    .add                (centerPanel,   BorderLayout.CENTER);
+        centerPanel             .setLayout          (new FlowLayout());
+        centerPanel             .setBackground      (DTheme.GUI_NTL.BCK_N);
 
-        centerPanel.add(darkMode);
-        centerPanel.add(lightMode);
 
-        darkMode.addActionListener(this);
-        lightMode.addActionListener(this);
+        // Plotting panel and set VFX
+        this                    .add                (centerPanel,   BorderLayout.CENTER);
+        centerPanel             .setLayout          (new GridBagLayout());
+        centerPanel             .setBackground      (DTheme.GUI_NTL.BCK_N);
+
+
+        // Constraint creation
+        GridBagConstraints gbc  = new GridBagConstraints();
+        gbc.gridx               = 0;
+        gbc.gridy               = 0;
+        gbc.weightx             = 1.0;
+        gbc.weighty             = 1.0;
+        gbc.anchor              = GridBagConstraints.CENTER;
+
+
+        // Centered panel
+        JPanel centeredPanel    = new JPanel();
+        centeredPanel           .setLayout          (new BoxLayout(centeredPanel, BoxLayout.Y_AXIS));
+        centeredPanel           .setBorder          (new EmptyBorder(30, 30, 30, 30));
+        centeredPanel           .setBackground      (DTheme.GUI_NTL.BCK_D);
+
+
+        // Game creation panel
+        JPanel darkModePanel    = new JPanel        (new GridLayout(1, 2));
+        darkModePanel           .setBackground      (DTheme.GUI_NTL.BCK_D);
+        darkModePanel           .add                (new DLabel("Dark mode", DFont.JOST_SEMIBOLD, 20, DTheme.LAB_TRS));
+        darkModePanel           .add                (darkMode);
+
+
+        // Game join panel
+        JPanel lightModePanel   = new JPanel        (new GridLayout(1, 2));
+        lightModePanel          .setBackground      (DTheme.GUI_NTL.BCK_D);
+        lightModePanel          .add                (new DLabel("Light mode", DFont.JOST_SEMIBOLD, 20, DTheme.LAB_TRS));
+        lightModePanel          .add                (lightMode);
+
+
+        // Plotting panels
+        centeredPanel           .add                (darkModePanel);
+        centeredPanel           .add                (Box.createRigidArea(new Dimension(10, 30)));
+        centeredPanel           .add                (lightModePanel);
+
+
+        // Plotting the centered panel
+        centerPanel             .add                (centeredPanel, gbc);
+
+
+        // Poltting button
+        darkMode                .addActionListener  (this);
+        lightMode               .addActionListener  (this);
 
     }
 

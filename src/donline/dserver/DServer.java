@@ -6,7 +6,9 @@ import deminer.DMinefield;
 import donline.DInterpreter;
 import donline.DRequestType;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -92,6 +94,16 @@ public class DServer implements Runnable{
 
             // Activating listening service
             this.init();
+
+            try {
+                // Obtenir l'adresse IP locale de l'appareil
+                InetAddress localHost = InetAddress.getLocalHost();
+                String ipAddress = localHost.getHostAddress();
+    
+                System.out.println("L'adresse IP locale de cet appareil est : " + ipAddress);
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
 
             
         } catch (IOException e) {

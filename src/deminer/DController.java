@@ -306,24 +306,29 @@ public class DController {
     /**
      * Lauching the new game
      */
-    private void newGame() {
+    public void newGame() {
 
         // Regenerate the field
         this    .meshInit();
 
 
-        // Reset attributes
-        this.sqRevealed = 0;
-        this.score      = 0;
-        this.winScore   = field.getLenght() * field.getWidth() - field.getNumberOfMine();
-        this.timeSpent  = 0;
-        this.timeLimit  = field.getTimeLimit();
+        // If it's an online game
+        if (!this.onlineGame) {
+
+            // Reset attributes
+            this.sqRevealed = 0;
+            this.score      = 0;
+            this.winScore   = field.getLenght() * field.getWidth() - field.getNumberOfMine();
+            this.timeSpent  = 0;
+            this.timeLimit  = field.getTimeLimit();
 
 
-        // Refresh display
-        gui.displayMesh     ();
-        gui.updateTimeLimit (this.timeLimit);
-        gui.updateTime      (this.timeSpent);
+            // Refresh display
+            gui.displayMesh     ();
+            gui.updateTimeLimit (this.timeLimit);
+            gui.updateTime      (this.timeSpent);
+
+        }
 
     }
 

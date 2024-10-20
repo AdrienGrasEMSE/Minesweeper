@@ -684,9 +684,9 @@ public class DUI_Local extends JPanel implements ActionListener {
 
 
         // Creating the grid to display mines and coefficient
-        JPanel minesPanel   = new JPanel();
-        minesPanel          .setLayout(new GridLayout(spriteMesh.length, spriteMesh[0].length));
-        minesPanel          .setBackground(DTheme.GUI_NTL.BCK_N);
+        JPanel minesPanel   = new JPanel    ();
+        minesPanel          .setLayout      (new GridLayout(spriteMesh.length, spriteMesh[0].length));
+        minesPanel          .setBackground  (DTheme.GUI_NTL.BCK_N);
 
 
         // Getting the size of the new sprite

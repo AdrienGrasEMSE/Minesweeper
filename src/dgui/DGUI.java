@@ -301,6 +301,12 @@ public class DGUI extends JFrame {
         this.uiOnline           = new DUI_Online(this, this.controller);
 
 
+        // Reset ui
+        this.controller         .newGame();
+        this.uiLocal            .setSizeAdaptation(true);
+        this                    .updateLevel(false);
+
+
         // Plotting UIs
         mainPanel               .add(this.uiLocal,  "UI_LOCAL");
         mainPanel               .add(this.uiOption, "UI_OPTION");
@@ -378,7 +384,7 @@ public class DGUI extends JFrame {
         // Switching
         mainLayout  .show(mainPanel, "UI_ONLINE");
         mSolo       .setEnabled(true);
-        mOption     .setEnabled(true);
+        mOption     .setEnabled(false);
         mMultiPlayer.setEnabled(false);
 
 
