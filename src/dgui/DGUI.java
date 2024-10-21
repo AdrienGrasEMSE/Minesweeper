@@ -154,6 +154,7 @@ public class DGUI extends JFrame {
             controller.setLevel     (DLevel.EASY);
             uiLocal.updateLevel     (false);
             uiLocal.newClassicGame  (false);
+            switchUILocal();
         });
 
 
@@ -163,6 +164,7 @@ public class DGUI extends JFrame {
             controller.setLevel     (DLevel.MEDIUM);
             uiLocal.updateLevel     (false);
             uiLocal.newClassicGame  (false);
+            switchUILocal();
         });
 
 
@@ -172,15 +174,17 @@ public class DGUI extends JFrame {
             controller.setLevel     (DLevel.HARD);
             uiLocal.updateLevel     (false);
             uiLocal.newClassicGame  (false);
+            switchUILocal();
         });
 
 
-        // mNewHardGame action
+        // mNewCustomGame action
         mNewCustomGame.addActionListener((ActionEvent e) -> {
             // Lauching a new custom game
             controller.setLevel     (DLevel.CUSTOM);
             uiLocal.updateLevel     (false);
             uiLocal.newCustomGame   (true);
+            switchUILocal();
         });
 
 
@@ -189,6 +193,7 @@ public class DGUI extends JFrame {
             // Change to easy difficulty
             controller.setLevel     (DLevel.EASY);
             uiLocal.updateLevel     (true);
+            switchUILocal();
         });
 
 
@@ -197,6 +202,7 @@ public class DGUI extends JFrame {
             // Change to medium difficulty
             controller.setLevel     (DLevel.MEDIUM);
             uiLocal.updateLevel     (true);
+            switchUILocal();
         });
 
 
@@ -205,6 +211,7 @@ public class DGUI extends JFrame {
             // Change to hard difficulty
             controller.setLevel     (DLevel.HARD);
             uiLocal.updateLevel     (true);
+            switchUILocal();
         });
 
 
