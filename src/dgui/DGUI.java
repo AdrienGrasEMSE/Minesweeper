@@ -151,40 +151,40 @@ public class DGUI extends JFrame {
         // mNewEasyGame action
         mNewEasyGame.addActionListener((ActionEvent e) -> {
             // Lauching a new easy game
-            controller.setLevel     (DLevel.EASY);
-            uiLocal.updateLevel     (false);
-            uiLocal.newClassicGame  (false);
             switchUILocal();
+            controller.setLevel     (DLevel.EASY);
+            uiLocal.newClassicGame  (false);
+            uiLocal.updateLevel     (false);
         });
 
 
         // mNewMediumGame action
         mNewMediumGame.addActionListener((ActionEvent e) -> {
             // Lauching a new medium game
-            controller.setLevel     (DLevel.MEDIUM);
-            uiLocal.updateLevel     (false);
-            uiLocal.newClassicGame  (false);
             switchUILocal();
+            controller.setLevel     (DLevel.MEDIUM);
+            uiLocal.newClassicGame  (false);
+            uiLocal.updateLevel     (false);
         });
 
 
         // mNewHardGame action
         mNewHardGame.addActionListener((ActionEvent e) -> {
             // Lauching a new hard game
-            controller.setLevel     (DLevel.HARD);
-            uiLocal.updateLevel     (false);
-            uiLocal.newClassicGame  (false);
             switchUILocal();
+            controller.setLevel     (DLevel.HARD);
+            uiLocal.newClassicGame  (false);
+            uiLocal.updateLevel     (false);
         });
 
 
         // mNewCustomGame action
         mNewCustomGame.addActionListener((ActionEvent e) -> {
             // Lauching a new custom game
-            controller.setLevel     (DLevel.CUSTOM);
-            uiLocal.updateLevel     (false);
-            uiLocal.newCustomGame   (true);
             switchUILocal();
+            controller.setLevel     (DLevel.CUSTOM);
+            uiLocal.newCustomGame   (true);
+            uiLocal.updateLevel     (false);
         });
 
 

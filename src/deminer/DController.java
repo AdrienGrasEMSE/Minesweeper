@@ -267,6 +267,8 @@ public class DController {
      */
     public void setLevel(DLevel newLevel) {
         gameLevel = newLevel;
+
+        System.out.println("cbdehskj bsdjo");
     }
 
 
