@@ -395,7 +395,7 @@ public class DGUI extends JFrame {
         this.uiOnline.switchSubUIDefault();
 
 
-        controller.setOnline(false);
+        controller.setOnline(true);
 
     }
 
