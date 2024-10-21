@@ -22,7 +22,6 @@ import java.awt.event.ActionListener;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 
@@ -237,12 +236,12 @@ public class DUI_Online_Default extends JPanel implements ActionListener {
         }
 
 
-        // Server creation
-        controller.newServer(param.getInputString());
-
-
         // Loading : waiting for the server to be online
         serverCreation.setVisible(true);
+
+
+        // Server creation
+        controller.newServer(param.getInputString());
 
     }
 
@@ -255,6 +254,10 @@ public class DUI_Online_Default extends JPanel implements ActionListener {
      * @param succeed indicate if the server creation is succesful
      */
     public void gameCreated(boolean succeed, String failInfo) {
+
+        // Closing the loading dialog
+        serverCreation.dispose();
+
 
         // Accoding to the sucess status
         if (succeed) {
@@ -273,24 +276,6 @@ public class DUI_Online_Default extends JPanel implements ActionListener {
             info.setVisible(true);
 
         }
-
-
-        /**
-         * In today's episod of wtf is going on there :
-         * 
-         * I think that the serverJoin dialog is displayed after
-         * the fail or succes to connect.
-         * 
-         * WHY IS THAT ? I DON'T FUCKING KNOW
-         * 
-         * 
-         * That's why the dialog close is at the end of this...
-         */
-        
-        // Close the dialog and connexion
-        SwingUtilities.invokeLater(() -> {
-            serverCreation.dispose();
-        });
 
     }
 
@@ -331,12 +316,12 @@ public class DUI_Online_Default extends JPanel implements ActionListener {
         }
 
 
-        // Join game
-        controller.joinGame(pseudo.getInputString());
-
-
         // Loading : waiting for the client to be connected
         serverJoin.setVisible(true);
+
+
+        // Join game
+        controller.joinGame(pseudo.getInputString());
 
     }
 
@@ -350,6 +335,10 @@ public class DUI_Online_Default extends JPanel implements ActionListener {
      * @param failInfo
      */
     public void gameJoinned(boolean succeed, String failInfo) {
+
+        // Close the dialog and connexion
+        serverJoin.dispose();
+
 
         // Accoding to the sucess status
         if (succeed) {
@@ -368,24 +357,6 @@ public class DUI_Online_Default extends JPanel implements ActionListener {
             info.setVisible(true);
 
         }
-
-
-        /**
-         * In today's episod of wtf is going on there :
-         * 
-         * I think that the serverJoin dialog is displayed after
-         * the fail or succes to connect.
-         * 
-         * WHY IS THAT ? I DON'T FUCKING KNOW
-         * 
-         * 
-         * That's why the dialog close is at the end of this...
-         */
-        
-        // Close the dialog and connexion
-        SwingUtilities.invokeLater(() -> {
-            serverJoin.dispose();
-        });
 
     }
 

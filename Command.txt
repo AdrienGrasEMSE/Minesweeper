@@ -1,5 +1,10 @@
+# Compile into jar file
 jar cfm Minesweeper.jar MANIFEST.MF -C bin .
 
+
+# Lauch jar file
 java --enable-preview -jar Minesweeper.jar
 
+
+# Attemp to make an exe file
 jpackage --input ./ --name Minesweeper --main-jar Minesweeper.jar --main-class Main --type exe

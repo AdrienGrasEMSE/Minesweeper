@@ -1,15 +1,15 @@
 // Package declaration
 package ddialog;
 
-// Import
 import java.awt.BorderLayout;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.Timer;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import dgraphics.DFont;
-import dgraphics.DLoadLabel;
+import dgraphics.DLabel;
 import dgraphics.dtheme.DColors_UI;
 import dgraphics.dtheme.DTheme;
 
@@ -28,7 +28,11 @@ public class DDialogLoad extends JDialog {
     /**
      * Wait label
      */
-    private final DLoadLabel wait;
+    private final   DLabel      label;
+    private final   String[]    labelPhase = new String[4];
+    private         int         labelIndex = 0;
+    private final   Timer       animationService;
+
 
 
 
@@ -42,7 +46,7 @@ public class DDialogLoad extends JDialog {
     public DDialogLoad(JFrame parent, String title, DColors_UI colorSet) {
 
         // Herited constructor
-        super(parent, "", true);
+        super(parent, "", false);
         this.setUndecorated (true);
         this.setBackground  (DTheme.TRSPCOL);
 
@@ -55,9 +59,9 @@ public class DDialogLoad extends JDialog {
 
 
         // Creating the label for the wait animation
-        this.wait           = new DLoadLabel        (title, DFont.JOST_SEMIBOLD, 18, DTheme.LAB_TRS);
-        wait                .setHorizontalAlignment (SwingConstants.CENTER);
-        mainPanel           .add                    (wait, BorderLayout.NORTH);
+        this.label           = new DLabel            (title + "...", DFont.JOST_SEMIBOLD, 18, DTheme.LAB_TRS);
+        label                .setHorizontalAlignment (SwingConstants.CENTER);
+        mainPanel           .add                    (label, BorderLayout.NORTH);
 
 
         // Adding the whole to the dialog frame
@@ -68,24 +72,33 @@ public class DDialogLoad extends JDialog {
         // Displaying the dialog relative to the prarent frame
         this.setLocationRelativeTo(parent);
 
-    }
+
+        // Creating animation phase
+        labelPhase[0] = title;
+        labelPhase[1] = title + ".";
+        labelPhase[2] = title + "..";
+        labelPhase[3] = title + "...";
 
 
+        // Creating timer
+        animationService = new Timer(500, e -> {
+
+            // Mettre à jour le texte du JLabel avec l'étape actuelle
+            label.setText(labelPhase[labelIndex]);
 
 
+            // Incrementing
+            if (labelIndex < 3) {
+                labelIndex ++;
+            } else {
+                labelIndex = 0;
+            }
 
-    /**
-     * Modigying the dispose method to stop the waitLabel
-     */
-    @Override
-    public void dispose() {
+        });
 
-        // Stoping the label
-        wait.stop();
-        
 
-        // Herited method
-        super.dispose();
+        // Start animation service
+        this.animationService.start();
 
     }
 

@@ -1,6 +1,0 @@
-impr[donline]: DUI_Online_Default fixed + game
-parameters
-
-Now the user no longer need to input the server ip
-and the server owner can manipulate game
-parameters.
