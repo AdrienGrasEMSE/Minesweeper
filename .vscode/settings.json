@@ -10,5 +10,10 @@
         "lib/deminer_dialog/*.java",
         "lib/deminer_graphic/*.java",
         "lib/deminer_graphic/combo_box*.java"
+    ],
+    "java.settings.compilerArgs": [
+        "--enable-preview",
+        "--release",
+        "21" // Remplacez par la version appropriée de Java que vous utilisez
     ]
 }

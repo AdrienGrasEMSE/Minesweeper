@@ -614,7 +614,7 @@ public class DController {
      * 
      * @param serverIP
      */
-    public void joinGame(String serverIP, String pseudo) {
+    public void joinGame(String pseudo) {
 
         // Client creation
         client = new DClient(this, pseudo);
@@ -745,7 +745,6 @@ public class DController {
     public void disconnect() {
         this.client.addRequest(interpreter.build(this.client.getUUID(), DRequestType.DISCONNECT));
         this.client.shutDown();
-        this.gui.switchUIOnline();
     }
 
 
@@ -775,12 +774,64 @@ public class DController {
 
 
     /**
+     * Apply the parameter for the online game
+     * 
+     * @param length
+     */
+    public void applyLength(int length) {
+        this.client.addRequest(interpreter.build(this.client.getUUID(), DRequestType.PARAM_FIELD_LENGTH, String.valueOf(length)));
+    }
+
+
+
+
+    /**
+     * Apply the parameter for the online game
+     * 
+     * @param height
+     */
+    public void applyHeigth(int height) {
+        this.client.addRequest(interpreter.build(this.client.getUUID(), DRequestType.PARAM_FIELD_HEIGTH, String.valueOf(height)));
+    }
+
+
+
+
+    /**
+     * Apply the parameter for the online game
+     * 
+     * @param nbMine
+     */
+    public void applyNbMine(int nbMine) {
+        this.client.addRequest(interpreter.build(this.client.getUUID(), DRequestType.PARAM_FIELD_NBMINES, String.valueOf(nbMine)));
+    }
+
+
+
+
+    /**
+     * Apply the parameter for the online game
+     * 
+     * @param nbMaxPlayer
+     */
+    public void applyNMaxPlayer(int nbMaxPlayer) {
+        this.client.addRequest(interpreter.build(this.client.getUUID(), DRequestType.PARAM_NMAX_PLAYER, String.valueOf(nbMaxPlayer)));
+    }
+
+
+
+
+    /**
      * Wiring
      */
     public void playerLost()        {this.gui.playerLost();}
     public void gameLost()          {this.gui.gameLost();}
     public void gameWin()           {this.gui.gameWin();}
     public void gameAborted()       {this.gui.gameAborted();}
+    public void setLength           (int length)                                        {this.gui.setLength(length);}
+    public void setHeigth           (int heigth)                                        {this.gui.setHeigth(heigth);}
+    public void setNbMine           (int setNbMine)                                     {this.gui.setNbMine(setNbMine);}
+    public void setNMaxPlayer       (int nbMaxPlayer)                                   {this.gui.setNMaxPlayer(nbMaxPlayer);}
 
 }
  

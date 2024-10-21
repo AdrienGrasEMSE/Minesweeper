@@ -3,10 +3,13 @@ package dgui.dui_online;
 
 // Import
 import ddialog.DDialogBinary;
+import ddialog.DDialogInfo;
 import deminer.DController;
 import dgraphics.DButton;
 import dgraphics.DFont;
+import dgraphics.DIntegerField;
 import dgraphics.DLabel;
+import dgraphics.DStringField;
 import dgraphics.dtheme.DTheme;
 import dgui.DGUI;
 import donline.DPlayer;
@@ -18,6 +21,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.Map;
 import javax.swing.BoxLayout;
+import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -56,7 +60,17 @@ public class DUI_Online_Wait extends JPanel implements DUI_Updatable {
      * South panels elements
      */
     private final   DButton     backButton          = new DButton("Back",           DFont.JOST_SEMIBOLD,    24, DTheme.BTN_RED);
+
+
+    /**
+     * East panels elements
+     */
     private final   DButton     launchGameButton    = new DButton("Lauch the game", DFont.JOST_SEMIBOLD,    24, DTheme.BTN_GRN);
+    private final   DIntegerField    fdLength       = new DIntegerField(DFont.JOST_LIGHT, 14, DTheme.FLD_NTL);
+    private final   DIntegerField    fdHeigth       = new DIntegerField(DFont.JOST_LIGHT, 14, DTheme.FLD_NTL);
+    private final   DIntegerField    fdNbMines      = new DIntegerField(DFont.JOST_LIGHT, 14, DTheme.FLD_NTL);
+    private final   DIntegerField    nbMaxPlayer    = new DIntegerField(DFont.JOST_LIGHT, 14, DTheme.FLD_NTL);
+    private final   DButton     applyParamButton    = new DButton("Apply parameters", DFont.JOST_SEMIBOLD,    24, DTheme.BTN_GRN);
 
 
     /**
@@ -199,11 +213,70 @@ public class DUI_Online_Wait extends JPanel implements DUI_Updatable {
 
 
             // Plotting the launch game button
-            eastPanel           .add            (launchGameButton);
+            JPanel lauchPanel   = new JPanel    (new FlowLayout());
+            lauchPanel          .setBackground  (DTheme.TRSPCOL);
+            lauchPanel          .add            (launchGameButton);
+            eastPanel           .add            (lauchPanel);
 
 
-            // Adding the listener
+            // Creating the parameters panel
+            JPanel paramPanel   = new JPanel    ();
+            paramPanel          .setLayout      (new BoxLayout(paramPanel, BoxLayout.Y_AXIS));
+            paramPanel          .setBackground  (DTheme.GUI_DRK.BCK_D);
+            paramPanel          .setBorder      (new EmptyBorder(10, 0, 10, 0));
+            eastPanel           .add            (paramPanel);
+
+
+            // Adding parameters input : Length
+            JPanel lengthPanel  = new JPanel    (new GridLayout(2, 1));
+            lengthPanel         .setBackground  (DTheme.TRSPCOL);
+            DLabel fdLength_    = new DLabel    ("Field Length",    DFont.JOST_SEMIBOLD, 16, DTheme.LAB_TRS);
+            lengthPanel         .add            (fdLength_);
+            lengthPanel         .add            (fdLength);
+            eastPanel           .add            (lengthPanel);
+            eastPanel           .add            (Box.createRigidArea(new Dimension(10, 15)));
+
+
+            // Adding parameters input : Heigth
+            JPanel heigthPanel  = new JPanel    (new GridLayout(2, 1));
+            heigthPanel         .setBackground  (DTheme.TRSPCOL);
+            DLabel fdHeigth_    = new DLabel    ("Field Heigth",    DFont.JOST_SEMIBOLD, 16, DTheme.LAB_TRS);
+            heigthPanel         .add            (fdHeigth_);
+            heigthPanel         .add            (fdHeigth);
+            eastPanel           .add            (heigthPanel);
+            eastPanel           .add            (Box.createRigidArea(new Dimension(10, 15)));
+
+
+            // Adding parameters input : Number of Mines
+            JPanel minePanel    = new JPanel    (new GridLayout(2, 1));
+            minePanel           .setBackground  (DTheme.TRSPCOL);
+            DLabel fdNbMines_   = new DLabel    ("Number of mines", DFont.JOST_SEMIBOLD, 16, DTheme.LAB_TRS);
+            minePanel           .add            (fdNbMines_);
+            minePanel           .add            (fdNbMines);
+            eastPanel           .add            (minePanel);
+            eastPanel           .add            (Box.createRigidArea(new Dimension(10, 15)));
+
+
+            // Adding parameters input : Max player
+            JPanel maxPlayerPanel = new JPanel    (new GridLayout(2, 1));
+            maxPlayerPanel      .setBackground  (DTheme.TRSPCOL);
+            DLabel nbMaxPlayer_ = new DLabel    ("Player limit",      DFont.JOST_SEMIBOLD, 16, DTheme.LAB_TRS);
+            maxPlayerPanel      .add            (nbMaxPlayer_);
+            maxPlayerPanel      .add            (nbMaxPlayer);
+            eastPanel           .add            (maxPlayerPanel);
+            eastPanel           .add            (Box.createRigidArea(new Dimension(10, 15)));
+
+
+            // Adding the submit parameters button
+            JPanel applyPanel   = new JPanel    (new FlowLayout());
+            applyPanel          .setBackground  (DTheme.TRSPCOL);
+            applyPanel          .add            (applyParamButton);
+            eastPanel           .add            (applyPanel);
+
+
+            // Adding listeners
             launchGameButton    .addActionListener(this);
+            applyParamButton    .addActionListener(this);
 
         }
 
@@ -342,6 +415,54 @@ public class DUI_Online_Wait extends JPanel implements DUI_Updatable {
 
 
     /**
+     * Setter : to set the default value to the length parameter
+     * 
+     * @param length
+     */
+    public void setLength(int length) {
+        this.fdLength.setIntegerValue(length);
+    }
+
+
+
+
+    /**
+     * Setter : to set the default value to the heigth parameter
+     * 
+     * @param heigth
+     */
+    public void setHeigth(int heigth) {
+        this.fdHeigth.setIntegerValue(heigth);
+    }
+
+
+
+
+    /**
+     * Setter : to set the default value to the number of mines
+     * 
+     * @param nbMine
+     */
+    public void setNbMine(int nbMine) {
+        this.fdNbMines.setIntegerValue(nbMine);
+    }
+
+
+
+
+    /**
+     * Setter : to set the default value to the player limit
+     * 
+     * @param nbMaxPlayer
+     */
+    public void setNMaxPlayer(int nbMaxPlayer) {
+        this.nbMaxPlayer.setIntegerValue(nbMaxPlayer);
+    }
+
+
+
+
+    /**
      * Action after a trigger from any event listener
      */
     @Override
@@ -360,6 +481,51 @@ public class DUI_Online_Wait extends JPanel implements DUI_Updatable {
 
             // Lauching a new game
             this.controller.launchGame();
+            return;
+
+
+        } else if (e.getSource() == applyParamButton) {
+
+            // Verify parameter
+            if (fdLength.getIntegerValue() < 5 || fdLength.getIntegerValue() > 20) {
+            
+                // Invalid parameters
+                DDialogInfo info = new DDialogInfo(gui, "Invalid field length", new String[]{"Length must be between", "5 and 20"}, DTheme.DLG_DRK);
+                info.setVisible(true);
+                return;
+    
+
+            } else if (fdHeigth.getIntegerValue() < 5 || fdHeigth.getIntegerValue() > 20) {
+    
+                // Invalid parameters
+                DDialogInfo info = new DDialogInfo(gui, "Invalid field height", new String[]{"Height must be between", "5 and 20"}, DTheme.DLG_DRK);
+                info.setVisible(true);
+                return;
+    
+
+            } else if (fdNbMines.getIntegerValue() < 1 || fdNbMines.getIntegerValue() > ((fdHeigth.getIntegerValue() * fdHeigth.getIntegerValue()) / 4)) {
+    
+                // Invalid parameters
+                DDialogInfo info = new DDialogInfo(gui, "Invalid number of mine", new String[]{"Number of mine must be between", "1 and 1/4 of (height * length)"}, DTheme.DLG_DRK);
+                info.setVisible(true);
+                return;
+                
+    
+            } else if (nbMaxPlayer.getIntegerValue() < 2 || nbMaxPlayer.getIntegerValue() > 10) {
+
+                // Invalid parameters
+                DDialogInfo info = new DDialogInfo(gui, "Invalid player limit", new String[]{"Player limit must be between", "1 and 10"}, DTheme.DLG_DRK);
+                info.setVisible(true);
+                return;
+
+            }
+
+
+            // Valid parameters
+            this.controller.applyLength     (fdLength.getIntegerValue());
+            this.controller.applyHeigth     (fdHeigth.getIntegerValue());
+            this.controller.applyNbMine     (fdNbMines.getIntegerValue());
+            this.controller.applyNMaxPlayer (nbMaxPlayer.getIntegerValue());
             return;
 
         }

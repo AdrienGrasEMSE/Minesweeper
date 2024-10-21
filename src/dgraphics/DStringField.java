@@ -84,7 +84,8 @@ public class DStringField extends JTextField implements MouseListener {
 
 
         // Mouslistener
-        initListener();
+        this.initListener();
+
     }
 
 

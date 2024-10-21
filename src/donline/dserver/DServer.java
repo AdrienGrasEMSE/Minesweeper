@@ -588,7 +588,7 @@ public class DServer implements Runnable{
 
                     // Request answer
                     switch (interpreter.getRequestType()) {
-                        case DRequestType.HELLO_CLT ->          {
+                        case DRequestType.HELLO_CLT             -> {
 
                             // Get the client handler and apply it the name
                             synchronized (clientList) {
@@ -614,7 +614,7 @@ public class DServer implements Runnable{
 
 
                         }
-                        case DRequestType.PING ->               {
+                        case DRequestType.PING                  -> {
 
                             // Answering the ping
                             synchronized (clientList) {
@@ -635,7 +635,7 @@ public class DServer implements Runnable{
 
 
                         }
-                        case DRequestType.PING_ANSWER ->        {
+                        case DRequestType.PING_ANSWER           -> {
 
                             // Client answer : taking it into account
                             synchronized (clientList) {
@@ -656,7 +656,7 @@ public class DServer implements Runnable{
 
 
                         }
-                        case DRequestType.DISCONNECT ->         {
+                        case DRequestType.DISCONNECT            -> {
 
                             // Client answer : taking it into account
                             synchronized (clientList) {
@@ -677,7 +677,7 @@ public class DServer implements Runnable{
 
 
                         }
-                        case DRequestType.OWNERSHIP_ASK ->      {
+                        case DRequestType.OWNERSHIP_ASK         -> {
 
                             // Answering the client
                             synchronized (clientList) {
@@ -696,6 +696,13 @@ public class DServer implements Runnable{
                                         client.addRequest(interpreter.build("SERVER", DRequestType.OWNERSHIP_GRANTED, ""));
                                         client.setOwnership(true);
                                         this.owner = client;
+
+
+                                        // Sending current game parameters
+                                        this.owner.addRequest(interpreter.build("SERVER", DRequestType.PARAM_FIELD_HEIGTH,  String.valueOf(this.fieldHeight)));
+                                        this.owner.addRequest(interpreter.build("SERVER", DRequestType.PARAM_FIELD_LENGTH,  String.valueOf(this.fieldLenght)));
+                                        this.owner.addRequest(interpreter.build("SERVER", DRequestType.PARAM_FIELD_NBMINES, String.valueOf(this.nbMine)));
+                                        this.owner.addRequest(interpreter.build("SERVER", DRequestType.PARAM_NMAX_PLAYER,   String.valueOf(this.nbMaxPlayer)));
                                         
                                         
                                     } else {
@@ -711,7 +718,7 @@ public class DServer implements Runnable{
 
 
                         }
-                        case DRequestType.GAME_LAUNCH_ASK ->    {
+                        case DRequestType.GAME_LAUNCH_ASK       -> {
 
                             // Verifying if there are enough player and if the one who asked is the server owner
                             synchronized (clientList) {
@@ -722,7 +729,7 @@ public class DServer implements Runnable{
 
 
                         }
-                        case DRequestType.SPRITE_CLICKED ->     {
+                        case DRequestType.SPRITE_CLICKED        -> {
 
                             /**
                              * Data shape :
@@ -766,6 +773,94 @@ public class DServer implements Runnable{
                             }
 
 
+                        }
+                        case DRequestType.PARAM_FIELD_LENGTH    -> {
+
+                            // Trying to get the field length
+                            int length = 0;
+                            try {
+            
+                                // Saving the parameter
+                                length = Integer.parseInt(interpreter.getContent());
+            
+            
+                                // Display the sprite position and spriteValue
+                                this.fieldLenght = length;
+            
+            
+                            } catch (NumberFormatException e) {
+            
+                                // TODO : handle this
+            
+                            }
+            
+            
+                        }
+                        case DRequestType.PARAM_FIELD_HEIGTH    -> {
+            
+                            // Trying to get the field heigth
+                            int heigth = 0;
+                            try {
+            
+                                // Saving the parameter
+                                heigth = Integer.parseInt(interpreter.getContent());
+            
+            
+                                // Display the sprite position and spriteValue
+                                this.fieldHeight = heigth;
+            
+            
+                            } catch (NumberFormatException e) {
+            
+                                // TODO : handle this
+            
+                            }
+            
+            
+                        }
+                        case DRequestType.PARAM_FIELD_NBMINES   -> {
+            
+                            // Trying to get the number of mine
+                            int nbMine = 0;
+                            try {
+            
+                                // Saving the parameter
+                                nbMine = Integer.parseInt(interpreter.getContent());
+            
+            
+                                // Display the sprite position and spriteValue
+                                this.nbMine = nbMine;
+            
+            
+                            } catch (NumberFormatException e) {
+            
+                                // TODO : handle this
+            
+                            }
+            
+            
+                        }
+                        case DRequestType.PARAM_NMAX_PLAYER     -> {
+            
+                            // Trying to get the player limit
+                            int nMaxPlayer = 0;
+                            try {
+            
+                                // Saving the parameter
+                                nMaxPlayer = Integer.parseInt(interpreter.getContent());
+            
+            
+                                // Display the sprite position and spriteValue
+                                this.nbMaxPlayer = nMaxPlayer;
+            
+            
+                            } catch (NumberFormatException e) {
+            
+                                // TODO : handle this
+            
+                            }
+            
+            
                         }
                         default -> {
 

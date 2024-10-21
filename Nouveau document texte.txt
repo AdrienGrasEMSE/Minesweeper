@@ -1,0 +1,5 @@
+jpackage --input ./ \
+         --name ./Minesweeper \
+         --main-jar Minesweeper.jar \
+         --main-class <votre_classe_principale> \
+         --type exe

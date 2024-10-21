@@ -282,7 +282,33 @@ public class DClient implements DConnexionHandler {
      */
     @Override
     public void shutDown() {
+
+        // Stop service
         connected = false;
+
+        
+        // Switching back to the default UI
+        this.controller.backDefaultOnlineUi("");
+
+    }
+
+
+
+
+    /**
+     * Stop the client
+     */
+    public void shutDown(String reason) {
+
+        // Stop service
+        connected = false;
+
+        
+        // If there is any reason
+        if (!reason.isEmpty()) {
+            this.controller.backDefaultOnlineUi(reason);
+        }
+
     }
 
 
@@ -353,7 +379,7 @@ public class DClient implements DConnexionHandler {
 
         // Action according to the request type
         switch (interpreter.getRequestType()) {
-            case DRequestType.HELLO_SRV         -> {
+            case DRequestType.HELLO_SRV             -> {
 
                 // Getting the given ID
                 this.uuid       = interpreter.getContent();
@@ -370,29 +396,28 @@ public class DClient implements DConnexionHandler {
 
 
             }
-            case DRequestType.PING              -> {
+            case DRequestType.PING                  -> {
 
                 // Ansewering the ping
                 this.addRequest(interpreter.build(this.uuid, DRequestType.PING_ANSWER, ""));
 
 
             }
-            case DRequestType.PING_ANSWER       -> {
+            case DRequestType.PING_ANSWER           -> {
 
                 // Server answer : taking it into account
                 this.pingService.answerPing();
 
 
             }
-            case DRequestType.DISCONNECT        -> {
+            case DRequestType.DISCONNECT            -> {
 
                 // Server answer : taking it into account
-                this.shutDown();
-                this.controller.backDefaultOnlineUi(interpreter.getContent());
+                this.shutDown(interpreter.getContent());
 
 
             }
-            case DRequestType.OWNERSHIP_GRANTED -> {
+            case DRequestType.OWNERSHIP_GRANTED     -> {
 
                 // Ownership granted
                 this.serverOwner    = true;
@@ -410,14 +435,14 @@ public class DClient implements DConnexionHandler {
 
 
             }
-            case DRequestType.OWNERSHIP_REFUSED -> {
+            case DRequestType.OWNERSHIP_REFUSED     -> {
 
                 // Ownership granted
                 this.serverOwner = false;
 
 
             }
-            case DRequestType.PLAYER_LIST       -> {
+            case DRequestType.PLAYER_LIST           -> {
 
                 /**
                  * Data shape :
@@ -462,7 +487,7 @@ public class DClient implements DConnexionHandler {
 
 
             }
-            case DRequestType.SERVER_OWNER      -> {
+            case DRequestType.SERVER_OWNER          -> {
 
                 // Saving the server owner
                 ownerUUID = interpreter.getContent();
@@ -470,7 +495,7 @@ public class DClient implements DConnexionHandler {
 
 
             }
-            case DRequestType.FIELD_SIZE        -> {
+            case DRequestType.FIELD_SIZE            -> {
 
                 /**
                  * Data shape :
@@ -505,14 +530,14 @@ public class DClient implements DConnexionHandler {
 
 
             }
-            case DRequestType.FIELD_READY       -> {
+            case DRequestType.FIELD_READY           -> {
 
                 // Saving the mine number
                 this.controller.initOnlineField(fieldLenght, fieldWidth);
 
 
             }
-            case DRequestType.GAME_READY        -> {
+            case DRequestType.GAME_READY            -> {
 
                 // Displaying the field and making the client alive
                 this.alive = true;
@@ -520,7 +545,7 @@ public class DClient implements DConnexionHandler {
 
 
             }
-            case DRequestType.SPRITE_REVEAL     -> {
+            case DRequestType.SPRITE_REVEAL         -> {
 
                 // Pattern definition
                 Pattern pattern = Pattern.compile("^([^:]+):([\\d.]+),([\\d.]+)=([^=]+)$");
@@ -561,7 +586,7 @@ public class DClient implements DConnexionHandler {
 
 
             }
-            case DRequestType.SCORE             -> {
+            case DRequestType.SCORE                 -> {
 
                 /**
                  * Data shape :
@@ -611,7 +636,7 @@ public class DClient implements DConnexionHandler {
 
             
             }
-            case DRequestType.PLAYER_HAS_LOST   -> {
+            case DRequestType.PLAYER_HAS_LOST       -> {
 
                 // Getting the player UUID
                 DPlayer player = playerList.get(interpreter.getContent());
@@ -628,24 +653,112 @@ public class DClient implements DConnexionHandler {
 
 
             }
-            case DRequestType.GAME_LOST         -> {
+            case DRequestType.GAME_LOST             -> {
 
                 // Displaying the info
                 this.controller.gameLost();
 
 
             }
-            case DRequestType.GAME_WIN          -> {
+            case DRequestType.GAME_WIN              -> {
 
                 // Displaying the info
                 this.controller.gameWin();
 
 
             }
-            case DRequestType.GAME_ABORTED      -> {
+            case DRequestType.GAME_ABORTED          -> {
 
                 // Displaying the info
                 this.controller.gameAborted();
+
+
+            }
+            case DRequestType.PARAM_FIELD_LENGTH    -> {
+
+                // Trying to get the field length
+                int length = 0;
+                try {
+
+                    // Saving the parameter
+                    length = Integer.parseInt(interpreter.getContent());
+
+
+                    // Display the sprite position and spriteValue
+                    this.controller.setLength(length);
+
+
+                } catch (NumberFormatException e) {
+
+                    // TODO : handle this
+
+                }
+
+
+            }
+            case DRequestType.PARAM_FIELD_HEIGTH    -> {
+
+                // Trying to get the field heigth
+                int heigth = 0;
+                try {
+
+                    // Saving the parameter
+                    heigth = Integer.parseInt(interpreter.getContent());
+
+
+                    // Display the sprite position and spriteValue
+                    this.controller.setHeigth(heigth);
+
+
+                } catch (NumberFormatException e) {
+
+                    // TODO : handle this
+
+                }
+
+
+            }
+            case DRequestType.PARAM_FIELD_NBMINES   -> {
+
+                // Trying to get the number of mine
+                int nbMine = 0;
+                try {
+
+                    // Saving the parameter
+                    nbMine = Integer.parseInt(interpreter.getContent());
+
+
+                    // Display the sprite position and spriteValue
+                    this.controller.setNbMine(nbMine);
+
+
+                } catch (NumberFormatException e) {
+
+                    // TODO : handle this
+
+                }
+
+
+            }
+            case DRequestType.PARAM_NMAX_PLAYER     -> {
+
+                // Trying to get the player limit
+                int nMaxPlayer = 0;
+                try {
+
+                    // Saving the parameter
+                    nMaxPlayer = Integer.parseInt(interpreter.getContent());
+
+
+                    // Display the sprite position and spriteValue
+                    this.controller.setNMaxPlayer(nMaxPlayer);
+
+
+                } catch (NumberFormatException e) {
+
+                    // TODO : handle this
+
+                }
 
 
             }

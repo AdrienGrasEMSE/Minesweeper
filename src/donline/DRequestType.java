@@ -27,6 +27,7 @@ public enum DRequestType {
 
     /**
      * Server IP broadcasted
+     *  -> {<@SERVER@><$SRV_IP_BROADCAST$><#__server_ip__#>}
      */
     SRV_IP_BROADCAST    ("SRV_IP_BROADCAST"),
 
@@ -81,9 +82,20 @@ public enum DRequestType {
 
     /**
      * Waiting screen infos
+     * - PLAYER_LIST        : {<@SERVER@><$PLAYER_LIST$><#__client1_id__:__client1_name__;__client2_id__:__client2_name__;...#>}
+     * - SERVER_OWNER       : {<@SERVER@><$SERVER_OWNER$><#__owner_id__#>}
      */
     PLAYER_LIST         ("PLAYER_LIST"), 
     SERVER_OWNER        ("SERVER_OWNER"),
+
+
+    /**
+     * Owner command
+     */
+    PARAM_FIELD_LENGTH  ("PARAM_FIELD_LENGTH"),
+    PARAM_FIELD_HEIGTH  ("PARAM_FIELD_HEIGTH"),
+    PARAM_FIELD_NBMINES ("PARAM_FIELD_NBMINES"),
+    PARAM_NMAX_PLAYER   ("PARAM_NMAX_PLAYER"),
 
 
     /**

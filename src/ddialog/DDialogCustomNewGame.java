@@ -64,7 +64,7 @@ public class DDialogCustomNewGame extends JDialog {
         // Creating the panel for the width parameters
         JPanel        widthPanel            = new JPanel        (new GridLayout(1, 2));
         DLabel        widthLab              = new DLabel        ("Custom width :", DFont.JOST_LIGHT, 18, DTheme.LAB_TRS);
-        DIntegerField widthInput            = new DIntegerField (DFont.JOST_LIGHT, 18, DTheme.FLD_NTL);
+        DIntegerField widthInput            = new DIntegerField (DFont.JOST_LIGHT, 18, DTheme.FLD_DRK);
         widthPanel.setBorder                (new EmptyBorder(2, 10, 2, 10));
         widthPanel.setBackground            (DTheme.DLG_DRK.BCK_N);
         widthPanel.add                      (widthLab);
@@ -74,7 +74,7 @@ public class DDialogCustomNewGame extends JDialog {
         // Creating the panel for the height parameters
         JPanel        heightPanel           = new JPanel        (new GridLayout(1, 2));
         DLabel        heightLab             = new DLabel        ("Custom height :", DFont.JOST_LIGHT, 18, DTheme.LAB_TRS);
-        DIntegerField heightInput           = new DIntegerField (DFont.JOST_LIGHT, 18, DTheme.FLD_NTL);
+        DIntegerField heightInput           = new DIntegerField (DFont.JOST_LIGHT, 18, DTheme.FLD_DRK);
         heightPanel.setBorder               (new EmptyBorder(2, 10, 2, 10));
         heightPanel.setBackground           (DTheme.DLG_DRK.BCK_N);
         heightPanel.add                     (heightLab);
@@ -84,7 +84,7 @@ public class DDialogCustomNewGame extends JDialog {
         // Creating the panel for the number of mines
         JPanel        nbMinesPanel          = new JPanel        (new GridLayout(1, 2));
         DLabel        nbMinesLab            = new DLabel        ("Number of mines :", DFont.JOST_LIGHT, 18, DTheme.LAB_TRS);
-        DIntegerField nbMinesInput          = new DIntegerField (DFont.JOST_LIGHT, 18, DTheme.FLD_NTL);
+        DIntegerField nbMinesInput          = new DIntegerField (DFont.JOST_LIGHT, 18, DTheme.FLD_DRK);
         nbMinesPanel.setBorder              (new EmptyBorder(2, 10, 2, 10));
         nbMinesPanel.setBackground          (DTheme.DLG_DRK.BCK_N);
         nbMinesPanel.add                    (nbMinesLab);
@@ -176,7 +176,7 @@ public class DDialogCustomNewGame extends JDialog {
         
 
         // NbMines validation
-        if (customNbMines < 1 || customNbMines > (int) ((customWidth * customHeight) / 0.75)) {
+        if (customNbMines < 1 || customNbMines > ((customWidth * customHeight) / 4)) {
 
             // Invalid parameters
             paramValid = false;

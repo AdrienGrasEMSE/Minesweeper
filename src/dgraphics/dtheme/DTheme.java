@@ -87,7 +87,8 @@ public class DTheme {
     /**
      * Field colors
      */
-    public static DColors_FLD   FLD_NTL = new DColors_FLD(0x222D41, 0x374158, 0xEAECEE);
+    public static DColors_FLD   FLD_DRK = new DColors_FLD(0x222D41, 0x374158, 0xEAECEE);
+    public static DColors_FLD   FLD_NTL = new DColors_FLD(0x374158, 0x828897, 0xEAECEE);
 
 
     /**
@@ -170,7 +171,7 @@ public class DTheme {
         /**
          * Field colors
          */
-        FLD_NTL = new DColors_FLD(0x222D41, 0x374158, 0xEAECEE);
+        FLD_DRK = new DColors_FLD(0x222D41, 0x374158, 0xEAECEE);
 
 
         /**
@@ -247,7 +248,7 @@ public class DTheme {
         /**
          * Field colors
          */
-        FLD_NTL = new DColors_FLD(0x2e6f64, 0x397268, 0xEAECEE);
+        FLD_DRK = new DColors_FLD(0x2e6f64, 0x397268, 0xEAECEE);
 
 
         /**

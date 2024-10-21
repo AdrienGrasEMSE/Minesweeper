@@ -462,6 +462,10 @@ public class DGUI extends JFrame {
     public void gameDisconnexion        (String reason)                                     {uiOnline.gameDisconnexion(reason);}
 
     public void updatePlayerList        (Map<String, DPlayer> playerList, String ownerUUID) {uiOnline.updatePlayerList(playerList, ownerUUID);}
+    public void setLength               (int length)                                        {uiOnline.setLength(length);}
+    public void setHeigth               (int heigth)                                        {uiOnline.setHeigth(heigth);}
+    public void setNbMine               (int setNbMine)                                     {uiOnline.setNbMine(setNbMine);}
+    public void setNMaxPlayer           (int nbMaxPlayer)                                   {uiOnline.setNMaxPlayer(nbMaxPlayer);}
 
     public void setServerOwner          (boolean serverOwner)                               {uiOnline.setServerOwner(serverOwner);}
 

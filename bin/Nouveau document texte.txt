@@ -1,0 +1,1 @@
+jpackage --input ./ --name Minesweeper --main-jar Minesweeper.jar --main-class Main --type exe

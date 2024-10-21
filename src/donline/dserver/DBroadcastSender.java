@@ -1,16 +1,13 @@
 // Package declaration
 package donline.dserver;
 
-import java.io.IOException;
 // Import
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import donline.DInterpreter;
 import donline.DRequestType;
 

@@ -60,7 +60,7 @@ public class DDialogStringInput extends JDialog {
         // Creating the panel for the string parameter
         JPanel          stringPanel         = new JPanel        (new GridLayout(1, 2));
         DLabel          stringLab           = new DLabel        (asked, DFont.JOST_LIGHT, 18, DTheme.LAB_TRS);
-        DStringField    stringInput         = new DStringField  (DFont.JOST_LIGHT, 18, DTheme.FLD_NTL);
+        DStringField    stringInput         = new DStringField  (DFont.JOST_LIGHT, 18, DTheme.FLD_DRK);
         stringPanel.setBorder               (new EmptyBorder(2, 10, 2, 10));
         stringPanel.setBackground           (DTheme.DLG_DRK.BCK_N);
         stringPanel.add                     (stringLab);

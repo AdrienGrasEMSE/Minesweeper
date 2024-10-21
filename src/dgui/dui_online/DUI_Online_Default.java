@@ -303,35 +303,6 @@ public class DUI_Online_Default extends JPanel implements ActionListener {
     private void joinGame() {
 
         // Dialog to get custom parameters
-        DDialogStringInput serverIP = new DDialogStringInput(gui, "Enter server IP", "IP :");
-        do {
-
-            // Display dialog
-            serverIP.setVisible(true);
-
-
-            // Infos
-            if (!serverIP.getParamValid() && serverIP.getUserConfirm()) {
-                DDialogInfo info = new DDialogInfo( gui,
-                                                    "Invalid parameters",
-                                                    new String[]{ "The server ip must be",
-                                                    "not empty..."
-                                                    },
-                                                    DTheme.DLG_DRK);
-                info.setVisible(true);
-            }
-
-
-        }while (!serverIP.getParamValid() && serverIP.getUserConfirm());
-
-
-        // Cancel operation
-        if (!serverIP.getUserConfirm()) {
-            return;
-        }
-
-
-        // Dialog to get custom parameters
         DDialogStringInput pseudo = new DDialogStringInput(gui, "Enter your pseudo", "Pseudo :");
         do {
 
@@ -361,7 +332,7 @@ public class DUI_Online_Default extends JPanel implements ActionListener {
 
 
         // Join game
-        controller.joinGame(serverIP.getInputString(), pseudo.getInputString());
+        controller.joinGame(pseudo.getInputString());
 
 
         // Loading : waiting for the client to be connected
