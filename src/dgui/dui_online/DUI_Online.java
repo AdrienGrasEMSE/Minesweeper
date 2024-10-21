@@ -133,6 +133,7 @@ public class DUI_Online extends JPanel {
     public void setHeigth       (int heigth)                                        {uiWait.setHeigth(heigth);}
     public void setNbMine       (int setNbMine)                                     {uiWait.setNbMine(setNbMine);}
     public void setNMaxPlayer   (int nbMaxPlayer)                                   {uiWait.setNMaxPlayer(nbMaxPlayer);}
+    public void gameLauchRefused()                                                  {uiWait.gameLauchRefused();};
 
     
 

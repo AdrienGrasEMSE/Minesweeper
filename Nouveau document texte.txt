@@ -1,5 +1,5 @@
-jpackage --input ./ \
-         --name ./Minesweeper \
-         --main-jar Minesweeper.jar \
-         --main-class <votre_classe_principale> \
-         --type exe
+jar cfm Minesweeper.jar MANIFEST.MF -C bin .
+
+java --enable-preview -jar Minesweeper.jar
+
+jpackage --input ./ --name Minesweeper --main-jar Minesweeper.jar --main-class Main --type exe

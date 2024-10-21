@@ -463,6 +463,20 @@ public class DUI_Online_Wait extends JPanel implements DUI_Updatable {
 
 
     /**
+     * Display a popup when the game lauch is refused
+     */
+    public void gameLauchRefused() {
+
+        // Display info
+        DDialogInfo info = new DDialogInfo(gui, "Unable to launch the game", new String[]{"There are not enough player..."}, DTheme.DLG_DRK);
+        info.setModal(false);
+        info.setVisible(true);
+
+    }
+
+
+
+    /**
      * Action after a trigger from any event listener
      */
     @Override
@@ -491,6 +505,7 @@ public class DUI_Online_Wait extends JPanel implements DUI_Updatable {
             
                 // Invalid parameters
                 DDialogInfo info = new DDialogInfo(gui, "Invalid field length", new String[]{"Length must be between", "5 and 20"}, DTheme.DLG_DRK);
+                info.setModal(false);
                 info.setVisible(true);
                 return;
     
@@ -499,6 +514,7 @@ public class DUI_Online_Wait extends JPanel implements DUI_Updatable {
     
                 // Invalid parameters
                 DDialogInfo info = new DDialogInfo(gui, "Invalid field height", new String[]{"Height must be between", "5 and 20"}, DTheme.DLG_DRK);
+                info.setModal(false);
                 info.setVisible(true);
                 return;
     
@@ -507,6 +523,7 @@ public class DUI_Online_Wait extends JPanel implements DUI_Updatable {
     
                 // Invalid parameters
                 DDialogInfo info = new DDialogInfo(gui, "Invalid number of mine", new String[]{"Number of mine must be between", "1 and 1/4 of (height * length)"}, DTheme.DLG_DRK);
+                info.setModal(false);
                 info.setVisible(true);
                 return;
                 
@@ -515,6 +532,7 @@ public class DUI_Online_Wait extends JPanel implements DUI_Updatable {
 
                 // Invalid parameters
                 DDialogInfo info = new DDialogInfo(gui, "Invalid player limit", new String[]{"Player limit must be between", "1 and 10"}, DTheme.DLG_DRK);
+                info.setModal(false);
                 info.setVisible(true);
                 return;
 
@@ -522,6 +540,9 @@ public class DUI_Online_Wait extends JPanel implements DUI_Updatable {
 
 
             // Valid parameters
+            DDialogInfo info = new DDialogInfo(gui, "Parameters applyied", new String[]{"Parameters has been", "successfully applied"}, DTheme.DLG_DRK);
+            info.setModal(false);
+            info.setVisible(true);
             this.controller.applyLength     (fdLength.getIntegerValue());
             this.controller.applyHeigth     (fdHeigth.getIntegerValue());
             this.controller.applyNbMine     (fdNbMines.getIntegerValue());

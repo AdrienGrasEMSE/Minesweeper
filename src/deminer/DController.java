@@ -832,6 +832,7 @@ public class DController {
     public void setHeigth           (int heigth)                                        {this.gui.setHeigth(heigth);}
     public void setNbMine           (int setNbMine)                                     {this.gui.setNbMine(setNbMine);}
     public void setNMaxPlayer       (int nbMaxPlayer)                                   {this.gui.setNMaxPlayer(nbMaxPlayer);}
+    public void gameLauchRefused    ()                                                  {this.gui.gameLauchRefused();};
 
 }
  

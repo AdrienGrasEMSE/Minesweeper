@@ -102,6 +102,7 @@ public enum DRequestType {
      * Game infos
      */
     GAME_LAUNCH_ASK     ("GAME_LAUNCH_ASK"),
+    GAME_LAUNCH_REFUSED ("GAME_LAUNCH_REFUSED"),
     GAME_LAUNCH         ("GAME_LAUNCH"),
     GAME_READY          ("GAME_READY"),
     GAME_WIN            ("GAME_WIN"),

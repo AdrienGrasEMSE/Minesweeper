@@ -466,6 +466,7 @@ public class DGUI extends JFrame {
     public void setHeigth               (int heigth)                                        {uiOnline.setHeigth(heigth);}
     public void setNbMine               (int setNbMine)                                     {uiOnline.setNbMine(setNbMine);}
     public void setNMaxPlayer           (int nbMaxPlayer)                                   {uiOnline.setNMaxPlayer(nbMaxPlayer);}
+    public void gameLauchRefused        ()                                                  {uiOnline.gameLauchRefused();};
 
     public void setServerOwner          (boolean serverOwner)                               {uiOnline.setServerOwner(serverOwner);}
 

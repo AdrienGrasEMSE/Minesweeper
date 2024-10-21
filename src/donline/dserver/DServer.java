@@ -724,6 +724,8 @@ public class DServer implements Runnable{
                             synchronized (clientList) {
                                 if (clientList.size() > 1 && this.owner.getUUID().equals(interpreter.getSenderUUID())) {
                                     this.newOnlineGame();
+                                } else {
+                                    this.owner.addRequest(interpreter.build("SERRVER", DRequestType.GAME_LAUNCH_REFUSED));
                                 }
                             }
 

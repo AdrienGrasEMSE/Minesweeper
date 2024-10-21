@@ -762,6 +762,13 @@ public class DClient implements DConnexionHandler {
 
 
             }
+            case DRequestType.GAME_LAUNCH_REFUSED   -> {
+
+                // Display info
+                this.controller.gameLauchRefused();
+
+
+            }
             default -> {
             }
         }
