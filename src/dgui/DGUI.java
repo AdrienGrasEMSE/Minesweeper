@@ -353,7 +353,13 @@ public class DGUI extends JFrame {
         mMultiPlayer.setEnabled(true);
 
 
+        // Changing controller game state
         controller.setOnline(false);
+
+
+        // Enabling menu option
+        mNewGame    .setEnabled(true);
+        mLevelChange.setEnabled(true);
 
     }
 
@@ -402,7 +408,13 @@ public class DGUI extends JFrame {
         this.uiOnline.switchSubUIDefault();
 
 
+        // Changing controller game state
         controller.setOnline(true);
+
+
+        // Enabling menu option
+        mNewGame    .setEnabled(true);
+        mLevelChange.setEnabled(true);
 
     }
 
@@ -470,8 +482,30 @@ public class DGUI extends JFrame {
      * 
      * =====================================================================================================================
      */
-    public void gameCreated             (boolean succeed, String failInfo)                  {uiOnline.gameCreated(succeed, failInfo);}
-    public void gameJoinned             (boolean succeed, String failInfo)                  {uiOnline.gameJoinned(succeed, failInfo);}
+    public void gameCreated(boolean succeed, String failInfo) {
+
+        // Switch UI
+        uiOnline.gameCreated(succeed, failInfo);
+
+
+        // Disabling menu option
+        mSolo       .setEnabled(false);
+        mNewGame    .setEnabled(false);
+        mLevelChange.setEnabled(false);
+    
+    }
+    public void gameJoinned(boolean succeed, String failInfo) {
+        
+        // Switch UI
+        uiOnline.gameJoinned(succeed, failInfo);
+    
+
+        // Disabling menu option
+        mSolo       .setEnabled(false);
+        mNewGame    .setEnabled(false);
+        mLevelChange.setEnabled(false);
+    
+    }
     public void gameDisconnexion        (String reason)                                     {uiOnline.gameDisconnexion(reason);}
 
     public void updatePlayerList        (Map<String, DPlayer> playerList, String ownerUUID) {uiOnline.updatePlayerList(playerList, ownerUUID);}
