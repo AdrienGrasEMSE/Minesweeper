@@ -202,6 +202,10 @@ public class DUI_Online_Wait extends JPanel implements DUI_Updatable {
      */
     private void eastPanelSetup() {
 
+        // Clearing all
+        eastPanel.removeAll();
+
+
         // Only if the client is the server owner
         if (this.serverOwner) {
 

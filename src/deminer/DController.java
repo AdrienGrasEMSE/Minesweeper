@@ -201,6 +201,19 @@ public class DController {
 
 
 
+
+    /**
+     * Change the game state
+     * 
+     * @param online
+     */
+    public void setOnline(boolean online) {
+        this.onlineGame = online;
+    }
+
+
+
+
     /**
      * =====================================================================================================================
      * 
@@ -563,7 +576,6 @@ public class DController {
                         // Asking the gui to display the nextstep
                         gui.gameCreated(true, "");
                         gui.setServerOwner(true);
-                        onlineGame = true;
 
 
                     } else {
@@ -650,7 +662,6 @@ public class DController {
                 // Game joinned
                 gui.gameJoinned(true, "");
                 gui.setServerOwner(false);
-                onlineGame = true;
 
 
             } else {

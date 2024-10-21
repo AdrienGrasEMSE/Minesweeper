@@ -345,6 +345,9 @@ public class DGUI extends JFrame {
         mOption     .setEnabled(true);
         mMultiPlayer.setEnabled(true);
 
+
+        controller.setOnline(false);
+
     }
 
 
@@ -390,6 +393,9 @@ public class DGUI extends JFrame {
 
         // Default screen
         this.uiOnline.switchSubUIDefault();
+
+
+        controller.setOnline(false);
 
     }
 
