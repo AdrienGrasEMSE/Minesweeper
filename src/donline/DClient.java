@@ -139,7 +139,7 @@ public class DClient implements DConnexionHandler {
     public boolean autoConnect() {
 
         // Testing on the local device
-        if (!this.tryConnection("127.0.0.1", 10000)) {
+        if (this.tryConnection("127.0.0.1", 10000)) {
 
             // Connexion established
             return true;

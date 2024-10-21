@@ -14,6 +14,6 @@
     "java.settings.compilerArgs": [
         "--enable-preview",
         "--release",
-        "21" // Remplacez par la version appropriée de Java que vous utilisez
+        "17" // Remplacez par la version appropriée de Java que vous utilisez
     ]
 }
